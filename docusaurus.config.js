@@ -163,5 +163,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         trackingID: 'XX-XXXXXXXXX-X',
         anonymizeIP: true,
       },
+      gtag: {
+        trackingID: 'XX-XXXXXXXXX-X',
+        anonymizeIP: true,        
+      },
     }),
 });
