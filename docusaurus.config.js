@@ -37,7 +37,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
     ],
   ],
   plugins: [
-    // ... Your other plugins.
     [
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
@@ -155,6 +154,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+      },
+      googleAnalytics: {
+        trackingID: 'XX-XXXXXXXXX-X',
+        anonymizeIP: true,
       },
     }),
 });
