@@ -4,15 +4,15 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'Welcome To The Swimm Developer Community',
+  tagline: 'Swimm Dev Docs',
+  url: 'https://docs.swimm.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'swimmio', // Usually your GitHub org/user name.
+  projectName: 'docs.swimm.io', // Usually your repo name.
 
   presets: [
     [
@@ -22,13 +22,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
+          editUrl: 'https://github.com/swimmio/docs.swimm.io/edit/main/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/main/website/blog/',
+            'https://github.com/swimmio/docs.swimm.io/edit/main/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -41,9 +41,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'My Site',
+        title: 'Swimm Dev Docs',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'Swimm Logo',
           src: 'img/logo.svg',
         },
         items: [
@@ -51,11 +51,17 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             type: 'doc',
             docId: 'intro',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Quick Start',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/blog', label: 'Changelog', position: 'left'},
+          {to: '/support', label: 'Support', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://swimm.io/blog/',
+            label: 'Blog',
+            position: 'right',
+          },
+          {
+            href: 'https://github.com/swimmio/docs.swimm.io',
             label: 'GitHub',
             position: 'right',
           },
@@ -65,11 +71,23 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         style: 'dark',
         links: [
           {
-            title: 'Docs',
+            title: 'Using Swimm',
             items: [
               {
-                label: 'Tutorial',
+                label: 'Quickstart',
                 to: '/docs/intro',
+              },
+              {
+                label: 'Use Cases',
+                href: 'https://swimm.io/use-cases',
+              },
+              {
+                label: 'Pricing',
+                href: 'https://swimm.io/pricing',
+              },
+              {
+                label: 'Support',
+                to: '/support',
               },
             ],
           },
@@ -77,16 +95,29 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Community Slack Channel',
+                href: 'https://swimm.live/slack',
               },
               {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                label: 'Stack Overflow',
+                href: 'https://stackoverflow.com/questions/tagged/swimm',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://twitter.com/swimmio',
+              },
+            ],
+          },
+          {
+            title: 'Legal',
+            items: [
+              {
+                label: 'Terms Of Service',
+                href: 'https://swimm.io/terms-of-service',
+              },
+              {
+                label: 'Privacy Policy',
+                href: 'https://swimm.io/privacy-policy',
               },
             ],
           },
@@ -94,17 +125,17 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             title: 'More',
             items: [
               {
-                label: 'Blog',
+                label: 'Changelog',
                 to: '/blog',
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/swimmio/docs.swimm.io',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Swimm, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
