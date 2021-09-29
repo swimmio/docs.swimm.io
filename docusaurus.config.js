@@ -62,7 +62,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         title: '',
         logo: {
           alt: 'Swimm Logo',
-          src: 'img/logo.svg',
+          src: 'img/logo.png',
         },
         items: [
           {
