@@ -59,7 +59,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'Swimm Dev Docs',
+        title: '',
         logo: {
           alt: 'Swimm Logo',
           src: 'img/logo.svg',
@@ -71,8 +71,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             position: 'left',
             label: 'Quick Start',
           },
+          {to: '/docs', label: 'All Docs', position: 'left'},
           {to: '/blog', label: 'Changelog', position: 'left'},
-          {to: '/support', label: 'Support', position: 'left'},
+          {to: '/docs/help/support', label: 'Support', position: 'left'},
           {
             href: 'https://swimm.io/blog/',
             label: 'Blog',
@@ -105,7 +106,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'Support',
-                to: '/support',
+                to: '/docs/help/support',
               },
             ],
           },
