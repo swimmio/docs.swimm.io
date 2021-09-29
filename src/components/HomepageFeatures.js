@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        It only takes a few minutes to set up Swimm to run on your continuous 
+        It's easy to set up Swimm to run on your continuous 
         integration server so that your documentation remains always up-to-date.
       </>
     ),
@@ -16,7 +16,7 @@ const FeatureList = [
     link_href: '/'
   },
   {
-    title: 'IDE Plugins',
+    title: 'Swimm\'s IDE Plugins',
     Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
@@ -28,7 +28,7 @@ const FeatureList = [
     link_href: '/'
   },
   {
-    title: 'Integrations',
+    title: 'Knowledgebase Integrations',
     Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
@@ -40,15 +40,15 @@ const FeatureList = [
     link_href: '/'
   },
   {
-    title: 'Documentation Tips & Tricks',
+    title: 'Documentation Strategies',
     Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Learn how to bring Swimm documentation to your internal knowledge platforms,
-        like Confluence and Notion.
+        Discover strategies to break down documentation debt into smaller,
+        accomplishable units that everyone can help with. 
       </>
     ),
-    link_title: 'Beat Writer\'s Block',
+    link_title: 'Let\'s Tackle It!',
     link_href: '/'
   },
   {
@@ -61,7 +61,7 @@ const FeatureList = [
         questions.
       </>
     ),
-    link_title: 'We even have cookies!',
+    link_title: 'Community Matters',
     link_href: '/'
   },
   {
