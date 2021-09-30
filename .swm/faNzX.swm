@@ -1,0 +1,66 @@
+{
+    "id": "faNzX",
+    "name": "SEO Plugin Configuration",
+    "content": [
+        {
+            "type": "text",
+            "text": "We have a sitemap generator as well as a gtags generator built in, and both run periodically, triggered by a visitor poking a function that sees enough time has passed to regenerate the files on the fly. We also have Google Analytics configured to run on this site."
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "         theme: {",
+                "           customCss: require.resolve('./src/css/custom.css'),",
+                "         },",
+                "*        sitemap: {",
+                "*          changefreq: 'weekly',",
+                "*          priority: 0.5,",
+                "*        },",
+                "       }),",
+                "     ],",
+                "   ],"
+            ],
+            "firstLineNumber": 33,
+            "path": "docusaurus.config.js",
+            "comments": [
+                "Here we define how often the site map regenerates itself (it will always be rebuilt in a production build)"
+            ]
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "         theme: lightCodeTheme,",
+                "         darkTheme: darkCodeTheme,",
+                "       },",
+                "*      googleAnalytics: {",
+                "*        trackingID: 'XX-XXXXXXXXX-X',",
+                "*        anonymizeIP: true,",
+                "*      },",
+                "*      gtag: {",
+                "*        trackingID: 'XX-XXXXXXXXX-X',",
+                "*        anonymizeIP: true,        ",
+                "*      },",
+                "     }),",
+                " });",
+                " "
+            ],
+            "firstLineNumber": 160,
+            "path": "docusaurus.config.js",
+            "comments": [
+                "And here's where we insert our GA identifier (this is not secret at all)"
+            ]
+        },
+        {
+            "type": "text",
+            "text": "These are configured to be zero-maintenance, so you shouldn't need to worry about them."
+        }
+    ],
+    "symbols": {},
+    "file_version": "2.0.3",
+    "meta": {
+        "app_version": "0.5.9-1",
+        "file_blobs": {
+            "docusaurus.config.js": "8cb31c39a4f81c3e4e93fde5c52c60a086e349d0"
+        }
+    }
+}
