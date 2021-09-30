@@ -1,0 +1,32 @@
+{
+    "id": "CVk1i",
+    "name": "Creating Static Pages",
+    "content": [
+        {
+            "type": "text",
+            "text": "If you want to create a page that doesn't show up in the documentation area, take a look at [[sym:./src/pages(fa615d09-e397-41d9-ba6e-7b69d310f8a5)]] where the main page exists (pulling in the homepage components found in [[sym:./src/components/HomepageFeatures.js(1edb5e65-8814-4b7e-af69-a44023f32b85)]].\n\nYou can make any kind of page that you want, and it can be Markdown (.md), JS, or MDX like the blog and docs area. We aren't currently using many, but almost anything can go there, within the limitations of a statically-generated site.\n\nBe aware that [[sym:./src/css/custom.css(3e39d3aa-9461-40a9-8ad9-f133b928caab)]] is global for this theme (light and dark mode). You can follow the homepage example for per-page needs. Docusaurus has a nice [quick start to tweaks through Infima](https://docusaurus.io/docs/styling-layout) and even has a palate generator."
+        }
+    ],
+    "symbols": {
+        "fa615d09-e397-41d9-ba6e-7b69d310f8a5": {
+            "type": "path",
+            "text": "src/pages",
+            "path": "src/pages"
+        },
+        "1edb5e65-8814-4b7e-af69-a44023f32b85": {
+            "type": "path",
+            "text": "src/components/HomepageFeatures.js",
+            "path": "src/components/HomepageFeatures.js"
+        },
+        "3e39d3aa-9461-40a9-8ad9-f133b928caab": {
+            "type": "path",
+            "text": "src/css/custom.css",
+            "path": "src/css/custom.css"
+        }
+    },
+    "file_version": "2.0.3",
+    "meta": {
+        "app_version": "0.5.9-1",
+        "file_blobs": {}
+    }
+}
