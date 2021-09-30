@@ -1,0 +1,88 @@
+{
+    "id": "Rmly2",
+    "name": "Building The Site Locally",
+    "content": [
+        {
+            "type": "text",
+            "text": "Docusaurus is for all intents and purposes a React app, which makes great use of the [MDX format](https://mdxjs.com/mdx/). So, we see pretty much what you'd expect from such an app. Before you do anything else, run `npm install` from the repository root. This will create a `.docusaurus` directory with the rest of the scripts we need."
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "   \"name\": \"temp\",",
+                "   \"version\": \"0.0.0\",",
+                "   \"private\": true,",
+                "*  \"scripts\": {",
+                "*    \"docusaurus\": \"docusaurus\",",
+                "*    \"start\": \"docusaurus start\",",
+                "*    \"build\": \"docusaurus build\",",
+                "*    \"swizzle\": \"docusaurus swizzle\",",
+                "*    \"deploy\": \"docusaurus deploy\",",
+                "*    \"clear\": \"docusaurus clear\",",
+                "*    \"serve\": \"docusaurus serve\",",
+                "*    \"write-translations\": \"docusaurus write-translations\",",
+                "*    \"write-heading-ids\": \"docusaurus write-heading-ids\"",
+                "   },",
+                "   \"dependencies\": {",
+                "     \"@docusaurus/core\": \"2.0.0-beta.6\","
+            ],
+            "firstLineNumber": 2,
+            "path": "package.json",
+            "comments": [
+                "Here we see the possible ways to invoke Docusaurus, but the one's we'll focus on are [[sym-text:build(84a6efda-5ece-4c53-9f1c-eccf27626437)]] [[sym-text:serve(1949d1a3-1357-449d-926d-90206726eda0)]] and [[sym-text:start(6c170459-7614-4576-b319-64e910631c5a)]] . You run `npm run build` when you want to build production, and `npm run serve` when you want to test the production build locally."
+            ]
+        },
+        {
+            "type": "text",
+            "text": "You don't need to run a production build every time you want to see your changes live, just change into the root of the repository and run `npx docusaurus start` in a terminal. The site will start, and you'll see the site reflect any changes as you save them. Note that certain plugins will _only_ work in production, not development (search, the sitemap generator, and the release notes feed generator come to mind).\n\nThat's it for building locally. Once you're certain all of your changes work in a production build, they're ready to be merged."
+        }
+    ],
+    "symbols": {
+        "84a6efda-5ece-4c53-9f1c-eccf27626437": {
+            "symbol": "84a6efda-5ece-4c53-9f1c-eccf27626437",
+            "path": "package.json",
+            "text": "build",
+            "lineNumber": 8,
+            "lineData": "    \"build\": \"docusaurus build\",",
+            "wordIndex": {
+                "start": 2,
+                "end": 2
+            },
+            "fileBlob": "e3c01c8593d2888466b567453874037a71daed30",
+            "type": "generic_text"
+        },
+        "1949d1a3-1357-449d-926d-90206726eda0": {
+            "symbol": "1949d1a3-1357-449d-926d-90206726eda0",
+            "path": "package.json",
+            "text": "serve",
+            "lineNumber": 12,
+            "lineData": "    \"serve\": \"docusaurus serve\",",
+            "wordIndex": {
+                "start": 2,
+                "end": 2
+            },
+            "fileBlob": "e3c01c8593d2888466b567453874037a71daed30",
+            "type": "generic_text"
+        },
+        "6c170459-7614-4576-b319-64e910631c5a": {
+            "symbol": "6c170459-7614-4576-b319-64e910631c5a",
+            "path": "package.json",
+            "text": "start",
+            "lineNumber": 7,
+            "lineData": "    \"start\": \"docusaurus start\",",
+            "wordIndex": {
+                "start": 2,
+                "end": 2
+            },
+            "fileBlob": "e3c01c8593d2888466b567453874037a71daed30",
+            "type": "generic_text"
+        }
+    },
+    "file_version": "2.0.3",
+    "meta": {
+        "app_version": "0.5.9-1",
+        "file_blobs": {
+            "package.json": "e3c01c8593d2888466b567453874037a71daed30"
+        }
+    }
+}
