@@ -1,0 +1,140 @@
+{
+    "id": "axB2v",
+    "name": "Creating Blog Posts",
+    "content": [
+        {
+            "type": "text",
+            "text": "We have two kinds of content that gets posted to the changelog portion of the site:\n\n*   Automatic release notes for every major/minor version (these will come directly from a script I'm going to run against ClickUp), and,\n    \n*   Occasional updates regarding the docs site, such as a new tutorial, or new language available, or something else.\n    \n\nFor automatic release notes, we create a directory in [[sym:./blog(3cecaae9-1ad4-4709-9c29-52cbe87362b1)]] matching the syntax `x.y.z`, where the letters represent the major / minor notation of the version. This makes easy permalinks.\n\nFor blog posts that have no assets (images, downloads, whatever) create a new file in [[sym:./blog(3cecaae9-1ad4-4709-9c29-52cbe87362b1)]] in the format of `YYYY-MM-DD-title-slug.mdx` following the example of [[sym:./blog/2021-09-30-Welcome.mdx(c58c1fdc-34ee-47a2-89f2-caf6f0494c79)]]like so:"
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "*---",
+                "*slug: welcome",
+                "*title: Welcome!",
+                "*authors: [swimm, tpost] ",
+                "*tags: [announcements, release-notes]",
+                "*---",
+                "*"
+            ],
+            "firstLineNumber": 1,
+            "path": "blog/2021-09-30-Welcome.mdx",
+            "comments": [
+                "Here, [[sym-text:slug(a8975fdf-0885-4a98-afd8-012add1d2bbf)]] ultimately sets the URL slug (this overrides the file name, so use short file names if you want) and [[sym-text:title(975b3d44-88bc-45f7-90a9-697280c12824)]] sets the title that is displayed to the reader. The [[sym-text:authors(18146d3b-33ba-4f2b-bf2a-1e5067b62326)]] are defined in [[sym:./blog/authors.yml(106cbd0b-ec1e-4ec9-aed4-45a8b4589a41)]] and tags are comma-separated and created on-the-fly."
+            ]
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "*import Tabs from '@theme/Tabs';",
+                "*import TabItem from '@theme/TabItem';",
+                "*const url = 'https://docs.swimm.io';"
+            ],
+            "firstLineNumber": 8,
+            "path": "blog/2021-09-30-Welcome.mdx",
+            "comments": [
+                "Right under the anchor markup, we can import components that we need (in this case we're using Tabs in [admonitions](https://docusaurus.io/docs/markdown-features/admonitions)), but almost any component that is useful in a static generated site will work."
+            ]
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                " (machine-generated) release notes for every major and minor version of Swimm, ",
+                " as well as notifications of new things to explore here. ",
+                " ",
+                "*:::tip You can pull RSS or Atom feeds to stay up-to-date:",
+                "*",
+                "*<Tabs",
+                "*    defaultValue=\"rss\"",
+                "*    values={[",
+                "*        {label: 'RSS', value: 'rss'},",
+                "*        {label: 'Atom', value: 'atom'},",
+                "*    ]}>",
+                "*    <TabItem value=\"rss\">",
+                "*        <code>{url}/blog/rss.xml</code>",
+                "*    </TabItem>",
+                "*    <TabItem value=\"atom\">",
+                "*        <code>{url}/blog/atom.xml</code>",
+                "*    </TabItem>",
+                "*</Tabs>",
+                "*",
+                "*:::",
+                " ",
+                " Swimm generally releases at the beginning of every week, so you can expect updates",
+                " to be pretty low volume. There will also be a note if new tutorials are added, or"
+            ],
+            "firstLineNumber": 17,
+            "path": "blog/2021-09-30-Welcome.mdx",
+            "comments": [
+                "Then, we ultimately mix our components with Github flavored Markdown (NB, it has issues with some of the advanced commonmark features, but works fine for GH style Markdown)."
+            ]
+        },
+        {
+            "type": "text",
+            "text": "For posts that **do** have images and assets, create a directory similarly to how we set up the automatic changelog entries, and place whatever media is necessary within that folder. To the reader, there is no difference between any of these approaches."
+        }
+    ],
+    "symbols": {
+        "3cecaae9-1ad4-4709-9c29-52cbe87362b1": {
+            "type": "path",
+            "text": "blog",
+            "path": "blog"
+        },
+        "c58c1fdc-34ee-47a2-89f2-caf6f0494c79": {
+            "type": "path",
+            "text": "blog/2021-09-30-Welcome.mdx",
+            "path": "blog/2021-09-30-Welcome.mdx"
+        },
+        "a8975fdf-0885-4a98-afd8-012add1d2bbf": {
+            "symbol": "a8975fdf-0885-4a98-afd8-012add1d2bbf",
+            "path": "blog/2021-09-30-Welcome.mdx",
+            "text": "slug",
+            "lineNumber": 2,
+            "lineData": "slug: welcome",
+            "wordIndex": {
+                "start": 0,
+                "end": 0
+            },
+            "fileBlob": "b21eb528279699a92f15da993399f49ce3d5595d",
+            "type": "generic_text"
+        },
+        "975b3d44-88bc-45f7-90a9-697280c12824": {
+            "symbol": "975b3d44-88bc-45f7-90a9-697280c12824",
+            "path": "blog/2021-09-30-Welcome.mdx",
+            "text": "title",
+            "lineNumber": 3,
+            "lineData": "title: Welcome!",
+            "wordIndex": {
+                "start": 0,
+                "end": 0
+            },
+            "fileBlob": "b21eb528279699a92f15da993399f49ce3d5595d",
+            "type": "generic_text"
+        },
+        "18146d3b-33ba-4f2b-bf2a-1e5067b62326": {
+            "symbol": "18146d3b-33ba-4f2b-bf2a-1e5067b62326",
+            "path": "blog/2021-09-30-Welcome.mdx",
+            "text": "authors",
+            "lineNumber": 4,
+            "lineData": "authors: [swimm, tpost] ",
+            "wordIndex": {
+                "start": 0,
+                "end": 0
+            },
+            "fileBlob": "b21eb528279699a92f15da993399f49ce3d5595d",
+            "type": "generic_text"
+        },
+        "106cbd0b-ec1e-4ec9-aed4-45a8b4589a41": {
+            "type": "path",
+            "text": "blog/authors.yml",
+            "path": "blog/authors.yml"
+        }
+    },
+    "file_version": "2.0.3",
+    "meta": {
+        "app_version": "0.5.9-1",
+        "file_blobs": {
+            "blog/2021-09-30-Welcome.mdx": "b21eb528279699a92f15da993399f49ce3d5595d"
+        }
+    }
+}
