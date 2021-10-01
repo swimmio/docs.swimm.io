@@ -67,13 +67,25 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         items: [
           {
             type: 'doc',
-            docId: 'quickstart',
-            position: 'left',
-            label: 'Quick Start',
+            docId: 'Welcome', 
+            label: 'Documentation', 
+            position: 'left'
           },
-          {to: '/docs', label: 'All Docs', position: 'left'},
-          {to: '/blog', label: 'Changelog', position: 'left'},
-          {to: '/docs/help/support', label: 'Support', position: 'left'},
+          {
+            to: '/blog', 
+            label: 'Changelog', 
+            position: 'left'
+          },
+          {
+            to: '/support',
+            label: 'Support', 
+            position: 'left'
+          },
+          {
+            to: '/community',
+            label: 'Community',
+            position: 'left',
+          },
           {
             href: 'https://swimm.io/blog/',
             label: 'Blog',
