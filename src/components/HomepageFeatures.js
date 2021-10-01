@@ -49,7 +49,7 @@ const FeatureList = [
       </>
     ),
     link_title: 'Let\'s Tackle It!',
-    link_href: '/'
+    link_href: '/documentation-strategies'
   },
   {
     title: 'Swimm Developer Community',
@@ -62,7 +62,7 @@ const FeatureList = [
       </>
     ),
     link_title: 'Community Matters',
-    link_href: '/'
+    link_href: '/community'
   },
   {
     title: 'Contribute To This Site',
@@ -74,7 +74,7 @@ const FeatureList = [
       </>
     ),
     link_title: 'Contributor Information',
-    link_href: '/'
+    link_href: '/contribute'
   },
 ];
 
