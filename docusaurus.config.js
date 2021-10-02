@@ -118,7 +118,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'Support',
-                to: '/docs/help/support',
+                to: '/support',
               },
             ],
           },
