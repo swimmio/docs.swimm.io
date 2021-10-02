@@ -77,7 +77,6 @@ const SocialList = [
 ];
 
 function SocialCard({label, social_url, metadata}) {
-    console.log(label, social_url);
     return (
         <div className={clsx('col col--4')}>
             <div className="text--center">
