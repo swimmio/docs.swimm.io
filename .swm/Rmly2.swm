@@ -4,7 +4,7 @@
     "content": [
         {
             "type": "text",
-            "text": "Docusaurus is for all intents and purposes a React app, which makes great use of the [MDX format](https://mdxjs.com/mdx/). So, we see pretty much what you'd expect from such an app. Before you do anything else, run `npm install` from the repository root. This will create a `.docusaurus` directory with the rest of the scripts we need."
+            "text": "If you have `make` installed, follow [[sym-link:(73353ee4-a4d2-44ec-893b-94e1070ea0bb)Building Via The Makefile]] instead.\n\nDocusaurus is for all intents and purposes a React app, which makes great use of the [MDX format](https://mdxjs.com/mdx/). So, we see pretty much what you'd expect from such an app. Before you do anything else, run `npm install` from the repository root. This will create a `.docusaurus` directory with the rest of the scripts we need."
         },
         {
             "type": "snippet",
@@ -76,6 +76,12 @@
             },
             "fileBlob": "7920bc0d583b072b230bdb54559d11f2a17827d1",
             "type": "generic_text"
+        },
+        "73353ee4-a4d2-44ec-893b-94e1070ea0bb": {
+            "type": "link",
+            "swimmId": "W8D2A",
+            "repoId": "Z2l0aHViJTNBJTNBZG9jcy5zd2ltbS5pbyUzQSUzQXN3aW1taW8=",
+            "text": "Building Via The Makefile"
         }
     },
     "file_version": "2.0.3",
