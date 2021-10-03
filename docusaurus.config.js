@@ -22,13 +22,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/swimmio/docs.swimm.io/edit/main/',
+          editUrl: 'https://github.com/swimmio/docs.swimm.io/edit/master/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/swimmio/docs.swimm.io/edit/main/blog/',
+            'https://github.com/swimmio/docs.swimm.io/edit/master/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
