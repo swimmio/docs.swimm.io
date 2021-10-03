@@ -4,10 +4,7 @@ title: Welcome!
 authors: [swimm, tpost] 
 tags: [announcements, release-notes]
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-const url = 'https://docs.swimm.io';
+import FeedSelector from '../src/components/FeedSelector';
 
 We're very thrilled to launch our new developer documentation and community 
 portal using the immensely flexible and feature rich [Docusaurus](https://docusaurus.io) 
@@ -19,19 +16,7 @@ as well as notifications of new things to explore here.
 
 :::tip You can pull RSS or Atom feeds to stay up-to-date:
 
-<Tabs
-    defaultValue="rss"
-    values={[
-        {label: 'RSS', value: 'rss'},
-        {label: 'Atom', value: 'atom'},
-    ]}>
-    <TabItem value="rss">
-        <code>{url}/blog/rss.xml</code>
-    </TabItem>
-    <TabItem value="atom">
-        <code>{url}/blog/atom.xml</code>
-    </TabItem>
-</Tabs>
+<FeedSelector />
 
 :::
 
