@@ -1,6 +1,6 @@
 {
     "id": "Rmly2",
-    "name": "Building The Site Locally",
+    "name": "Building The Site Manually",
     "content": [
         {
             "type": "text",
@@ -48,7 +48,7 @@
                 "start": 2,
                 "end": 2
             },
-            "fileBlob": "e3c01c8593d2888466b567453874037a71daed30",
+            "fileBlob": "7920bc0d583b072b230bdb54559d11f2a17827d1",
             "type": "generic_text"
         },
         "1949d1a3-1357-449d-926d-90206726eda0": {
@@ -61,7 +61,7 @@
                 "start": 2,
                 "end": 2
             },
-            "fileBlob": "e3c01c8593d2888466b567453874037a71daed30",
+            "fileBlob": "7920bc0d583b072b230bdb54559d11f2a17827d1",
             "type": "generic_text"
         },
         "6c170459-7614-4576-b319-64e910631c5a": {
@@ -74,7 +74,7 @@
                 "start": 2,
                 "end": 2
             },
-            "fileBlob": "e3c01c8593d2888466b567453874037a71daed30",
+            "fileBlob": "7920bc0d583b072b230bdb54559d11f2a17827d1",
             "type": "generic_text"
         }
     },
@@ -82,7 +82,7 @@
     "meta": {
         "app_version": "0.5.9-1",
         "file_blobs": {
-            "package.json": "e3c01c8593d2888466b567453874037a71daed30"
+            "package.json": "7920bc0d583b072b230bdb54559d11f2a17827d1"
         }
     }
 }
