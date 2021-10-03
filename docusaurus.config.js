@@ -120,11 +120,19 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
                 label: 'Support',
                 to: '/support',
               },
+              {
+                label: 'Changelog',
+                to: '/changelog',
+              },
             ],
           },
           {
             title: 'Community',
             items: [
+              {
+                label: 'Community Portal',
+                to: '/community',
+              },
               {
                 label: 'Community Slack Channel',
                 href: 'https://swimm.live/slack',
@@ -133,9 +141,34 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
                 label: 'Stack Overflow',
                 href: 'https://stackoverflow.com/questions/tagged/swimm',
               },
+            ],
+          },
+          {
+            title: 'Swimm Socially',
+            items: [
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/swimmio',
+              },
+              {
+                label: 'Github',
+                href: 'https://github.com/swimmio'
+              },
+              {
+                label: 'YouTube',
+                href: 'https://www.youtube.com/channel/UC-icYrmhtL3yYxaI0TnL7Lg'
+              },
+              {
+                label: 'LinkedIn',
+                href: 'https://linkedin.com/in/swimmio',
+              },
+              {
+                label: 'Facebook',
+                href: 'https://www.facebook.com/Swimm.io',
+              },
+              {
+                label: 'Instagram',
+                href: 'https://www.instagram.com/swimm.io/',
               },
             ],
           },
@@ -152,21 +185,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
             ],
           },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'Changelog',
-                to: '/blog',
-              },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/swimmio/docs.swimm.io',
-              },
-            ],
-          },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Swimm, Inc. Built with Docusaurus.`,
+        copyright: `
+        Copyright © ${new Date().getFullYear()} Swimm, Inc. Built with Docusaurus.<br />
+        Text Content Only Licensed Under <a href="">CC-BY-SA 4.0</a>. Attribution Is Required.<br />
+        Code Snippets & Configuration Examples Licensed Under <a href="#">The MIT License</a>.`,
       },
       prism: {
         theme: lightCodeTheme,
