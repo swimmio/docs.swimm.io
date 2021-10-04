@@ -1,13 +1,47 @@
 ---
 id: Swimm's IDE Plugins
 slug: ide-plugins
-sidebar_position: 1
+sidebar_position: 2
 ---
+import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 # Swimm's IDE Plugins
 
+Swimm's IDE plugins allow you to see links to Swimm documentation right from
+the code that they document. When you click on a link, your IDE will open a 
+new tab with the documentation perfectly rendered from Markdown. You can then
+kick off a split window, and read the documentation side-by-side with the 
+code you're working on. 
+
+Here's how Swimm documents are advertised within the IDE - take this state
+machine transition table as an example:
+
+<img alt="Swimm VSCode Plugin Showing Swimm Unit Link" src={useBaseUrl('/img/ide-plugins_1.png')} />
+
+Links appear *per snippet* that you include in your documentation, so the more
+snippets, the better the in-IDE coverage is going to be. Continuing the example,
+let's say someone was looking for clues about that state machine in the header:
+
+<img alt="Swimm VSCode Plugin Showing Swimm Unit Link" src={useBaseUrl('/img/ide-plugins_2.png')} />
+
+What's even more special is the ability to read the in-depth doc, right there in
+the IDE, by just clicking on one of those unit links:
+
+<img alt="Swimm VSCode Plugin Showing Whole Unit In Tab" src={useBaseUrl('/img/ide-plugins_3.png')} />
+
 ## VSCode
+
+Our VSCode plugin is very mature and available from within the VSCode Marketplace.
+
+<Link href="https://marketplace.visualstudio.com/items?itemName=Swimm.swimm">Visit The VSCode Marketplace</Link>
 
 ## JetBrains (All IDE Products)
 
-## In Development
+Our JetBrains plugin works across all IDE products, including IntelliJ IDEA, 
+PHPStorm, PyCharm, etc. You can download it from your IDE in the marketplace, 
+or <Link href="https://plugins.jetbrains.com/plugin/17201-swimm"> check out the plugin page</Link>.
+
+## Coming Soon
+
+We plan to release a plugin for Visual Studio next. 

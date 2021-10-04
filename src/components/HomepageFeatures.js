@@ -13,7 +13,7 @@ const FeatureList = [
       </>
     ),
     link_title: 'Find Out How',
-    link_href: '/'
+    link_href: '/docs/continuous-integration/'
   },
   {
     title: 'Swimm\'s IDE Plugins',

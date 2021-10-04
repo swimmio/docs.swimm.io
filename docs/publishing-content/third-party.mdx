@@ -3,11 +3,75 @@ id: Third-party Knowledgebases
 slug: third-party
 sidebar_position: 3
 ---
+import Link from '@docusaurus/Link';
+
+:::warning Content Needs Review Before Launch
+
+The product team is currently figuring out how we deal with the notion / confluence
+cases since the CLI tool is no longer a given. This needs to be adjusted to reflect
+how it actually gets implemented.
+
+:::
 
 # Third-party Knowledgebases
 
-## Notion
+Swimm's markdown is easily shared to your internal wikis or knowledgebases. If the
+back-end supports markdown, you can open your docs right from the `.swm/` directory
+and copy/paste it, or write a script to read the files and upload them using 
+whatever API the software provides. Most developer-centric platforms have a RESTful
+API that allows simple '*Create this if it doesn't exist, update it if it does*' 
+functionality.
 
-## Confluence
+You can also use any text transformation tool to produce PDFs, styled HTML, or
+whatever else you need. In fact, if you come up with something that you think
+might help someone else, we hope you'll check out our <Link to="/contribute">
+contributor information</Link> so we can share it and give you credit!
 
-## Others
+## Supported Transformations
+
+Swimm already understands the formats that Notion and Confluence require so that
+things are rendered correctly. To take advantage of this, grab the latest version
+of our CLI tool like this:
+
+```shell
+mkdir -p ~/bin/
+src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
+wget -O ~/bin/swimm_cli $src
+chmod +x ~/bin/swimm_cli
+```
+This will save the executable to `/home/yourname/bin/` where you can invoke it. The
+rest of these examples assume that you will be running them from the root of the 
+repository that you want to export or automate:
+
+### Notion
+
+To export your documentation in Notion-friendly format, go to the repository root and
+type the following command:
+
+```
+~/bin/swimm_cli export -n /tmp
+```
+
+Your documentation will be saved to `/tmp`.
+
+### Confluence / HTML 
+To export your documentation in Confluence-friendly format, go to the repository root and
+type the following command:
+
+```
+~/bin/swimm_cli export -c /tmp
+```
+
+Your documentation will be saved to `/tmp`.
+
+### Docusaurus
+
+To export your documentation in Docusaurus-friendly format (it includes an index), go to the repository root and
+type the following command:
+
+```
+~/bin/swimm_cli export -d /tmp
+```
+
+Your documentation will be saved to `/tmp`. From that, please <Link href="https://github.com/swimmio/docusaurus-template">
+check out our Docusaurus tutorial repository</Link> to get going very quickly!

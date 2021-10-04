@@ -1,7 +1,54 @@
 ---
 id: Continuous Documentation
-slug: coninuous-documentation
+slug: continuous-documentation
 sidebar_position: 0
 ---
+import Link from '@docusaurus/Link';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-# Continuous Documentation
+# What Is Continuous Documentation?
+
+<Link href="https://www.infoq.com/articles/continuous-documentation/">Continuous Documentation</Link> is the 
+guiding philosophy behind all of the components that make up Swimm. In the modern age, for documentation to
+remain relevant, it must integrate continuously with the code that it supports. For Swimm to enable this, it 
+needs to understand when the documentation you've written seems to be out-of-date.
+
+## When Is Documentation Considered Continuous?
+
+:::tip We Consider Docunentation Continuous If It Meets The Following Criteria:
+
+<Tabs
+    defaultValue="coupled"
+    values={[
+        {label: 'Code-coupled', value: 'coupled'},
+        {label: 'Up-to-date', value: 'current'},
+        {label: 'Written When Best', value: 'fresh'},
+    ]}>
+    <TabItem value="coupled">
+        <p><b>This means documentation that explicitly references parts of the code.</b></p>
+        <p>For example, including code snippets, names of functions or variables, file paths 
+        and other explicit reference to the code, within the documents.</p>
+    </TabItem>
+    <TabItem value="current">
+        <p>Continuously verifying documentation means making sure that the current state 
+        of the documentation matches the current state of the codebase, as the code evolves.</p>
+    </TabItem>
+    <TabItem value="fresh">
+        <p>Continuously creating documentation means that documentation is written not
+        as an aftermath, but when it makes sense.</p>
+    </TabItem>
+</Tabs>
+
+:::
+
+The best way to achieve this is by running Swimm's verification checks within your existing continuous 
+integration workflow, or building a continuous integration workflow with Swimm if you don't currently 
+use a CI server. If you can't adopt a CI server, it can be accomplished through commit hooks.
+
+## Further Reading On Continuous Documentation
+
+Omer Rosenbaum, our CTO & Swimm Co-founder has also written a two-part blog series:
+
+ - <Link href="https://swimm.io/blog/what-is-continuous-documentation-manifesto-part-1/">What Is Continuous Documentation : The Manifesto Part I</Link>
+ - TODO: Post number two.

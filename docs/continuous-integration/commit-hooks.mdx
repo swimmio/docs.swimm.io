@@ -1,7 +1,95 @@
 ---
 id: Local Commit Hooks
 slug: commit-hooks
-sidebar_position: 3
+sidebar_position: 4
 ---
+import Link from '@docusaurus/Link';
 
-# Local Commit Hooks
+# Verification Through Commit Hooks
+
+Commit hooks are a neat feature of Git (and other DVCS) that allow you to 'tap into'
+certain functuionality at certain stages of operation. One of the most useful places
+for hooks to run is *right* before finalizing a commit.
+
+Commit hooks are very usful for running lint scripts, static analysis and anything
+else that commonly causes pull requests to be rejected due to housekeeping. Swimm's
+verification checks can efffectively run here, but this will only be effective if
+**everyone** uses the hooks the same way.
+
+To utilize pre-commit hooks, You'll need to make sure you have the latest `swimm_cli`
+executable somewhere. **The `swimm_cli` executable should be invoked from the root
+of the repository you wish to verify**. 
+
+You can run this code to install it to `/home/yourname/bin` for instance:
+
+```shell
+src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
+wget -O ~/bin/swimm_cli $src
+chmod +x ./swimm_cli
+```
+We recommend always fetching a new copy of `swimm_cli` in your scripts so that your
+verification is the same engine as the latest Swimm release.
+
+## Sample Commit Hook Configurations:
+
+Below are the sample configurations, in no specific order. If you need one that
+isn't listed, 
+
+### Husky
+
+Add the following to your `package.json` file:
+
+```js
+// package.json
+{
+ "scripts": {
+   "pre-commit": "swimm_cli verify"
+ }
+}
+```
+
+Then, run the following in your terminal while in the repository root:
+
+```shell
+// run in terminal
+$ npx husky add .husky/pre-commit "npm run pre-commit"
+```
+
+### pre-commit
+
+[Pre-commit](https://pre-commmit.com) works with Git to intercept certain kinds of events 
+through the use of hooks, which allows actions to run before the commit transaction actually 
+takes place. Swimm's CI tools are just as useful if run pre-commit as they are if run through 
+a CI server - the main difference is the check runs on your local machine _before_ the commit 
+actually takes place, and not as a part of the push / PR / review cycle.
+
+The result is the same, failed documentation checks can trigger other things to happen, or even 
+block the commit, depending on the conventions that feel right for you and your team.
+
+To install pre-commit hooks, first install pre-commit, and then follow the instructions 
+[in this repository](https://github.com/swimmio/pre-commit). 
+
+### Shell Example: Verifying Docs As Up-To-Date
+
+```shell
+echo "Verifying documentation units"
+src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
+wget -O swimm_cli $src
+chmod +x ./swimm_cli  
+./swimm_cli verify
+``` 
+### Shell Example: Verify Overall Coverage
+
+`swimm_cli coverage` Will scan whatever code Git knows about and compare that to
+the amount of documentation you've created. The result will be a score of 0 to 100. 
+To get that number, try the following command:
+
+```shell
+swimm_cli coverage | grep "/" | awk '{print $4}'
+```
+
+Expect a float (as in 0.00 or 89.73). If you need a whole number (0 - 100), run this instead:
+
+```shell
+swimm_cli coverage | grep "/" | awk '{print $4}' | cut -d. -f1
+```

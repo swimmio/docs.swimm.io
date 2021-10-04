@@ -122,7 +122,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'Changelog',
-                to: '/changelog',
+                to: '/blog',
               },
             ],
           },

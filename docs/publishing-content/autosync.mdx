@@ -1,0 +1,90 @@
+---
+id: Swimm Autosync
+slug: autosync
+sidebar_position: 1
+---
+import Link from "@docusaurus/Link";
+
+# What is Swimm's Autosync?
+
+There are approximately <Link href="https://en.wikipedia.org/wiki/List_of_programming_languages">
+700 non-esoteric programming languages</Link> in the wild that someone could conceivably use. But,
+even esoteric or purely educational code needs documentation, so imagine that number being at least
+one thousand very conservatively.
+
+Swimm's Autosync algorithm makes informed decisions about what happened in your code based on the
+impact that any given change made to the code. This approach is much faster, much more accurate and
+exponentially more efficient than requiring a full-blown lexical parser for well over a thousand
+languages.
+
+## What kinds of things can Swimm automaticaly sync?
+
+It's difficult to provie an exhaustive answer to this. Rather, it's helpful to contemplate the
+footprint that any change to the code might leave:
+
+ - You implemented a new method or function, so code that follows below it likely shifted down
+ a bit.
+ - You added or removed a line that was there to help with debugging. 
+ - You renamed a variable, or changed function or method arguments
+ - You used Git to rename a file or directory
+ - You added a type cast to resolve warnings about an ambiguous callback
+
+These are all great examples of trvial changes that all have a very similar "shape" to them,
+almost completely regardless of the language being used. 
+
+Additionally, when you use <Link to="/docs/creating-content/smart-tokens">Smart Text & Paths</Link>
+to teach Swimm about tokens it should keep an eye on, you allow Swimm to not only sync your
+code snippets, but also other mentions of these tokens throughout your documentation.
+
+## Does Swimm have any concept of types?
+
+No. Swimm doesn't understand the *implications* of your change since it's not interpreting
+your code, it's examining the totality of the shape of the change that you introduced. 
+
+If you change:
+
+```c
+int main(void) {
+    unsigned int i;
+}
+```
+
+To this:
+
+```c
+int main(void) {
+    unsigned long i;
+}
+```
+
+... Swimm is going to understand it and automatically update the snippet, because the code
+appears to still represent the same thing. If you introduce a change in the code that raises
+a potential type safety issue, you'll need to make sure to note that in the narrative around
+the code. 
+
+## What About Preprocessors Or Oxygen-style Markup?
+
+Swimm only understands one scope, which is the entire file. It doesn't understand conditional
+compilation, execution scope, variable scope, comments, or other comment markup. 
+
+It's on our roadmap to be able to input documentation from other formats easily into Swimm
+documentation, but understanding comment markup would be a job the editor does, similarly to 
+how it interprets markdown.
+
+## What Happens If Autosync Can't Handle Something?
+
+Sometimes code vanishes completely, or changes into something that's just unrecognizeable from
+what it was. If Autosync decides that a change is impactful enough that human oversight is needed, the
+following things happen:
+
+ - The running verification check will fail. Depending on your configuration, this means
+ it will block the commit or pull request until the issue is fixed, or it will open an 
+ issue that needs to be resolved within a certain timeframe.
+ - Any affected documentation will be marked as potentially out-of-date, including any
+ exported (confluence, notion, etc) docunentation if you automate updatating them
+ from your builds.
+
+The *worst* case becomes documentation that lets people know that certain parts are 
+potentially out-of-date, which is still a marked improvement over letting folks find out
+that documentation was out-of-date the hard way. 
+

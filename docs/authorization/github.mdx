@@ -3,7 +3,48 @@ id: Github Auth & Permissions
 slug: github-auth
 sidebar_position: 1
 ---
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import Link from '@docusaurus/Link';
 
 # Github Sign In & Authorization
 
-## What Permissions Are Needed, And Why?
+We try to make signing in as frictionless as possible. However, Swimm can't
+control the entire experience, so we've put together a short list of things
+that are handy to know in advance.
+
+## Making Sure You Use The Correct Account
+
+It is very likely that you'll receive an invitation to join a workspace
+to your work email address. But, unless your company has requested that you
+create a Github account tied *only* to your work email address, it's extremely
+likely that you want to use your *personal* account when signing into Github
+upon following the invite link. 
+
+A handy way to tell in advance is to open your Github profile page, which is
+found at `https://github.com/your-githuyb-username`. At the bottom-left side
+of the page, you'll see a section for Achievements and Organizations:
+
+:::info Example Github Profile Excerpt Showing The Swimm Organization
+
+<img alt="Github Organizations Sample" src={useBaseUrl('/img/github-organizations.png')} />
+
+:::
+
+If you see *your* company logo there it means you're logged in to the correct 
+account, and that's the account you should use when you follow the invite link.
+
+## Selecting The Correct Repositories & Permissions
+
+As explained in <Link to="/docs/authorization/permissions">permissions</Link>, Swimm
+is going to need access to the organization that owns the repoistories, as well
+as access to the individual repositories themselves.
+
+You can manage this access in Github.
+
+## Sometimes Loading Github's Response Takes Time
+
+If you have a lot of repositories associated with your Github account and organization
+it can sometimes take 30 - 45 seconds for Github to return a response. Please allow
+up to a minute; if there is a timeout, we'll report it and give you a button to
+try again. This seldom happens, and if it does, it will only happen when the admin
+user initially sets up a workspace. 

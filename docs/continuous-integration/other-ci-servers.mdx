@@ -1,7 +1,179 @@
 ---
 id: Sample CI Configurations
 slug: other-ci-servers
-sidebar_position: 2
+sidebar_position: 3
 ---
+import Link from '@docusaurus/Link';
 
-# Sample CI Configurations
+# Contunuous Integration Sample Configurations 
+
+If you're using Github, we **strongly** encourage you to <Link to="/docs/continuous-integration/github-app">install our Github app.</Link> This
+will provide the best possible experience for everyone involved from the originator of the PR all the way to the reviewer.
+
+For all other CI servers the process is almost exactly the same:
+
+ 1. Make sure git is present and configured (`user.name` and `user.email` **must** be set.)
+ 2. Download the latest 64 bit dynamically-linked executable with `curl` (Node is no longer needed)
+ 3. Make the download executable
+ 4. Return the result of  `swimm_cli verify`, which is nonzero on failure
+
+:::warning Make sure you don't use 'shallow' pulls
+
+Shallow pulls are where only part of the history is fetched. This can save a few
+seconds of time for projects that have extremely long histories, but it can trigger
+false alarms for Swimm when it can't reconcile specific changes in the code. 
+
+:::
+
+Below are tested example configurations that you can use as-is, or as a starting
+point for your own configuration:
+
+### Github Actions 
+
+```yml
+name: Swimm
+on: pull_request
+jobs:
+  Verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # pulling the commits history is required for the verification to function properly
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - uses: swimmio/swimm-verify-action@v1
+
+```
+
+### Bitbucket Pipelines
+
+```yml
+image: node:12.18.3
+pipelines:
+  default:
+    - parallel:
+        - step:
+            name: Documentation
+            script:
+              - echo "Verifying documentation units"
+              - src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4)
+              - wget -O swimm_cli $src
+              - chmod +x ./swimm_cli
+              - ./swimm_cli verify
+```
+
+### Travis CI
+
+```yml
+- curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4 | wget -O swimm_cli -qi -
+- chmod +x ./swimm_cli
+- ./swimm_cli verify
+
+```
+
+### Gitlab
+
+```yml
+# Adopted from the community contributed base node image, found at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Nodejs.gitlab-ci.yml
+image: node:latest
+# We deliberately do not cache anything
+test_async:
+ script:
+   - echo "Verifying documentation units"
+   - src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4)
+   - wget -O swimm_cli $src
+   - chmod +x ./swimm_cli
+   - ./swimm_cli verify
+```
+
+### Azure DevOps Pipelines
+
+Note that Microsoft no longer grants free parallel tasks to new Azure DevOps users; this was done in response to some folks abusing the build servers. Hence, you'll need to have been given a grant to continue using parallel jobs for free, or you need to be on a paid account. 
+
+Below is the YAML to configure the pipeline:
+
+```yml
+# Pipeline config to verify Swimm docs as in-sync
+# Copyright 2021 Swimm
+# License: MIT
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '>=10.0'
+    checkLatest: false
+
+- bash: |
+    echo "Verifying documentation units"
+    git config --global user.name "Username" 
+    git config --global user.email "me@example.com"
+    src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
+    wget -O swimm_cli $src
+    chmod +x ./swimm_cli  
+    ./swimm_cli verify
+  displayName: "Swimm Verify" 
+
+```
+
+### Circle CI
+
+```yml
+# Use the latest 2.1 version of CircleCI pipeline process engine. 
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+jobs:
+  swimm-verify:  
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: |
+            git config --global user.name "Pretend User"
+            git config --global user.email "pretend@example.com"
+            src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
+            wget -O swimm_cli $src
+            node swimm_cli --version  
+            node swimm_cli verify
+workflows:
+  sample: 
+    jobs:
+      - swimm-verify
+```
+
+Ordinarily, your `workflows:` section will already be defined, just put `- swimm-verify` under one of the defined jobs, where you want it to run.
+
+### Jenkins
+
+The best way to run on Jenkins is through a "Freestyle Project", formerly known as a "Workflow". 
+You can set up a project called "Swimm Verification" and point it at your repository, with 
+whatever triggers or timing you'd like. There are only a few things that you have to watch out for:
+
+
+ 1. You absolutely, positively must have Node JS installed on the worker, version 14 or later. If you're on a Debian-ish setup, [here's a really good tutorial on how to install the Node LTS package](https://tecadmin.net/install-latest-nodejs-npm-on-debian/). The gist is, add the official Node repo to your sources via `curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -` - and then just `apt-get install nodejs` -- this will work even if you have an older version installed (e.g. Node 10)
+
+ 2. If you are using Jenkins' advanced clone configuration, _make sure you disable the shallow pull option_ - Swimm is going to require that the entire history be present.
+
+ 3. You're going to need `curl` installed, which you can do via `apt-get install curl`
+ 
+Once you have that done, under Build, select "Execute Shell" and paste the following commands:
+
+```shell
+echo "Verifying documentation units"
+git config --global user.name "nobody"
+git config --global user.email "nobody@example.com"
+src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
+wget -O swimm_cli $src
+node swimm_cli --version  
+node swimm_cli verify
+```
