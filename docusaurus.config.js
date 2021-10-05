@@ -58,6 +58,14 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      announcementBar: {
+        id: 'wip',
+        content:
+          '<b>This is a preview of Swimm\'s new documentation portal. It is not yet ready for use.</b>',
+        backgroundColor: '#fafbfc',
+        textColor: '#091E42',
+        isCloseable: false,
+      },
       navbar: {
         title: '',
         logo: {
