@@ -82,6 +82,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             position: 'left'
           },
           {
+            to: '/faq',
+            label: 'FAQ',
+            position: 'left',
+          },
+          {
             to: '/community',
             label: 'Community',
             position: 'left',
@@ -123,6 +128,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               {
                 label: 'Changelog',
                 to: '/blog',
+              },
+              {
+                label: 'FAQ',
+                to: '/faq',
               },
             ],
           },
@@ -188,7 +197,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         ],
         copyright: `
         Copyright © ${new Date().getFullYear()} Swimm, Inc. Built with Docusaurus.<br />
-        Text Content Only Licensed Under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>. Attribution Is Required.<br />
+        Text Content Licensed Under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>. Attribution Is Required.<br />
         Code Snippets & Configuration Examples Licensed Under <a href="https://opensource.org/licenses/MIT">The MIT License</a>.`,
       },
       prism: {
