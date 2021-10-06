@@ -1,0 +1,177 @@
+{
+    "id": "DV_q9",
+    "name": "Creating Custom Components",
+    "content": [
+        {
+            "type": "text",
+            "text": "Docusaurus brings the full power of React, so it's very straightforward to install and use new components via `npm` or create something on-the-fly.\n\nTo create one, first create a new file in [[sym:./src/components(2fe8976c-9527-40da-87eb-b0a6d47a4393)]] named after your component along with whatever style customizations it will use. A great example of this is in [[sym:./src/components/SocialAccounts.js(658eea15-34fb-493c-8f22-8fd250564693)]] with the corresponding styles in [[sym:./src/components/SocialAccounts.module.css(7cf49bca-57b4-4454-a352-de7fabf4e8fd)]]"
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "*import React from 'react';",
+                "*import clsx from 'clsx';",
+                "*import { SocialIcon } from 'react-social-icons';",
+                "*import styles from './SocialAccounts.module.css';",
+                " ",
+                " const SocialList = [",
+                " {"
+            ],
+            "firstLineNumber": 1,
+            "path": "src/components/SocialAccounts.js",
+            "comments": [
+                "First, bring in React, then whatever additional components you'll need (you probably want to grab [[sym-text:clsx(ff8eac86-dbd4-440a-8f16-b8041df2082b)]] unless you're not generating any markup at all). After that, import your component styles."
+            ]
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                " import { SocialIcon } from 'react-social-icons';",
+                " import styles from './SocialAccounts.module.css';",
+                " ",
+                "*const SocialList = [",
+                "*{",
+                "*    label: \"Twitter\",",
+                "*    social_url: \"https://twitter.com/swimmio\",",
+                "*    metadata: (",
+                "*        <>",
+                "*        We love when people tweet about their experiences",
+                "*        with Swimm! Follow us for updates and ways to get",
+                "*        cool swag 😎",
+                "*        </>",
+                "*    ),",
+                "*},",
+                "*{",
+                "*    label: \"Github\",",
+                "*    social_url: \"https://github.com/swimmio\",",
+                "*    metadata: (",
+                "         <>",
+                "         Code tutorials, utilities, and examples of open",
+                "         source projects using Swimm!"
+            ],
+            "firstLineNumber": 3,
+            "path": "src/components/SocialAccounts.js",
+            "comments": [
+                "Then, add whatever content is needed. Docusaurus guards the main [[sym:./docusaurus.config.js(39349342-c591-489c-9e05-fca9f00158fd)]] file, although it does make provisions for some custom modules, it's better to just define things in the component itself. We may change how this works depending upon future translation needs, but for now just keep it all together."
+            ]
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                " },",
+                " ];",
+                " ",
+                "*function SocialCard({label, social_url, metadata}) {",
+                "*    return (",
+                "*        <div className={clsx('col col--4')}>",
+                "*            <div className=\"text--center\">",
+                "*                <SocialIcon url={\"\" + social_url + \"\"} style={{height: 100, width: 100}} label={\"\" + label + \"\"} />",
+                "*            </div>",
+                "*            <div className=\"text--center padding-horiz--md\">",
+                "*                <p>{metadata}</p>",
+                "*            </div>",
+                "*        </div>",
+                "*    );",
+                "*}",
+                " ",
+                " export default function ListSocialAccounts() {",
+                "     return ("
+            ],
+            "firstLineNumber": 76,
+            "path": "src/components/SocialAccounts.js",
+            "comments": [
+                "Use whatever functions you need to build your output. While it's not shown here, you can [get the Docusaurus configuration context within any function](https://docusaurus.io/docs/docusaurus-core#usedocusauruscontext) very easily (it just has to be within a function). This is handy if you need the site URL, or something else that's defined in [[sym:./docusaurus.config.js(39349342-c591-489c-9e05-fca9f00158fd)]]"
+            ]
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "     );",
+                " }",
+                " ",
+                "*export default function ListSocialAccounts() {",
+                "*    return (",
+                "*        <section className={styles.socialCard}>",
+                "*            <div className=\"container\">",
+                "*                <div className=\"row\">",
+                "*                    {SocialList.map((props, idx) => (",
+                "*                        <SocialCard key={idx} {...props} />",
+                "*                    ))}",
+                "*                </div>",
+                "*            </div>",
+                "*        </section>",
+                "*    );",
+                "*}"
+            ],
+            "firstLineNumber": 89,
+            "path": "src/components/SocialAccounts.js",
+            "comments": [
+                "Then export whatever you want to make available, just make sure you have a default and (only) one of them is exported as such."
+            ]
+        },
+        {
+            "type": "snippet",
+            "lines": [
+                "*.socialCard {",
+                "*    display: flex;",
+                "*    align-items: center;",
+                "*    padding: 2rem 0;",
+                "*    width: 100%;",
+                "*}"
+            ],
+            "firstLineNumber": 1,
+            "path": "src/components/SocialAccounts.module.css",
+            "comments": [
+                "Because not every component is loaded on every page, there's no reason to always have their styles loaded in the global scope. Additionally, even if we are using a plugin somewhere that renders on every page load (e.g. in the footer), that doesn't mean we'll always be using it. If we disable it, then any styles associated with it become useless overhead.\n\nFinally, if we ever want to package the component separately, it's ideal to package the styles in a self-contained way.\n\nIf you're writing a component and the urge to stick something in [[sym:./src/css/custom.css(f5a62a7b-edb6-43cb-82a3-eb927779551a)]] sneaks in, there's a really good chance you're not writing a mere component anymore."
+            ]
+        }
+    ],
+    "symbols": {
+        "2fe8976c-9527-40da-87eb-b0a6d47a4393": {
+            "type": "path",
+            "text": "src/components",
+            "path": "src/components"
+        },
+        "658eea15-34fb-493c-8f22-8fd250564693": {
+            "type": "path",
+            "text": "src/components/SocialAccounts.js",
+            "path": "src/components/SocialAccounts.js"
+        },
+        "7cf49bca-57b4-4454-a352-de7fabf4e8fd": {
+            "type": "path",
+            "text": "src/components/SocialAccounts.module.css",
+            "path": "src/components/SocialAccounts.module.css"
+        },
+        "ff8eac86-dbd4-440a-8f16-b8041df2082b": {
+            "symbol": "ff8eac86-dbd4-440a-8f16-b8041df2082b",
+            "path": "src/components/SocialAccounts.js",
+            "text": "clsx",
+            "lineNumber": 2,
+            "lineData": "import clsx from 'clsx';",
+            "wordIndex": {
+                "start": 2,
+                "end": 2
+            },
+            "fileBlob": "88c3fba4fb52cb869b98bcd4fcfe99263f14b46a",
+            "type": "generic_text"
+        },
+        "39349342-c591-489c-9e05-fca9f00158fd": {
+            "type": "path",
+            "text": "docusaurus.config.js",
+            "path": "docusaurus.config.js"
+        },
+        "f5a62a7b-edb6-43cb-82a3-eb927779551a": {
+            "type": "path",
+            "text": "src/css/custom.css",
+            "path": "src/css/custom.css"
+        }
+    },
+    "file_version": "2.0.3",
+    "meta": {
+        "app_version": "0.6.0-0",
+        "file_blobs": {
+            "src/components/SocialAccounts.js": "88c3fba4fb52cb869b98bcd4fcfe99263f14b46a",
+            "src/components/SocialAccounts.module.css": "852de79ca82497302ecaf9f440d10f310dcc8c43"
+        }
+    }
+}
