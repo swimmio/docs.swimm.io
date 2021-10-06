@@ -4,7 +4,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
-  title: 'Welcome To The Swimm Developer Community',
+  title: 'Swimm Developer Community',
   tagline: 'Swimm Dev Docs',
   url: 'https://docs.swimm.io',
   baseUrl: '/',
@@ -13,6 +13,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   favicon: 'img/favicon.ico',
   organizationName: 'swimmio', // Usually your GitHub org/user name.
   projectName: 'docs.swimm.io', // Usually your repo name.
+  titleDelimiter: '🏊',
 
   presets: [
     [
