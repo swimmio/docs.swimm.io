@@ -44,13 +44,12 @@ jobs:
         with:
           node-version: '14'
       - uses: swimmio/swimm-verify-action@v1
-
 ```
 
 ### Bitbucket Pipelines
 
 ```yml
-image: node:12.18.3
+image: ubuntu:latest
 pipelines:
   default:
     - parallel:
@@ -70,7 +69,6 @@ pipelines:
 - curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4 | wget -O swimm_cli -qi -
 - chmod +x ./swimm_cli
 - ./swimm_cli verify
-
 ```
 
 ### Gitlab
@@ -78,7 +76,7 @@ pipelines:
 ```yml
 # Adopted from the community contributed base node image, found at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Nodejs.gitlab-ci.yml
-image: node:latest
+image: ubuntu:latest
 # We deliberately do not cache anything
 test_async:
  script:
@@ -107,10 +105,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '>=10.0'
-    checkLatest: false
 
 - bash: |
     echo "Verifying documentation units"
@@ -121,7 +115,6 @@ steps:
     chmod +x ./swimm_cli  
     ./swimm_cli verify
   displayName: "Swimm Verify" 
-
 ```
 
 ### Circle CI
@@ -133,7 +126,7 @@ version: 2.1
 jobs:
   swimm-verify:  
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/ubuntu:latest
     steps:
       - checkout
       - run:
