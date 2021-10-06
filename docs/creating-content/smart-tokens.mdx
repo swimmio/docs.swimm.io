@@ -3,5 +3,70 @@ id: Smart Tokens & Paths
 slug: smart-tokens
 sidebar_position: 4
 ---
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import Link from '@docusaurus/Link';
 
 # Smart Tokens & Paths
+
+Smart tokens and and paths in Swimm help your documentation stay in sync
+through refactoring and reorganization. With smart paths, you don't have
+to worry about changing file names or even directory structure around, 
+Swimm will be able to keep up with it. 
+
+With smart tokens, you'll no longer need to worry about the impact of
+refactoring on your documentation, renaming constants or variables or even
+class and method names won't cause you to need to update your documentation
+everywhere they're mentioned. 
+
+## How Do Smart Paths Work?
+
+You can insert a smart path in your doucment throught the `/` slash menu in
+the editor. Select "Path" and then select a file or directory that you'd like
+Swimm to keep track of for you. 
+
+<img alt="Swimm Smart Path Selection" src={useBaseUrl('/img/smart-paths1.png')} />
+
+As long as you use `git mv` to move things around, Swimm will automatically 
+sync the links. The path will appear as a hyperlink in your document that 
+allows people to browse the content.
+
+:::tip Use Smart Paths Early To Save Time Later
+Sometimes what starts as one project snowballs into writing a library, and a client
+to use that library, as well as a bunch of tests. Smart paths let you keep documenting
+things as you go without much concern for where they ultimately land in your repo structure.
+:::
+
+## How Do Smart Tokens Work?
+
+Smart tokens are a feature that lets you reference parts of your code even outside of
+snippets in a way that automatically updates when the code changes. The most common use
+for smart tokens is referencing variable, method or function names within the narrative.
+
+<img alt="Swimm Smart Text" src={useBaseUrl('/img/smart-tokens1.png')} />
+
+To create one, you first need to add a snippet containing the token you want to track. 
+Then, just open a backtick <code>\`</code> and start typing - Swimm will autocomplete based on
+code you've referenced.
+
+<img alt="Swimm Smart Text Selection" src={useBaseUrl('/img/smart-tokens2.png')} />
+
+We're working on making smart tokens not require the presence of a snippet and hope
+to have it in testing in the very near future. We understand that sometimes it's 
+ideal to just reference the file and the token, rather than bring in a snippet just
+for one or two lines.
+
+:::tip Naming Is Hard - Just Write It
+It's easy to get caught up in what to name things especially when the scope of what
+something will do is stll unclear. With Swimm, you can name it `MysticalDooDad` and
+document it as you go, then come up with something more sensible once it settles.
+:::
+
+## Do Smart Tokens Have The Concept Of Types?
+
+No. Tokens are watched based on the shape and nature of the way they change. While 
+you migh think Swimm understands types by the way it syncs a change from something
+like `(void **)` to `(mytype_t **)` or strings to integers, it's really just 
+tracking the change in context and the token itself. 
+
+While there may theoretically be some limits to this approach, we have yet to hit
+them, and the approach lends very well to our language-agnostic design.
