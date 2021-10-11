@@ -10,7 +10,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
   organizationName: 'swimmio', // Usually your GitHub org/user name.
   projectName: 'docs.swimm.io', // Usually your repo name.
   titleDelimiter: '🏊',
