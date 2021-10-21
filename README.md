@@ -1,5 +1,7 @@
 # Welcome To Swimm's Future Documentation Hub!
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/406e0c69-b32b-419a-9a77-5b34f3638d51/deploy-status)](https://app.netlify.com/sites/upbeat-hermann-fbaf53/deploys)
+
 We're hard at work on a brand-new [Docusaurus-based](http://docusaurus.io) site
 for the Swimm developer community! We've got amazing things in store for you, 
 and this is the place where you can get information, tutorials and examples, as
