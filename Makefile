@@ -1,8 +1,9 @@
-.PHONY: all help production clean distclean dev
+.PHONY: all help production rebuild clean distclean dev
 
 help:
 	@echo "Target        | Explanation"
 	@echo "production    | Run a complete production build from scratch."
+	@echo "rebuild       | Rebuild the production site with no changes."
 	@echo "release-notes | Generate or refresh release notes from clickup"
 	@echo "dev           | alias for npx docusaurus run"
 	@echo "world         | distclean, production and then dev"
@@ -15,6 +16,15 @@ all: help
 production:
 	@echo "Creating production build"
 	npm install && npm run build || true
+
+rebuild:
+ifndef NETLIFY_REBUILD_WEBHOOK
+	@echo "NETLIFY_REBUILD_WEBHOOK must be set to the correct URL in the enviornment."
+	@echo "Try 'export NETLIFY_REBUILD_WEBHOOK=https://url.to.webhook' and run again."
+	@exit 1
+endif
+	@curl -X POST -d '{}' ${NETLIFY_REBUILD_WEBHOOK} > /dev/null 2>&1
+	@exit $?
 
 clean:
 	@echo "Removing module cache & build directory"
