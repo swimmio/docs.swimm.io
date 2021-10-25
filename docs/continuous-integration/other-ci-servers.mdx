@@ -57,8 +57,7 @@ pipelines:
             name: Documentation
             script:
               - echo "Verifying documentation units"
-              - src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4)
-              - wget -O swimm_cli $src
+              - wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
               - chmod +x ./swimm_cli
               - ./swimm_cli verify
 ```
@@ -66,7 +65,7 @@ pipelines:
 ### Travis CI
 
 ```yml
-- curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4 | wget -O swimm_cli -qi -
+- wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
 - chmod +x ./swimm_cli
 - ./swimm_cli verify
 ```
@@ -81,8 +80,7 @@ image: ubuntu:latest
 test_async:
  script:
    - echo "Verifying documentation units"
-   - src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4)
-   - wget -O swimm_cli $src
+   - wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
    - chmod +x ./swimm_cli
    - ./swimm_cli verify
 ```
@@ -110,8 +108,7 @@ steps:
     echo "Verifying documentation units"
     git config --global user.name "Username" 
     git config --global user.email "me@example.com"
-    src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
-    wget -O swimm_cli $src
+    wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
     chmod +x ./swimm_cli  
     ./swimm_cli verify
   displayName: "Swimm Verify" 
@@ -134,8 +131,7 @@ jobs:
           command: |
             git config --global user.name "Pretend User"
             git config --global user.email "pretend@example.com"
-            src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
-            wget -O swimm_cli $src
+            wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
             node swimm_cli --version  
             node swimm_cli verify
 workflows:
@@ -165,8 +161,7 @@ Once you have that done, under Build, select "Execute Shell" and paste the follo
 echo "Verifying documentation units"
 git config --global user.name "nobody"
 git config --global user.email "nobody@example.com"
-src=$(curl -s https://api.github.com/repos/swimmio/SwimmReleases/releases/latest | grep 'browser_download_url.*swimm-cli' | cut -d '"' -f 4) 
-wget -O swimm_cli $src
+wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
 node swimm_cli --version  
 node swimm_cli verify
 ```
