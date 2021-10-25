@@ -98,10 +98,13 @@ const FAQIndex = {
                 content:
                     <p>
                         Swimm requires access to the organization that owns the code you wish to document (your
-                        company, for instance) and at least access to public repositories. If the repositories 
+                        company, for instance) and at least access to public repositories. If the repositories
                         you wish to document are private, Swimm will need access to private repositories as well.
                         We encourage you to just grant access to both public and private repositories to avoid
                         confusion later.
+                        <br /><br />
+                        We have a special <a href="/github">security FAQ for Github</a> that answers many
+                        questions about how we store the token, what travels through our servers, and more.
                     </p>
             },
             {

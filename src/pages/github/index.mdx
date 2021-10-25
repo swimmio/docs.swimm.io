@@ -1,0 +1,105 @@
+# Swimm Web App - Security Overview
+
+Swimm is a code documentation platform for individuals and teams. With Swimm, developers 
+create code-coupled documentation that is saved on their own repository in Markdown format, 
+and is kept up-to-date when the code changes.
+
+The Following are several questions and answers regarding our security profile. If you have 
+any questions that do not appear here, or if you need clarification, please don’t hesitate 
+to contact us at info@swimm.io
+
+
+## Why is Swimm asking me for Github OAuth?
+
+Swimm is using it to connect with your Github repositories in order to fetch relevant documents 
+and verify if code snippets are up-to-date. In addition, Swimm enables users to issue Pull 
+Requests to update documentation accordingly. Swimm never makes changes to source code files 
+other than documentation files (.sw.md).
+
+### How does Swimm store the Github token that I provide?
+
+The Github token is stored on the client-side browser (local storage) in a manner that is only 
+accessible to Swimm’s app. The Token is not stored at any time on Swimm’s servers. 
+
+### Will any of our code or content ever travel to, or be stored on Swimm’s servers?
+
+No. Swimm does store meta-data such as document titles, timestamps, usage statistics etc, but
+none of your actual code or content.
+
+### Will Swimm ever make any changes to my code?
+
+Swimm will create a folder in your repo to store the documents you create upon first login to the 
+app (`/.swm/`). After that, upon each document creation - once the user stores the document, Swimm 
+will save the relevant file in the folder created in your repo. Swimm will not make any modifications 
+to your code besides these files and will not change any existing code files. Every operation to the 
+code starts with an explicit intent from the user, and the change management is performed on your 
+version control system.
+
+### Where are Swimm’s servers?
+
+Google Cloud Platform (GCP)
+
+### Does Swimm encrypt my data?
+
+All data transferred to and from Swimm’s server will be encrypted during transit. Any data or 
+metadata stored on Swimm’s servers will be encrypted at rest.
+
+### Can Swimm affect code in production? 
+
+No, Swimm does not modify any code in your production environment.
+
+## Swimm CI Integration - Information Regarding Github App Authorization
+
+Swimm helps its users maintain fresh documentation by integrating into their CI. This can be done 
+manually [add link to relevant doc site page] or by using our Github App.
+
+Following are several questions and answers regarding the Swimm Github App’s security profile. 
+Note that these refer only to users of the Github App and not to users of our web app that do not 
+use the Github App. If you have any questions that do not appear here, or if you need clarification, 
+please don’t hesitate to contact us at info@swimm.io
+
+
+### Which permissions does the Github App require and why?
+
+Swimm uses read access to read your code and verify that the documents are in sync.
+
+We use “PR comment creation” access to write a comment, identified with “Swimm” on the PR during 
+verification. Note, that this access permission does not grant any write access to the repo. 
+We need check permissions (both read and write) to install the Github app in your repos and execute 
+the app on demand. Once the app is installed, a user can select to enable/disable the app per repo 
+and make the checks required or not-required per branch. 
+
+### Does Swimm store the Github token that I provide?
+No. Every time an action is triggered, Github sends  the unique app installation identifier to Swimm’s 
+server. We use this information to generate a unique token (one-off token). This token is never stored 
+on our servers and is used for the duration of the action only.
+
+### Will any of our code or content travel to Swimm’s servers? Why?
+
+Yes. During the action operation, the app reads the code to verify that the documentation is up to date. 
+We remove the code immediately from our servers after the operation is completed. During this process, 
+no one at Swimm has access to your code or to your content. 
+
+**To emphasize - we never store your code on our servers.**
+
+### Will any of our code or content ever be stored on Swimm’s servers?
+
+No.
+
+### Will Swimm ever make any changes to my code?
+
+No. The Github App will only indicate to the user whether or not the documents are up to date. The app does
+not have any write access permissions to the code itself. 
+
+### Where are Swimm’s servers?
+
+Google Cloud Platform (GCP)
+
+### Does Swimm encrypt my data?
+
+All data transferred to Swimm’s server will be encrypted during transit. We use only secure functions (HTTPS) 
+to fetch the code from Github servers and communicate back the results. 
+
+### Can the Swimm CI app affect code in production? 
+
+No, Swimm does not modify any code in your production environment.
