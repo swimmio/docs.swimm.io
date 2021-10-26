@@ -2,10 +2,10 @@
 id: W8D2A
 name: Building Via The Makefile
 file_version: 1.0.2
-app_version: 0.6.2-0
+app_version: 0.6.3-1
 file_blobs:
-  Makefile: 70665aef9f89e7264f7351365c15744ded660bb8
-  docusaurus.config.js: 4509ddc240cf6d90a85015642d063dc11f4bd530
+  Makefile: 509f556c6e288a8f581c1c120dc79e9599fc4d5e
+  docusaurus.config.js: 0f22f6f31cb535475752e53ce16df92410baeef7
 ---
 
 Running A Build (And Rebuilding Prod From The Last Change)
@@ -21,18 +21,18 @@ In fact, it's the default target.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 Makefile
 ```makefile
-⬜ 1      .PHONY: all help production rebuild clean distclean dev
+⬜ 1      .PHONY: all help production rebuild-remote clean distclean dev
 ⬜ 2      
 🟩 3      help:
-🟩 4      	@echo "Target        | Explanation"
-🟩 5      	@echo "production    | Run a complete production build from scratch."
-🟩 6      	@echo "rebuild       | Rebuild the production site with no changes."
-🟩 7      	@echo "release-notes | Generate or refresh release notes from clickup"
-🟩 8      	@echo "dev           | alias for npx docusaurus run"
-🟩 9      	@echo "world         | distclean, production and then dev"
-🟩 10     	@echo "clean         | remove module cache and build directories"
-🟩 11     	@echo "distclean     | runs clean, and also removes .docusaurus and lockfiles"
-🟩 12     	@echo "help          | this help screen (and default if no other argument is given)"
+🟩 4      	@echo "Target                     | Explanation"
+🟩 5      	@echo "production                 | Run a complete production build from scratch."
+🟩 6      	@echo "rebuild-remote             | Rebuild the production site with no changes."
+🟩 7      	@echo "release-notes              | Generate or refresh release notes from clickup"
+🟩 8      	@echo "dev                        | alias for npx docusaurus run"
+🟩 9      	@echo "world                      | distclean, production and then dev"
+🟩 10     	@echo "clean                      | remove module cache and build directories"
+🟩 11     	@echo "distclean                  | runs clean, and also removes .docusaurus and lockfiles"
+🟩 12     	@echo "help                       | this help screen (and default if no other argument is given)"
 🟩 13     
 🟩 14     all: help
 ⬜ 15     
@@ -56,7 +56,7 @@ If you want to ask Netlify to rebuild the site from the latest ref (HEAD) withou
 ```makefile
 ⬜ 18     	npm install && npm run build || true
 ⬜ 19     
-🟩 20     rebuild:
+🟩 20     rebuild-remote:
 🟩 21     ifndef NETLIFY_REBUILD_WEBHOOK
 🟩 22     	@echo "NETLIFY_REBUILD_WEBHOOK must be set to the correct URL in the enviornment."
 🟩 23     	@echo "Try 'export NETLIFY_REBUILD_WEBHOOK=https://url.to.webhook' and run again."
@@ -112,7 +112,7 @@ When MDX matures a bit more, we'll run lints for markdown. In the meantime, you 
 
 <span id="f-Z1fu52N">dev</span>[^](#Z1fu52N) - "Makefile" L1
 ```makefile
-.PHONY: all help production rebuild clean distclean dev
+.PHONY: all help production rebuild-remote clean distclean dev
 ```
 
 <span id="f-ZbLV9G">NETLIFY_REBUILD_WEBHOOK</span>[^](#ZbLV9G) - "Makefile" L21
@@ -127,17 +127,17 @@ ifndef NETLIFY_REBUILD_WEBHOOK
 
 <span id="f-1zYEAr">rebuild</span>[^](#1zYEAr) - "Makefile" L20
 ```makefile
-rebuild:
+rebuild-remote:
 ```
 
 <span id="f-Z2f0Rb5">release-notes</span>[^](#Z2f0Rb5) - "Makefile" L7
 ```makefile
-	@echo "release-notes | Generate or refresh release notes from clickup"
+	@echo "release-notes              | Generate or refresh release notes from clickup"
 ```
 
 <span id="f-yN5mL">world</span>[^](#yN5mL) - "Makefile" L9
 ```makefile
-	@echo "world         | distclean, production and then dev"
+	@echo "world                      | distclean, production and then dev"
 ```
 
 <br/>
