@@ -241,10 +241,12 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      /*
       googleAnalytics: {
         trackingID: 'XX-XXXXXXXXX-X',
         anonymizeIP: true,
       },
+      */
       gtag: {
         trackingID: 'GTM-TJP96GG',
         anonymizeIP: false,        
