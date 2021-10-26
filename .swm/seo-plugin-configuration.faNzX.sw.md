@@ -2,10 +2,13 @@
 id: faNzX
 name: SEO Plugin Configuration
 file_version: 1.0.2
-app_version: 0.6.2-0
+app_version: 0.6.3-1
 file_blobs:
-  docusaurus.config.js: 4509ddc240cf6d90a85015642d063dc11f4bd530
+  docusaurus.config.js: 0f22f6f31cb535475752e53ce16df92410baeef7
 ---
+
+This is currently disabled.
+===========================
 
 We have a sitemap generator as well as a gtags generator built in, and both run periodically, triggered by a visitor poking a function that sees enough time has passed to regenerate the files on the fly. We also have Google Analytics configured to run on this site.
 
@@ -33,19 +36,20 @@ And here's where we insert our GA identifier (this is not secret at all)
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 docusaurus.config.js
 ```javascript
-⬜ 241            theme: lightCodeTheme,
 ⬜ 242            darkTheme: darkCodeTheme,
 ⬜ 243          },
-🟩 244          googleAnalytics: {
-🟩 245            trackingID: 'XX-XXXXXXXXX-X',
-🟩 246            anonymizeIP: true,
-🟩 247          },
-🟩 248          gtag: {
-🟩 249            trackingID: 'GTM-TJP96GG',
-🟩 250            anonymizeIP: false,        
-🟩 251          },
-⬜ 252        }),
-⬜ 253    });
+⬜ 244          /*
+🟩 245          googleAnalytics: {
+🟩 246            trackingID: 'XX-XXXXXXXXX-X',
+🟩 247            anonymizeIP: true,
+🟩 248          },
+🟩 249          */
+🟩 250          gtag: {
+🟩 251            trackingID: 'GTM-TJP96GG',
+🟩 252            anonymizeIP: false,        
+🟩 253          },
+⬜ 254        }),
+⬜ 255    });
 ```
 
 <br/>
