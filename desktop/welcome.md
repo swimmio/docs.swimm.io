@@ -3,7 +3,9 @@ slug: /
 sidebar_position: 1
 ---
 
-# Welcome To Swimm's Knowledge Portal!
+# Swimm's Desktop App Documentation
+
+**If you're using the Web App, [you want to head over here](/docs).**
 
 Hello, and welcome to Swimm! We're glad you're here and we're here to help you get the most out of using Swimm to keep your documentation up-to-date and in lock-step sync with your code. Swimm is a rapidly-evolving tool, so we recommend checking back here weekly with each new release. If you're not already in our private beta program and wish to join, [you can sign up here](https://swimm.io/sign-beta). There aren't any sales calls, we just need to give you a guided tour of Swimm because some parts are still a little rough around the edges.
 
