@@ -14,10 +14,10 @@ export default function FeedSelector() {
                 {label: 'Atom', value: 'atom'},
          ]}>
             <TabItem value="rss">
-                <code>{siteConfig.url}/blog/rss.xml</code>
+                <a href="{siteConfig.url}/blog/rss.xml"><code>{siteConfig.url}/blog/rss.xml</code></a>
             </TabItem>
             <TabItem value="atom">
-                <code>{siteConfig.url}/blog/atom.xml</code>
+            <a href="{siteConfig.url}/blog/atom.xml"><code>{siteConfig.url}/blog/atom.xml</code></a>
             </TabItem>
         </Tabs>
     );
