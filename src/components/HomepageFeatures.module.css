@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+.features a {
+  font-weight: bold;
+}
+
 .featureSvg {
   height: 200px;
   width: 200px;

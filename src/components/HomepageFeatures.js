@@ -5,7 +5,7 @@ import styles from './HomepageFeatures.module.css';
 const FeatureList = [
   {
     title: 'Continuous Documentation',
-    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('../../static/img/01_continuousDocumentation.svg').default,
     description: (
       <>
         It's easy to set up Swimm to run on your continuous 
@@ -17,7 +17,7 @@ const FeatureList = [
   },
   {
     title: 'Swimm\'s IDE Plugins',
-    Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('../../static/img/02_idePlugin.svg').default,
     description: (
       <>
         Put beautiful, media-rich documentation right where your engineers need it, 
@@ -29,7 +29,7 @@ const FeatureList = [
   },
   {
     title: 'Knowledgebase Integrations',
-    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('../../static/img/03_knowledgebaseIntegrations.svg').default,
     description: (
       <>
         Learn how to bring Swimm documentation to your internal knowledge platforms,
@@ -41,7 +41,7 @@ const FeatureList = [
   },
   {
     title: 'Documentation Strategies',
-    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('../../static/img/04_docuStrategies.svg').default,
     description: (
       <>
         Discover strategies to break down documentation debt into smaller,
@@ -53,7 +53,7 @@ const FeatureList = [
   },
   {
     title: 'Swimm Developer Community',
-    Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('../../static/img/05_DevCommunity.svg').default,
     description: (
       <>
         Swimm is language-agnostic and has users all over the world from all 
@@ -66,7 +66,7 @@ const FeatureList = [
   },
   {
     title: 'Contribute To This Site',
-    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('../../static/img/06_Contribution.svg').default,
     description: (
       <>
         Would you like to help translate this site or contribute a blog post
