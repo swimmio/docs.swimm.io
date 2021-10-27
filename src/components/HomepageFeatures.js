@@ -17,7 +17,7 @@ const FeatureList = [
   },
   {
     title: 'Swimm\'s IDE Plugins',
-    Svg: require('../../static/img/02_idePlugin.svg').default,
+    Svg: require('../../static/img/02_idePlugIn.svg').default,
     description: (
       <>
         Put beautiful, media-rich documentation right where your engineers need it, 
