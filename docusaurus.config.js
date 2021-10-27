@@ -68,6 +68,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      /*
       announcementBar: {
         id: 'wip',
         content:
@@ -76,6 +77,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         textColor: '#091E42',
         isCloseable: false,
       },
+      */
       navbar: {
         title: '',
         logo: {
