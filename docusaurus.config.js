@@ -14,7 +14,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   organizationName: 'swimmio', // Usually your GitHub org/user name.
   projectName: 'docs.swimm.io', // Usually your repo name.
   titleDelimiter: '🏊',
-
+  customFields: {
+    enableHeapAnalytics: true,
+  },
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -40,6 +42,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         },
       }),
     ],
+  ],
+  // see https://docusaurus.io/docs/api/docusaurus-config#scripts
+  scripts: 
+  [
+
   ],
   plugins: [
     [
