@@ -1,12 +1,12 @@
 ---
 id: 3FTx0DX2PMwt3sL0HvaQ
-name: Understanding The Docs Site
+name: How To Manage The Docs Site (From A Content Point Of View)
 file_version: 1.0.2
 app_version: 0.6.3-1
 ---
 
 <!-- Intro - Do not remove this comment -->
-This will guide you through how to build both dev and production, as well as how adding and managing content works.
+This will show you how to manage content on the main docs site, like blog posts, documentation entries, static pages and the FAQ. It also goes over how some of the SEO and analytics stuff works. This is for everyone on the marketing team.
 
 <br/>
 
@@ -16,10 +16,8 @@ This will guide you through how to build both dev and production, as well as how
 3. [Managing Static Pages](managing-static-pages.CVk1i.sw.md)
 4. [How Do Links Work?](how-do-links-work.ANv7K.sw.md)
 5. [How Does The FAQ Work?](how-does-the-faq-work.k68n1.sw.md)
-6. [Building Via The Makefile](building-via-the-makefile.W8D2A.sw.md)
+6. [How Does Heap Work?](how-does-heap-work.AJ5ng.sw.md)
 7. [SEO Plugin Configuration](seo-plugin-configuration.faNzX.sw.md)
-8. [How Does Heap Work?](how-does-heap-work.AJ5ng.sw.md)
-9. [Creating Custom Components](creating-custom-components.DV_q9.sw.md)
 
 
 <br/>
