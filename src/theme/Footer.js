@@ -36,7 +36,7 @@ export default function Footer(props) {
     return (
         <>
         <OriginalFooter {...props} />
-        <HeapAnalytics />
+        {isBrowser && <HeapAnalytics />}
         </>
     );
 }
