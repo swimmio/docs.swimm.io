@@ -5,7 +5,7 @@ file_version: 1.0.2
 app_version: 0.6.3-1
 file_blobs:
   Makefile: 509f556c6e288a8f581c1c120dc79e9599fc4d5e
-  docusaurus.config.js: 0f22f6f31cb535475752e53ce16df92410baeef7
+  docusaurus.config.js: 86e4fa3101e2d60fd865edc0e56bed05c2bd4066
 ---
 
 Running A Build (And Rebuilding Prod From The Last Change)
@@ -42,7 +42,7 @@ In fact, it's the default target.
 
 <br/>
 
-To get up and running locally, just run make `world`[<sup id="yN5mL">↓</sup>](#f-yN5mL) . To start a development environment just run make `dev`[<sup id="Z1fu52N">↓</sup>](#f-Z1fu52N) . Eventually, the `release-notes`[<sup id="Z2f0Rb5">↓</sup>](#f-Z2f0Rb5) target will run another local script that queries Clickup to generate or refresh a list of all changes as structured in `📄 blog`
+To get up and running locally, just run make `world`[<sup id="yN5mL">↓</sup>](#f-yN5mL) . To start a development environment just run make `dev`[<sup id="Z1fu52N">↓</sup>](#f-Z1fu52N) . Eventually, the `release-notes`[<sup id="Z2f0Rb5">↓</sup>](#f-Z2f0Rb5) target will run another local script that queries Clickup to generate or refresh a list of all changes as structured in `📄 changelog`
 
 Because Docusaurus V2 is still in beta, there may be _slight_ idiosyncrasies with link and duplicate route checking that don't show up in your local dev environment, however, they will show up when you run a full production build.
 
@@ -101,7 +101,7 @@ We throw `onBrokenLinks`[<sup id="Zl2UoL">↓</sup>](#f-Zl2UoL) because we never
 Lints & Static Analysis
 -----------------------
 
-For right now, we're not using any Markdown lints in the `📄 docs` `📄 src/pages` or `📄 blog` directories because there are still too many vague corner cases with MDX that can create confusion. Non-devs on the marketing team might need to update or create content, and they shouldn't need to deal with weird behavior from seeing it work on the local dev server to seeing it break in production. MDX can sometimes break if a newline separator is missing, or other circumstances where automatic linting could create infuriating bugs.
+For right now, we're not using any Markdown lints in the `📄 docs` `📄 src/pages` or `📄 changelog` directories because there are still too many vague corner cases with MDX that can create confusion. Non-devs on the marketing team might need to update or create content, and they shouldn't need to deal with weird behavior from seeing it work on the local dev server to seeing it break in production. MDX can sometimes break if a newline separator is missing, or other circumstances where automatic linting could create infuriating bugs.
 
 When MDX matures a bit more, we'll run lints for markdown. In the meantime, you can use whatever you want for JS & CSS.
 
