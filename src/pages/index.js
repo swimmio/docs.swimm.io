@@ -17,8 +17,14 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/quickstart">
-            Get Up And Swimming In 15 Minutes &raquo;
+            Fifteen Minute Quickstart &raquo;
           </Link>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Link
+            className="button button--secondary button--lg"
+            to="/github">
+            See Our Security Overview &raquo;
+          </Link>          
         </div>
       </div>
     </header>
