@@ -20,7 +20,7 @@ function FeedLinkTab({label, value}) {
     var feedLabel = label || "RSS";
     var feedValue = value || "rss";
     const {siteConfig} = useDocusaurusContext();
-    var feedUrl = siteConfig.url + '/blog/' + value + '.xml';
+    var feedUrl = siteConfig.url + '/changelog/' + value + '.xml';
     console.log(feedValue, feedUrl);
     return (
         <TabItem value={feedValue}>
@@ -53,10 +53,10 @@ export default function FeedSelector() {
                 {label: 'Atom', value: 'atom'},
          ]}>
             <TabItem value="rss">
-                <code>{siteConfig.url}/blog/rss.xml</code>
+                <code>{siteConfig.url}/changelog/rss.xml</code>
             </TabItem>
             <TabItem value="atom">
-                <code>{siteConfig.url}/blog/atom.xml</code>
+                <code>{siteConfig.url}/changelog/atom.xml</code>
             </TabItem>
         </Tabs>
     );

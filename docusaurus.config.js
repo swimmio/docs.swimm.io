@@ -28,10 +28,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
           editUrl: 'https://github.com/swimmio/docs.swimm.io/edit/main/',
         },
         blog: {
+          id: 'changelog',
+          routeBasePath: 'changelog',
+          path: './changelog',
           showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/swimmio/docs.swimm.io/edit/main/blog/',
+          editUrl: 'https://github.com/swimmio/docs.swimm.io/edit/main/changelog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -99,7 +100,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             position: 'left'
           },
           {
-            to: '/blog', 
+            to: '/changelog', 
             label: 'Changelog', 
             position: 'left'
           },
@@ -159,7 +160,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'Changelog',
-                to: '/blog',
+                to: '/changelog',
               },
               {
                 label: 'FAQ',
