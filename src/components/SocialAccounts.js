@@ -6,7 +6,7 @@ import styles from './SocialAccounts.module.css';
 const SocialList = [
 {
     label: "Twitter",
-    social_url: "https://twitter.com/swimmio",
+    social_url: "https://twitter.com/swimm_io",
     metadata: (
         <>
         We love when people tweet about their experiences

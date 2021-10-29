@@ -189,7 +189,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             items: [
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/swimmio',
+                href: 'https://twitter.com/swimm_io',
               },
               {
                 label: 'Github',
