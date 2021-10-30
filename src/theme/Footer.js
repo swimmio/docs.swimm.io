@@ -14,7 +14,6 @@ export function HeapAnalytics() {
     /* Don't run if disabled. */
     const {siteConfig, siteMetadata} = useDocusaurusContext();
     const heapSettings = siteConfig.customFields.siteSettings.analytics.heap;
-    console.log(heapSettings);
     
     if (heapSettings.enabled == false)
         return null;
