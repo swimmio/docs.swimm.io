@@ -16,42 +16,10 @@ const FeedTypes = [
     }
 ];
 
-function FeedLinkTab({label, value}) {
-    var feedLabel = label || "RSS";
-    var feedValue = value || "rss";
-    const {siteConfig} = useDocusaurusContext();
-    var feedUrl = siteConfig.url + '/changelog/' + value + '.xml';
-    console.log(feedValue, feedUrl);
-    return (
-        <TabItem value={feedValue}>
-            <Link href={feedUrl}>{feedUrl}</Link>
-        </TabItem>
-    );
-}
-
-export function NewFeedSelector() {
-    return (
-        <Tabs groupId="NewFeedSelector"
-        defaultValue={DefaultFeedValue} 
-        values={FeedTypes}>
-
-        {FeedTypes.map((props, idx) => (
-           <FeedLinkTab key={idx} {...props} />
-        ))}
-        
-        </Tabs>
-    );
-}
-
-export default function FeedSelector() {
+function FeedSelector() {
     const {siteConfig} = useDocusaurusContext();
     return (
-        <Tabs groupId="FeedSelector"
-            defaultValue="rss"
-            values={[
-                {label: 'RSS', value: 'rss'},
-                {label: 'Atom', value: 'atom'},
-         ]}>
+        <Tabs groupId="FeedSelector" defaultValue={DefaultFeedValue} values={FeedTypes}>
             <TabItem value="rss">
                 <code>{siteConfig.url}/changelog/rss.xml</code>
             </TabItem>
@@ -60,4 +28,8 @@ export default function FeedSelector() {
             </TabItem>
         </Tabs>
     );
+}
+
+export {
+    FeedSelector as default
 }
