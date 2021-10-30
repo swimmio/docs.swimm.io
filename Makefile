@@ -27,15 +27,12 @@ endif
 	@exit $?
 
 clean:
-	@echo "Removing module cache & build directory"
-	rm -rf node_modules build
+	@echo "Clearing build cache ..."
+	npx docusaurus clear
 
 distclean: clean
-	@echo "Removing .docusaurus instance and package locks"
-	rm -rf .docusaurus package-lock.json yarn.lock
-
-release-notes:
-	@echo Coming Soon ...
+	@echo "Removing package locks ..."
+	rm -rf package-lock.json yarn.lock
 
 dev:
 	@echo "Creating Development Environment"
