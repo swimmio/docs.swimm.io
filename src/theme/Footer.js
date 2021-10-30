@@ -13,7 +13,10 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 export function HeapAnalytics() {
     /* Don't run if disabled. */
     const {siteConfig, siteMetadata} = useDocusaurusContext();
-    if (siteConfig.customFields.enableHeapAnalytics == false)
+    const heapSettings = siteConfig.customFields.siteSettings.analytics.heap;
+    console.log(heapSettings);
+    
+    if (heapSettings.enabled == false)
         return null;
 
     /* Never run in staging / locally. */
@@ -30,18 +33,9 @@ export function HeapAnalytics() {
             return function() {
                 heap.push([e].concat(Array.prototype.slice.call(arguments, 0)))
             }
-        }, p = ["addEventProperties", 
-                "addUserProperties", 
-                "clearEventProperties", 
-                "identify", 
-                "resetIdentity", 
-                "removeEventProperty", 
-                "setEventProperties", 
-                "track", 
-                "unsetEventProperty"
-            ], o = 0; o < p.length; o++) heap[p[o]] = n(p[o])
+        }, p = heapSettings.params, o = 0; o < p.length; o++) heap[p[o]] = n(p[o])
     };
-    heap.load("2760903549");
+    heap.load(heapSettings.id);
     return null;
 }
 
