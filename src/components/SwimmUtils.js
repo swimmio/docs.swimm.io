@@ -4,6 +4,7 @@ import {SiteSettings} from '../../swimm.config.js';
 import GetCurrentSwimmRelease, {GetSpecificSwimmRelease} from '../../swimm.versions.config.js';
 import Link from '@docusaurus/Link';
 import Emojione from 'react-emoji-render';
+import {TwitterTweetEmbed} from 'react-twitter-embed';
 
 import styles from './SwimmUtils.module.css';
 
@@ -20,6 +21,11 @@ Swimm.defaultProps = {
     index: 'version'
 }
 
+/**
+ * Provides Swimm current version information in a variety of formats.
+ * @param {*} props 
+ * @returns string 
+ */
 function SwimmVersion(props) {
     var index = props.segment || 'full';
     switch (index) {
@@ -39,6 +45,7 @@ function SwimmVersion(props) {
 }
 
 SwimmVersion.propTypes = {
+    /* Which part of the version string do you need, or all of it? */
     segment: PropTypes.string,
 }
 
@@ -46,12 +53,28 @@ SwimmVersion.defaultProps = {
     segment: 'full'
 }
 
+/**
+ * Wraps the Docusaurus <Link> component to produce commonly-used links, 
+ * or whatever you pass to it. See use in src/pages/community.mdx for examples, 
+ * or in the changelog entries.
+ * 
+ * Example:
+ * 
+ * <SwimmLink target="slack" big />
+ * 
+ * Actually renders as:
+ * 
+ * <Link className="button button--secondary button--lg" href="https://swimm.live">Community Slack Channel</Link>
+ * 
+ * @param {*} props 
+ * @returns Link component 
+ */
 function SwimmLink(props) {
     var linkClass = props.big ? 'button button--secondary button--lg' : '';
     switch (props.target) {
         case 'slack':
             return (
-                <Link  className={linkClass} to={SiteSettings.community.slack}>{props.text ? props.text : 'Community Slack Channel'}</Link>
+                <Link className={linkClass} to={SiteSettings.community.slack}>{props.text ? props.text : 'Community Slack Channel'}</Link>
             );
         case 'officeHours':
             return (
@@ -63,14 +86,17 @@ function SwimmLink(props) {
             );
         default:
             return (
-                <Link className={linkClass} to={target}>{props.text}</Link>
+                <Link className={linkClass} to={props.target}>{props.text}</Link>
             );
     }   
 }
 
 SwimmLink.propTypes = {
+    /* Where the link should go. Store frequently-used links in the function. */
     target: PropTypes.string,
-    text: PropTypes.string, 
+    /* What should the link text be? */
+    text: PropTypes.string,
+    /* If set, make the link a button */ 
     big: PropTypes.bool,
 }
 
@@ -79,6 +105,17 @@ SwimmLink.defaultProps = {
     big: false,
 }
 
+/**
+ * Print arbitrary, or pre-defined strings of fun emoji!
+ * Pre-defined strings exist in swimm.config.js
+ * 
+ * Example: <SwimmMoji text=":tada:"/> renders the "tada" emoji.
+ * Example: <SwimmMoji text="release" renders the string of emoji stored in the config
+ * Example: <SwimmMoji /> will render ":ocean:", which is currently the config-defined default
+ * 
+ * @param {*} props 
+ * @returns string
+ */
 function SwimmMoji(props) {
     var slug = props.text;
     var useSvg = props.useSvg;
@@ -97,7 +134,9 @@ function SwimmMoji(props) {
 }
 
 SwimmMoji.propTypes = {
+    /* Emoji to print, or name of pre-defined string */ 
     text: PropTypes.string,
+    /* Whether to use svg (for open emoji this is always better) */
     svg: PropTypes.bool,
 }
 
@@ -106,6 +145,14 @@ SwimmMoji.defaultProps = {
     svg: true
 }
 
+/**
+ * Helper to check version config to see if a blog post on the main site is 
+ * associated with release notes that were published in the changelog. If so,
+ * it'll render a link.
+ * 
+ * @param {*} props 
+ * @returns string
+ */
 function SwimmReleaseBlogPost(props) {
     var releaseInfo = GetSpecificSwimmRelease(props.version);
     var blogPost = releaseInfo.blog;
@@ -115,17 +162,50 @@ function SwimmReleaseBlogPost(props) {
     else
         return (
             <>
-            <p><b>We have an even more detailed post about this release <Link href={blogPost}>on our main blog</Link>, 
-            which we really hope you enjoy!</b></p>
+            <p>We have an even more detailed post about this release on our main blog.</p>
+            <p><SwimmLink target={blogPost} text="Get The Full Scoop! &raquo;" big /></p>
             </>
         );
 }
 
 SwimmReleaseBlogPost.propTypes = {
+    /* The Swimm version number associated with the release, e.g. '0.1.2' */
     version: PropTypes.string
 }
 
 SwimmReleaseBlogPost.defaultProps = {
+    /* If called with no arguments, the current release is checked. */
+    version: GetCurrentSwimmRelease(),
+}
+
+/**
+ * Helper to check version config to see if a tweet from our Twitter
+ * account is associated with a release, and if so, embed it in the release notes.
+ * 
+ * @param {*} props 
+ * @returns string
+ */
+ function SwimmReleaseTweet(props) {
+    var releaseInfo = GetSpecificSwimmRelease(props.version);
+    var tweet = releaseInfo.tweet;
+    console.log(releaseInfo);
+    if (tweet === null)
+        return null;
+    else
+        return (
+            <>
+            <TwitterTweetEmbed tweetId={tweet} />
+            </>
+        );
+}
+
+SwimmReleaseTweet.propTypes = {
+    /* The Swimm version number associated with the release, e.g. '0.1.2' */
+    version: PropTypes.string
+}
+
+SwimmReleaseTweet.defaultProps = {
+    /* If called with no arguments, the current release is checked. */
     version: GetCurrentSwimmRelease(),
 }
 
@@ -135,4 +215,5 @@ export {
     SwimmLink,
     SwimmMoji,
     SwimmReleaseBlogPost,
+    SwimmReleaseTweet,
 }
