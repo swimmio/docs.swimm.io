@@ -84,6 +84,14 @@ function SwimmLink(props) {
             return (
                 <Link className={linkClass} to="/conduct">{props.text ? props.text : 'code of conduct'}</Link>
             );
+        case 'stackOverflowTag':
+            return (
+                <Link className={linkClass} href="https://stackoverflow.com/questions/tagged/swimm">{props.text ? props.text : 'Swimm tag on Stack Overflow'}</Link>
+            );
+        case 'stackOverflowAsk':
+            return (
+                <Link className={linkClass} href="https://stackoverflow.com/questions/ask?tags=swimm">{props.text ? props.text : 'ask a question about Swimm on Stack Overflow'}</Link>
+            );
         default:
             return (
                 <Link className={linkClass} to={props.target}>{props.text}</Link>
@@ -188,7 +196,6 @@ SwimmReleaseBlogPost.defaultProps = {
  function SwimmReleaseTweet(props) {
     var releaseInfo = GetSpecificSwimmRelease(props.version);
     var tweet = releaseInfo.tweet;
-    console.log(releaseInfo);
     if (tweet === null)
         return null;
     else
