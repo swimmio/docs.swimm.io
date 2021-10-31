@@ -1,36 +1,30 @@
+import GetCurrentSwimmRelease from './swimm.versions.config.js';
+
 const SiteSettings = {
-    version: {
-        major: 0,
-        minor: 6,
-        patch: 3,
-        codename: null,
-        blog: null,
-        tweet: null,
-        linkedin: null
-    },
+    version: GetCurrentSwimmRelease(),
     community: {
         slack: 'https://swimm.live/slack',
-        officeHours: null,
+        officeHours: 'https://calendly.com/timpost/swimm-s-office-hours-with-tim-post',
     },
-    analytics: {
-        heap: {
-            enabled: true,
-            id: '2760903549',
-            params: [
-                "addEventProperties", 
-                "addUserProperties", 
-                "clearEventProperties", 
-                "identify", 
-                "resetIdentity", 
-                "removeEventProperty", 
-                "setEventProperties", 
-                "track", 
-                "unsetEventProperty"
-            ]
-        }
+    emojiShortcuts: {
+        default: ':ocean:',
+        release: ':exclamation:  :ocean::ship::swimmer::rocket::new::boom::tada::sparkles:', 
+    },
+    heap: {
+         enabled: true,
+        id: '2760903549',
+        params: [
+            "addEventProperties", 
+            "addUserProperties", 
+            "clearEventProperties", 
+            "identify", 
+            "resetIdentity", 
+            "removeEventProperty", 
+            "setEventProperties", 
+            "track", 
+            "unsetEventProperty"
+        ]
     }
 }
 
-export {
-    SiteSettings,
-}
+export {SiteSettings};

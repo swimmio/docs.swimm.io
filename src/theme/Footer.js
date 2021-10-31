@@ -1,20 +1,12 @@
 import OriginalFooter from '@theme-original/Footer';
 import React from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Swimm from '../components/SwimmUtils.js';
 
-/*
- * This is a dirty hack and needs to be moved into a proper heap plugin.
- * It's here because, for reasons we still don't know, heap will just 
- * not fire or load when loaded by Google Tag Manager. :shrug:
- * 
- * This renders nothing, it just executes code in the browswer.
- */
-export function HeapAnalytics() {
-    /* Don't run if disabled. */
-    const {siteConfig, siteMetadata} = useDocusaurusContext();
-    const heapSettings = siteConfig.customFields.siteSettings.analytics.heap;
-    
+function HeapAnalytics() {
+    const heapSettings = Swimm('heap');
+
+    /* No point in going further if we're disbled */
     if (heapSettings.enabled == false)
         return null;
 
