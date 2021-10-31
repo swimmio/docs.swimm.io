@@ -4,8 +4,8 @@ name: How Does Heap Work?
 file_version: 1.0.2
 app_version: 0.6.3-1
 file_blobs:
-  docusaurus.config.js: c13ae5a0e2b808d763ea63d90562cce49866fbbe
-  src/theme/Footer.js: 29f5e1aba5ef218dc8e5d201e136ea4d8b731232
+  swimm.config.js: e3a0736ae5e3774ea4afe7767deda06ae23bae01
+  src/theme/Footer.js: f422471de05ac9b62e8a2a612ebe3a2f6c5c66a1
 ---
 
 Heap Is Currently Kind Of Messy.
@@ -13,7 +13,7 @@ Heap Is Currently Kind Of Messy.
 
 Originally, we wanted to load heap through Google Tag Manager as described in [SEO Plugin Configuration](seo-plugin-configuration.faNzX.sw.md), however, we could not (for reasons that are yet to be understood) get heap to actually fire on the page, even when the code was obviously there.
 
-To get around that, we're loading it **synchronously** in the footer through an ad-hoc component we call by wrapping the theme/Footer component that actually runs the heap code in the browser.
+To get around that, we're loading it **synchronously** in the footer through an ad-hoc component we call by wrapping the theme/Footer component that actually runs the heap code in the browser. Why the footer? Because right now, the Docusaurus header is a very steady moving target and even wrapping it could cause problems.
 
 How Do I Turn Heap On Or Off?
 -----------------------------
@@ -22,19 +22,31 @@ If that's all you need to do, see below, and you can skip the rest of this docum
 
 <br/>
 
-In the main site config, set `enableHeapAnalytics`[<sup id="Z2jBSsd">↓</sup>](#f-Z2jBSsd) within `customFields`[<sup id="1b4Gb8">↓</sup>](#f-1b4Gb8) to the desired value. `true` means Heap will load, `false` turns it off.
+Edit the Swimm config, and in `heap`[<sup id="1SPIcQ">↓</sup>](#f-1SPIcQ) set `enabled`[<sup id="Z2bX9gX">↓</sup>](#f-Z2bX9gX) to `false` if you want to turn it off, or `true` if you want to turn it on. A build is required for the change to go live.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
-### 📄 docusaurus.config.js
+### 📄 swimm.config.js
 ```javascript
-⬜ 14       organizationName: 'swimmio', // Usually your GitHub org/user name.
-⬜ 15       projectName: 'docs.swimm.io', // Usually your repo name.
-⬜ 16       titleDelimiter: '🏊',
-🟩 17       customFields: {
-🟩 18         enableHeapAnalytics: true,
-🟩 19       },
-⬜ 20       presets: [
-⬜ 21         [
-⬜ 22           '@docusaurus/preset-classic',
+⬜ 10             default: ':ocean:',
+⬜ 11             release: ':exclamation:  :ocean::ship::swimmer::rocket::new::boom::tada::sparkles:', 
+⬜ 12         },
+🟩 13         heap: {
+🟩 14              enabled: true,
+🟩 15             id: '2760903549',
+🟩 16             params: [
+🟩 17                 "addEventProperties", 
+🟩 18                 "addUserProperties", 
+🟩 19                 "clearEventProperties", 
+🟩 20                 "identify", 
+🟩 21                 "resetIdentity", 
+🟩 22                 "removeEventProperty", 
+🟩 23                 "setEventProperties", 
+🟩 24                 "track", 
+🟩 25                 "unsetEventProperty"
+🟩 26             ]
+🟩 27         }
+⬜ 28     }
+⬜ 29     
+⬜ 30     export {SiteSettings};
 ```
 
 <br/>
@@ -56,44 +68,22 @@ We can't import Footer from Footer because to understand recursion is to underst
 
 <br/>
 
-Then, we talk to `useDocusaurusContext`[<sup id="Z48WAN">↓</sup>](#f-Z48WAN) to grab the global config and see if we're supposed to run, and then do a quick check to make sure we're not running locally. Heap events should only fire in production, not in development or staging.
-<!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
-### 📄 src/theme/Footer.js
-```javascript
-⬜ 11      * This renders nothing, it just executes code in the browswer.
-⬜ 12      */
-⬜ 13     export function HeapAnalytics() {
-🟩 14         /* Don't run if disabled. */
-🟩 15         const {siteConfig, siteMetadata} = useDocusaurusContext();
-🟩 16         if (siteConfig.customFields.enableHeapAnalytics == false)
-🟩 17             return null;
-🟩 18     
-🟩 19         /* Never run in staging / locally. */
-🟩 20         if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-🟩 21             return null;
-⬜ 22     
-⬜ 23         window.heap = window.heap || [], heap.load = function(e, t) {
-⬜ 24         window.heap.appid = e, window.heap.config = t = t || {};
-```
-
-<br/>
-
 Then, we present the original theme footer through the reference we made, and if (and only if) we're running in a browser do we actually run the code via `<HeapAnalytics>`.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 src/theme/Footer.js
 ```javascript
-⬜ 45         return null;
-⬜ 46     }
-⬜ 47     
-🟩 48     export default function Footer(props) {
-🟩 49         const isBrowser = useIsBrowser();
-🟩 50         return (
-🟩 51             <>
-🟩 52             <OriginalFooter {...props} />
-🟩 53             {isBrowser && <HeapAnalytics />}
-🟩 54             </>
-🟩 55         );
-🟩 56     }
+⬜ 30         return null;
+⬜ 31     }
+⬜ 32     
+🟩 33     export default function Footer(props) {
+🟩 34         const isBrowser = useIsBrowser();
+🟩 35         return (
+🟩 36             <>
+🟩 37             <OriginalFooter {...props} />
+🟩 38             {isBrowser && <HeapAnalytics />}
+🟩 39             </>
+🟩 40         );
+🟩 41     }
 ```
 
 <br/>
@@ -108,19 +98,14 @@ We should just load Heap through `<script>` tags in the header like anything els
 <!-- THIS IS AN AUTOGENERATED SECTION. DO NOT EDIT THIS SECTION DIRECTLY -->
 ### Swimm Note
 
-<span id="f-1b4Gb8">customFields</span>[^](#1b4Gb8) - "docusaurus.config.js" L17
+<span id="f-Z2bX9gX">enabled</span>[^](#Z2bX9gX) - "swimm.config.js" L14
 ```javascript
-  customFields: {
+         enabled: true,
 ```
 
-<span id="f-Z2jBSsd">enableHeapAnalytics</span>[^](#Z2jBSsd) - "docusaurus.config.js" L18
+<span id="f-1SPIcQ">heap</span>[^](#1SPIcQ) - "swimm.config.js" L13
 ```javascript
-    enableHeapAnalytics: true,
-```
-
-<span id="f-Z48WAN">useDocusaurusContext</span>[^](#Z48WAN) - "src/theme/Footer.js" L15
-```javascript
-    const {siteConfig, siteMetadata} = useDocusaurusContext();
+    heap: {
 ```
 
 <br/>
