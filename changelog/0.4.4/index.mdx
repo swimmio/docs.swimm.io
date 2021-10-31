@@ -1,0 +1,42 @@
+---
+slug: release-0.4.4
+title: Swimm 0.4.4 Released
+authors: [swimm] 
+tags: [release-notes]
+date: 2021-04-27
+---
+import Swimm, {SwimmVersion, SwimmLink, SwimmMoji, SwimmReleaseBlogPost, SwimmReleaseTweet} from '../../src/components/SwimmUtils.js';
+
+# Swimm <SwimmVersion/> Has Been Released!
+
+We're pleased to announce the availability of **Swimm <SwimmVersion/>**<SwimmMoji text="release"/>
+
+<SwimmReleaseBlogPost version="0.4.4" />
+
+**Here's the nitty-gritty overview for those that like the condensed version:**
+
+## Features:
+
+ - New fluid editor features are deisgned to keep your hands on the keyboard as much as possible while you're writing.
+ - Swimm documents can now be converted to Markdown on the fly.
+ - Read documentation inline with code from within VSCode!
+ - Code auto-completion based on snippets (triggered by backticks)
+ - [Pre-commit hooks](https://github.com/swimmio/pre-commit) are now avilable for Swimm verification.
+
+## Changes:
+
+ - Markdown rendering now waits until after a space appears after the text.
+ - Documents now show their author under the title.
+ - Performance tweaks in routes that were taking longer than others to load.
+
+## Bug Fixes:
+
+ - Fixed issue where repositories weren't visible to all users. 
+ - Fixed UX glitch where it was not obvious how to close the support flyout.
+ - Fixed issue where some docs had double headers when viewed in playlists.
+ - Fixed issue with flickering upon signup (it's now a two-step process).
+
+If you have any questions or issues, please reach out on our <SwimmLink target="slack" />. You can
+also drop in during our next <SwimmLink target="officeHours" /> event. We hope to see you there!
+
+<SwimmReleaseTweet version="0.4.4"/>
