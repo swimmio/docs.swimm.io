@@ -1,4 +1,4 @@
-import Link from '@docusaurus/Link';
+import {SwimmLink} from '../components/SwimmUtils.js';
 
 # Getting Help With Swimm
 
@@ -19,7 +19,8 @@ This is also our preferred way of receiving feature requests and bug reports whi
 we're still in beta. We love the reports, but we also want to help you fix whatever
 might have gone wrong.
 
-<Link to="https://swimm.live/slack" className="button button--secondary button--lg">Join Swimm's Community Slack Channel &raquo;</Link>
+<SwimmLink target="slack" text="Join Us In Our Community Slack Channel " big/>
+
 <p>&nbsp;</p>
 
 ## Stack Overflow
@@ -29,7 +30,7 @@ be happy to answer them. Stack Overflow prefers question of a technical, objecti
 nature and shouldn't be used for discussions, bug reports or feature requests. Those
 types of things are welcome in Slack.
 
-Make sure you use the [**swimm**](https://stackoverflow.com/questions/tagged/swimm) tag
-to your question, and it will be seen in our internal and community slack channels.
+Make sure you use the <SwimmLink target="stackOverflowTag"/> to your question, and it 
+will be seen in our internal and community slack channels.
 
-<Link to="https://stackoverflow.com/questions/ask?tags=swimm" className="button button--secondary button--lg">Ask A Question About Swimm On Stack Overflow &raquo;</Link>
+<SwimmLink target="stackOverflowAsk" text="Ask A Question About Swimm On Stack Overflow &raquo;" big/>
