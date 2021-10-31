@@ -2,10 +2,10 @@
 id: W8D2A
 name: Building Via The Makefile
 file_version: 1.0.2
-app_version: 0.6.3-1
+app_version: 0.6.4-0
 file_blobs:
-  Makefile: 509f556c6e288a8f581c1c120dc79e9599fc4d5e
-  docusaurus.config.js: 86e4fa3101e2d60fd865edc0e56bed05c2bd4066
+  Makefile: 0ab27439987023497000a12aaee9239ff398ea07
+  docusaurus.config.js: 07d35e2cd6bfee547ea8bc5744c9d1208adb5586
 ---
 
 Running A Build (And Rebuilding Prod From The Last Change)
@@ -20,29 +20,30 @@ To understand the Makefile, just run `make help` to see the available targets, a
 In fact, it's the default target.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 Makefile
-```makefile
-⬜ 1      .PHONY: all help production rebuild-remote clean distclean dev
-⬜ 2      
-🟩 3      help:
-🟩 4      	@echo "Target                     | Explanation"
-🟩 5      	@echo "production                 | Run a complete production build from scratch."
-🟩 6      	@echo "rebuild-remote             | Rebuild the production site with no changes."
-🟩 7      	@echo "release-notes              | Generate or refresh release notes from clickup"
-🟩 8      	@echo "dev                        | alias for npx docusaurus run"
-🟩 9      	@echo "world                      | distclean, production and then dev"
-🟩 10     	@echo "clean                      | remove module cache and build directories"
-🟩 11     	@echo "distclean                  | runs clean, and also removes .docusaurus and lockfiles"
-🟩 12     	@echo "help                       | this help screen (and default if no other argument is given)"
-🟩 13     
-🟩 14     all: help
-⬜ 15     
-⬜ 16     production:
-⬜ 17     	@echo "Creating production build"
+```
+⬜ 3      -include .buildrc
+⬜ 4      
+🟩 5      help:
+🟩 6      	@echo "Target                     | Explanation"
+🟩 7      	@echo "production                 | Run a complete production build from scratch."
+🟩 8      	@echo "rebuild-remote             | Rebuild the production site with no changes."
+🟩 9      	@echo "release-notes              | Generate or refresh release notes from clickup"
+🟩 10     	@echo "dev                        | alias for npx docusaurus run. Interactive dev environment"
+🟩 11     	@echo "pretend                    | alias for npm docusaurus serve - serve a production build locally."
+🟩 12     	@echo "world                      | distclean, production and then dev"
+🟩 13     	@echo "clean                      | remove module cache and build directories"
+🟩 14     	@echo "distclean                  | runs clean, and also removes .docusaurus and lockfiles"
+🟩 15     	@echo "help                       | this help screen (and default if no other argument is given)"
+🟩 16     
+🟩 17     all: help
+⬜ 18     
+⬜ 19     production:
+⬜ 20     	@echo "Creating production build"
 ```
 
 <br/>
 
-To get up and running locally, just run make `world`[<sup id="yN5mL">↓</sup>](#f-yN5mL) . To start a development environment just run make `dev`[<sup id="Z1fu52N">↓</sup>](#f-Z1fu52N) . Eventually, the `release-notes`[<sup id="Z2f0Rb5">↓</sup>](#f-Z2f0Rb5) target will run another local script that queries Clickup to generate or refresh a list of all changes as structured in `📄 changelog`
+To get up and running locally, just run make `world`[<sup id="k0gwV">↓</sup>](#f-k0gwV) . To start a development environment just run make `dev`[<sup id="Z1fu52N">↓</sup>](#f-Z1fu52N) . Eventually, the `release-notes`[<sup id="Z1qSKUd">↓</sup>](#f-Z1qSKUd) target will run another local script that queries Clickup to generate or refresh a list of all changes as structured in `📄 changelog`
 
 Because Docusaurus V2 is still in beta, there may be _slight_ idiosyncrasies with link and duplicate route checking that don't show up in your local dev environment, however, they will show up when you run a full production build.
 
@@ -50,23 +51,33 @@ So, at the minimum, you should run `make production` at least prior to pushing, 
 
 <br/>
 
-If you want to ask Netlify to rebuild the site from the latest ref (HEAD) without any changes being applied (for dynamic hooks), you can do it with the `rebuild`[<sup id="1zYEAr">↓</sup>](#f-1zYEAr) target. First, set the environmental variable `NETLIFY_REBUILD_WEBHOOK`[<sup id="ZbLV9G">↓</sup>](#f-ZbLV9G) to be the URL of the site's 'rebuild' web hook as obtained by logging into Netlify. You'll also obviously need curl.
+If you want to ask Netlify to rebuild the site from the latest ref (HEAD) without any changes being applied (for dynamic hooks), you can do it with the `rebuild`[<sup id="fyJzh">↓</sup>](#f-fyJzh) target. First, set the environmental variable `NETLIFY_REBUILD_WEBHOOK`[<sup id="Z1wcQaQ">↓</sup>](#f-Z1wcQaQ) to be the URL of the site's 'rebuild' web hook as obtained by logging into Netlify. You'll also obviously need curl.
+
+To avoid exporting it all the time, the Makefile will read environmental vars from a `.buildrc` file, which is part of the Makefile help output:
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 Makefile
-```makefile
-⬜ 18     	npm install && npm run build || true
-⬜ 19     
-🟩 20     rebuild-remote:
-🟩 21     ifndef NETLIFY_REBUILD_WEBHOOK
-🟩 22     	@echo "NETLIFY_REBUILD_WEBHOOK must be set to the correct URL in the enviornment."
-🟩 23     	@echo "Try 'export NETLIFY_REBUILD_WEBHOOK=https://url.to.webhook' and run again."
-🟩 24     	@exit 1
-🟩 25     endif
-🟩 26     	@curl -X POST -d '{}' ${NETLIFY_REBUILD_WEBHOOK} > /dev/null 2>&1
-🟩 27     	@exit $?
-⬜ 28     
-⬜ 29     clean:
-⬜ 30     	@echo "Removing module cache & build directory"
+```
+⬜ 21     	npm install && npm run build || true
+⬜ 22     
+🟩 23     rebuild-remote:
+🟩 24     ifndef NETLIFY_REBUILD_WEBHOOK
+🟩 25     	@echo
+🟩 26     	@echo "NETLIFY_REBUILD_WEBHOOK must be set to the correct URL in the enviornment."
+🟩 27     	@echo "If you create a .buildrc file in the same directory as the Makefile with it defined, it will be included."
+🟩 28     	@echo
+🟩 29     	@echo "Try this:"
+🟩 30     	@echo "    echo \"NETLIFY_REBUILD_WEBHOOK=https//url.to.webhook\" > .buildrc"
+🟩 31     	@echo "    echo \".buildrc\" >> .gitignore"
+🟩 32     	@echo 
+🟩 33     	@echo "This makes sure the hook isn't shared or tracked, but keeps you from having to keep exporting it."
+🟩 34     	@echo
+🟩 35     	@exit 1
+🟩 36     endif
+🟩 37     	@curl -X POST -d '{}' ${NETLIFY_REBUILD_WEBHOOK} > /dev/null 2>&1
+🟩 38     	@exit $?
+⬜ 39     
+⬜ 40     clean:
+⬜ 41     	@echo "Clearing build cache ..."
 ```
 
 <br/>
@@ -111,12 +122,12 @@ When MDX matures a bit more, we'll run lints for markdown. In the meantime, you 
 ### Swimm Note
 
 <span id="f-Z1fu52N">dev</span>[^](#Z1fu52N) - "Makefile" L1
-```makefile
-.PHONY: all help production rebuild-remote clean distclean dev
+```
+.PHONY: all help production rebuild-remote clean distclean dev pretend
 ```
 
-<span id="f-ZbLV9G">NETLIFY_REBUILD_WEBHOOK</span>[^](#ZbLV9G) - "Makefile" L21
-```makefile
+<span id="f-Z1wcQaQ">NETLIFY_REBUILD_WEBHOOK</span>[^](#Z1wcQaQ) - "Makefile" L24
+```
 ifndef NETLIFY_REBUILD_WEBHOOK
 ```
 
@@ -125,21 +136,21 @@ ifndef NETLIFY_REBUILD_WEBHOOK
   onBrokenLinks: 'throw',
 ```
 
-<span id="f-1zYEAr">rebuild</span>[^](#1zYEAr) - "Makefile" L20
-```makefile
+<span id="f-fyJzh">rebuild</span>[^](#fyJzh) - "Makefile" L23
+```
 rebuild-remote:
 ```
 
-<span id="f-Z2f0Rb5">release-notes</span>[^](#Z2f0Rb5) - "Makefile" L7
-```makefile
+<span id="f-Z1qSKUd">release-notes</span>[^](#Z1qSKUd) - "Makefile" L9
+```
 	@echo "release-notes              | Generate or refresh release notes from clickup"
 ```
 
-<span id="f-yN5mL">world</span>[^](#yN5mL) - "Makefile" L9
-```makefile
+<span id="f-k0gwV">world</span>[^](#k0gwV) - "Makefile" L12
+```
 	@echo "world                      | distclean, production and then dev"
 ```
 
 <br/>
 
-This file was generated by Swimm. [Click here to view it in the app](https://app.swimm.io/#/repos/Z2l0aHViJTNBJTNBZG9jcy5zd2ltbS5pbyUzQSUzQXN3aW1taW8=/docs/W8D2A).
+This file was generated by Swimm. [Click here to view it in the app](https://app.swimm.io/repos/Z2l0aHViJTNBJTNBZG9jcy5zd2ltbS5pbyUzQSUzQXN3aW1taW8=/docs/W8D2A).
