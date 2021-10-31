@@ -47,27 +47,36 @@ SwimmVersion.defaultProps = {
 }
 
 function SwimmLink(props) {
+    var linkClass = props.big ? 'button button--secondary button--lg' : '';
     switch (props.target) {
         case 'slack':
             return (
-                <Link to={SiteSettings.community.slack}>{props.text ? props.text : 'Community Slack Channel'}</Link>
+                <Link  className={linkClass} to={SiteSettings.community.slack}>{props.text ? props.text : 'Community Slack Channel'}</Link>
             );
         case 'officeHours':
             return (
-                <Link to={SiteSettings.community.officeHours}>{props.text ? props.text : 'office hours'}</Link>
+                <Link className={linkClass} to={SiteSettings.community.officeHours}>{props.text ? props.text : 'office hours'}</Link>
+            );
+        case 'conduct':
+            return (
+                <Link className={linkClass} to="/conduct">{props.text ? props.text : 'code of conduct'}</Link>
             );
         default:
-            return null;
+            return (
+                <Link className={linkClass} to={target}>{props.text}</Link>
+            );
     }   
 }
 
 SwimmLink.propTypes = {
     target: PropTypes.string,
-    text: PropTypes.string
+    text: PropTypes.string, 
+    big: PropTypes.bool,
 }
 
 SwimmLink.defaultProps = {
-    target: ''
+    target: '',
+    big: false,
 }
 
 function SwimmMoji(props) {
