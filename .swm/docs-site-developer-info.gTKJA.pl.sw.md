@@ -13,6 +13,8 @@ This covers building, deploying, plugins, organization and other things you'd wa
 <!-- Steps - Do not remove this comment -->
 1. [Building Via The Makefile](building-via-the-makefile.W8D2A.sw.md)
 2. [Creating Custom Components](creating-custom-components.DV_q9.sw.md)
+3. [What's The SwimmUtils Component For?](whats-the-swimmutils-component-for.LUPZd.sw.md)
+4. [What Are The Local Site Configuration Files?](what-are-the-local-site-configuration-files.Zo6UG.sw.md)
 
 
 <br/>
