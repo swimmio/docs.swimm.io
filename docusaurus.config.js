@@ -30,6 +30,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
           routeBasePath: 'changelog',
           path: './changelog',
           showReadingTime: true,
+          blogTitle: 'Swimm Changelog And Announcements',
+          blogDescription: 'Changelog',
+          blogSidebarCount: 5,
+          blogSidebarTitle: 'Previous Posts',
           editUrl: 'https://github.com/swimmio/docs.swimm.io/edit/main/changelog/',
         },
         theme: {
