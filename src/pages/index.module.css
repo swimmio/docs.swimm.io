@@ -17,16 +17,16 @@
   .heroBanner {
     padding: 2rem;
   }
-  .buttons {
-    padding: .1rem;
-  }
 }
 
 .buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 }
 
 .buttons a {
-  margin:  .5rem;
+  margin: .3rem .5rem;
 }
