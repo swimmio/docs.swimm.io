@@ -16,15 +16,10 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/quickstart">
-            Fifteen Minute Quickstart &raquo;
-          </Link>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            to="/docs/quickstart">Fifteen Minute Quickstart &raquo;</Link>
           <Link
             className="button button--secondary button--lg"
-            to="/github">
-            See Our Security Overview &raquo;
-          </Link>          
+            to="/github">See Our Security Overview &raquo;</Link>          
         </div>
       </div>
     </header>
