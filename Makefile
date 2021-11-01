@@ -18,7 +18,7 @@ all: help
 
 production:
 	@echo "Creating production build"
-	npm install && npm run build || true
+	npm install --legacy-peer-deps && npm run build || true
 
 rebuild-remote:
 ifndef NETLIFY_REBUILD_WEBHOOK
