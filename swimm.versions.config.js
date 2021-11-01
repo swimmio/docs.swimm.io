@@ -1,5 +1,13 @@
 const SwimmVersions = {
-    current: '0.6.3',
+    current: '0.6.4',
+    '0.6.4': {
+        major: 0,
+        minor: 6,
+        patch: 4,
+        blog: null,
+        tweet: null,
+        linkedin: null
+    },
     '0.6.3': {
         major: 0,
         minor: 6,
