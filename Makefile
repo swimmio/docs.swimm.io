@@ -1,4 +1,4 @@
-.PHONY: all help production rebuild-remote clean distclean dev pretend
+.PHONY: all help production rebuild-remote clean distclean dev pretend believe
 
 -include .buildrc
 
@@ -45,10 +45,20 @@ distclean: clean
 	@echo "Removing package locks ..."
 	rm -rf package-lock.json yarn.lock
 
+maintainer-clean-check:
+	@git clean -nfdx
+	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+
+maintainer-clean: maintainer-clean-check
+	@echo "Removing all untracked files (pausing for five seconds in case you didn't mean it) ..."
+	sleep 5
+	git clean -fdx
+	
 dev:
 	@echo "Creating Development Environment"
 	npx docusaurus start
-
+	open http://localhost:3000/__docusaurus/debug
+	
 pretend:
 	@echo "Launching Production Build Locally"
 	npm docusaurus serve
