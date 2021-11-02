@@ -6,24 +6,4 @@ const SwimmVersions = {
     '0.4.4': {major: 0,minor: 4,patch: 4,blog: 'https://swimm.io/blog/release-notes-dive-into-0-4-4/',tweet: '1390180301993910278',linkedin: null},
 }
 
-function GetCurrentSwimmRelease() {
-    var currentVersion = SwimmVersions.current;
-    return SwimmVersions[currentVersion];
-}
-
-function GetAllSwimmReleases() {
-    return SwimmVersions;
-}
-
-function GetSpecificSwimmRelease(props) {
-    if (typeof(SwimmVersions[props]) != "undefined")
-        return SwimmVersions[props];
-    return null;
-}
-
-export {
-    GetCurrentSwimmRelease as default,
-    GetAllSwimmReleases,
-    GetSpecificSwimmRelease,
-    SwimmVersions
-}
+export {SwimmVersions}

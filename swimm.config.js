@@ -1,4 +1,4 @@
-import GetCurrentSwimmRelease from './swimm.versions.config.js';
+import GetCurrentSwimmRelease from './src/components/SwimmVersions.js';
 
 const SiteSettings = {
     version: GetCurrentSwimmRelease(),
