@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import {SiteSettings} from '../../swimm.config.js';
-import GetCurrentSwimmRelease, {GetSpecificSwimmRelease} from '../../swimm.versions.config.js';
+import GetCurrentSwimmRelease, {GetSpecificSwimmRelease} from './SwimmVersions.js';
 import Link from '@docusaurus/Link';
 import Emojione from 'react-emoji-render';
 import {TwitterTweetEmbed} from 'react-twitter-embed';

@@ -2,12 +2,12 @@
 id: Zo6UG
 name: What Are The Local Site Configuration Files?
 file_version: 1.0.2
-app_version: 0.6.3-1
+app_version: 0.6.4-0
 file_blobs:
-  docusaurus.config.js: 07d35e2cd6bfee547ea8bc5744c9d1208adb5586
-  src/components/SwimmUtils.js: 0cb464d4d114ac2f74512cdb1465098c906d0746
-  swimm.config.js: e3a0736ae5e3774ea4afe7767deda06ae23bae01
-  swimm.versions.config.js: 5007e00a30036a3d7a7e4d03294784a6823bda99
+  docusaurus.config.js: 30cd143aea2172d645633057483a87891c7b2970
+  src/components/SwimmUtils.js: b60aa03ac08c63f8655e8facafb1373e9a2590df
+  swimm.config.js: fdd57b163239388d69fa6c10c1eef9235336d8f0
+  swimm.versions.config.js: c98b7f964538427eb19d72f95951b323cb2f57ab
 ---
 
 We have three main configuration files that you need to know about:
@@ -46,17 +46,17 @@ You can also define scripts that will be put in the head of every page.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 docusaurus.config.js
 ```javascript
-⬜ 42           }),
-⬜ 43         ],
-⬜ 44       ],
-🟩 45       // see https://docusaurus.io/docs/api/docusaurus-config#scripts
-🟩 46       scripts: 
-🟩 47       [
-🟩 48     
-🟩 49       ],
-⬜ 50       plugins: [
-⬜ 51         [
-⬜ 52           require.resolve("@easyops-cn/docusaurus-search-local"),
+⬜ 46           }),
+⬜ 47         ],
+⬜ 48       ],
+🟩 49       // see https://docusaurus.io/docs/api/docusaurus-config#scripts
+🟩 50       scripts: 
+🟩 51       [
+🟩 52     
+🟩 53       ],
+⬜ 54       plugins: [
+⬜ 55         [
+⬜ 56           require.resolve("@easyops-cn/docusaurus-search-local"),
 ```
 
 <br/>
@@ -68,20 +68,20 @@ This config can store whatever needs to be kept track of. Use the functions in `
 
 <br/>
 
-After you import the SwimmUtils component, you can call `Swimm`[<sup id="Z20hdNe">↓</sup>](#f-Z20hdNe) with an argument to get the configuration object that you need. For instance, `Swimm('version')` would return an object with information about the current version.
+After you import the SwimmUtils component, you can call `Swimm`[<sup id="Z1bdEdk">↓</sup>](#f-Z1bdEdk) with an argument to get the configuration object that you need. For instance, `Swimm('version')` would return an object with information about the current version.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 src/components/SwimmUtils.js
 ```javascript
-⬜ 7      
-⬜ 8      import styles from './SwimmUtils.module.css';
-⬜ 9      
-🟩 10     function Swimm(props) {
-🟩 11         var index = props || 'version';
-🟩 12         return SiteSettings[index];
-🟩 13     }
-⬜ 14     
-⬜ 15     Swimm.propTypes = {
-⬜ 16         index: PropTypes.string
+⬜ 8      
+⬜ 9      import styles from './SwimmUtils.module.css';
+⬜ 10     
+🟩 11     function Swimm(props) {
+🟩 12         var index = props || 'version';
+🟩 13         return SiteSettings[index];
+🟩 14     }
+⬜ 15     
+⬜ 16     Swimm.propTypes = {
+⬜ 17         index: PropTypes.string
 ```
 
 <br/>
@@ -90,7 +90,7 @@ The objects in `SiteSettings`[<sup id="28FeRl">↓</sup>](#f-28FeRl) contain wha
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 swimm.config.js
 ```javascript
-⬜ 1      import GetCurrentSwimmRelease from './swimm.versions.config.js';
+⬜ 1      import GetCurrentSwimmRelease from './src/components/SwimmVersions.js';
 ⬜ 2      
 🟩 3      const SiteSettings = {
 🟩 4          version: GetCurrentSwimmRelease(),
@@ -124,64 +124,25 @@ The objects in `SiteSettings`[<sup id="28FeRl">↓</sup>](#f-28FeRl) contain wha
 
 <br/>
 
-The Swimm Releases Config
--------------------------
+## The Swimm Releases Config
 
-This is just a config that contains (or soon will) all of the Swimm releases with metadata about each one. This will soon be backfilled from all previous releases.
-
-The config exports a couple of functions to make it convenient to get to the data
+This is automatically generated whenever a new release is added.
 
 <br/>
 
-Once you have included the config like any other component, you can get the current release or all releases, or a specific release by name.
-<!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
-### 📄 swimm.versions.config.js
-```javascript
-⬜ 18         }
-⬜ 19     }
-⬜ 20     
-🟩 21     function GetCurrentSwimmRelease() {
-🟩 22         var currentVersion = SwimmVersions.current;
-🟩 23         return SwimmVersions[currentVersion];
-🟩 24     }
-🟩 25     
-🟩 26     function GetAllSwimmReleases() {
-🟩 27         return SwimmVersions;
-🟩 28     }
-🟩 29     
-🟩 30     function GetSpecificSwimmRelease(props) {
-🟩 31         if (typeof(SwimmVersions[props]) != "undefined")
-🟩 32             return SwimmVersions[props];
-🟩 33         return null;
-🟩 34     }
-⬜ 35     
-⬜ 36     export {
-⬜ 37         GetCurrentSwimmRelease as default,
-```
-
-<br/>
-
-The history itself is self-explanatory. The null fields are strings when set (URLs to the main blog post, Twitter post and Linked in post (if any) that we ship with some releases.
+The `current` index will always point to the version that was current during the last build. The rest of the field are self explanatory.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 swimm.versions.config.js
 ```javascript
 🟩 1      const SwimmVersions = {
-🟩 2          current: '0.6.3',
-🟩 3          '0.6.3': {
-🟩 4              major: 0,
-🟩 5              minor: 6,
-🟩 6              patch: 3,
-🟩 7              blog: null,
-🟩 8              tweet: null,
-🟩 9              linkedin: null
-🟩 10         },
-🟩 11         '0.6.2': {
-🟩 12             major: 0,
-🟩 13             minor: 6,
-🟩 14             patch: 2,
-⬜ 15             blog: null,
-⬜ 16             tweet: null,
-⬜ 17             linkedin: null        
+🟩 2          current: '0.6.4',
+🟩 3          '0.6.4': {major: 0,minor: 6,patch: 4,blog: null,tweet: null,linkedin: null},
+🟩 4          '0.6.3': {major: 0,minor: 6,patch: 3,blog: null,tweet: null,linkedin: null},
+🟩 5          '0.6.2': {major: 0,minor: 6,patch: 2,blog: null,tweet: null,linkedin: null},
+🟩 6          '0.4.4': {major: 0,minor: 4,patch: 4,blog: 'https://swimm.io/blog/release-notes-dive-into-0-4-4/',tweet: '1390180301993910278',linkedin: null},
+🟩 7      }
+⬜ 8      
+⬜ 9      export {SwimmVersions}
 ```
 
 <br/>
@@ -204,7 +165,7 @@ The history itself is self-explanatory. The null fields are strings when set (UR
 const SiteSettings = {
 ```
 
-<span id="f-Z20hdNe">Swimm</span>[^](#Z20hdNe) - "src/components/SwimmUtils.js" L10
+<span id="f-Z1bdEdk">Swimm</span>[^](#Z1bdEdk) - "src/components/SwimmUtils.js" L11
 ```javascript
 function Swimm(props) {
 ```
@@ -216,4 +177,4 @@ function Swimm(props) {
 
 <br/>
 
-This file was generated by Swimm. [Click here to view it in the app](https://app.swimm.io/#/repos/Z2l0aHViJTNBJTNBZG9jcy5zd2ltbS5pbyUzQSUzQXN3aW1taW8=/docs/Zo6UG).
+This file was generated by Swimm. [Click here to view it in the app](https://app.swimm.io/repos/Z2l0aHViJTNBJTNBZG9jcy5zd2ltbS5pbyUzQSUzQXN3aW1taW8=/docs/Zo6UG).

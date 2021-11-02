@@ -1,18 +1,23 @@
-.PHONY: all help production rebuild-remote clean distclean dev pretend believe
+.PHONY: all help production rebuild-remote clean distclean dev debug world
 
 -include .buildrc
 
 help:
-	@echo "Target                     | Explanation"
-	@echo "production                 | Run a complete production build from scratch."
-	@echo "rebuild-remote             | Rebuild the production site with no changes."
-	@echo "release-notes              | Generate or refresh release notes from clickup"
-	@echo "dev                        | alias for npx docusaurus run. Interactive dev environment"
-	@echo "pretend                    | alias for npm docusaurus serve - serve a production build locally."
-	@echo "world                      | distclean, production and then dev"
-	@echo "clean                      | remove module cache and build directories"
-	@echo "distclean                  | runs clean, and also removes .docusaurus and lockfiles"
-	@echo "help                       | this help screen (and default if no other argument is given)"
+	@echo "Target              | Explanation"
+	@echo "------------------- + ------------------------------------------------------------------"
+	@echo "production          | Run a complete production build from scratch."
+	@echo "rebuild-remote      | Rebuild the production site with no changes."
+	@echo "release-notes       | Generate or refresh release notes from clickup"
+	@echo "dev                 | alias for npx docusaurus run. Interactive dev environment"
+	@echo "debug               | open a browser window to the docusaurus state explorer" 
+	@echo "                    | (requires devinstance running)"
+	@echo "pretend             | alias for npm docusaurus serve - serve a production build locally."
+	@echo "world               | distclean, production and then dev"
+	@echo "clean               | remove module cache and build directories"
+	@echo "distclean           | runs clean, and also removes .docusaurus and lockfiles"
+	@echo "maintainer-clean    | removes *all* untracked files, even if ignored by .gitignore."
+	@echo "                    | Use carefully!"
+	@echo "help                | this help screen (and default if no other argument is given)"
 
 all: help
 
@@ -57,8 +62,11 @@ maintainer-clean: maintainer-clean-check
 dev:
 	@echo "Creating Development Environment"
 	npx docusaurus start
+
+debug:
+	@echo "Opening Docusaurus Global Explorer"
 	open http://localhost:3000/__docusaurus/debug
-	
+
 pretend:
 	@echo "Launching Production Build Locally"
 	npm docusaurus serve

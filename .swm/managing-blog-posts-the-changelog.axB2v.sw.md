@@ -4,7 +4,7 @@ name: Managing Blog Posts & The Changelog
 file_version: 1.0.2
 app_version: 0.6.4-0
 file_blobs:
-  changelog/2021-10-29-Welcome.mdx: d4fd45f7e482bcd526ad8841830f53e03e64f5dc
+  changelog/2021-10-29-Welcome.mdx: 9ebea1a66716daaa80b3f0f5001365eadeb61744
 ---
 
 We have two kinds of content that gets posted to the changelog portion of the site:
@@ -31,11 +31,11 @@ Here, `slug`[<sup id="zCbYL">↓</sup>](#f-zCbYL) ultimately sets the URL slug (
 🟩 5      tags: [announcements, release-notes]
 🟩 6      ---
 🟩 7      import FeedSelector from '../src/components/FeedSelector';
-🟩 8      import Swimm, {SwimmLink, SwimmReleaseBlogPost} from '../src/components/SwimmUtils.js';
-⬜ 9      
-⬜ 10     We're very thrilled to launch our new developer documentation and community 
-⬜ 11     portal using the immensely flexible and feature rich [Docusaurus](https://docusaurus.io) 
-⬜ 12     to manage all of the content.
+🟩 8      import Swimm, {SwimmLink} from '../src/components/SwimmUtils.js';
+⬜ 9      import {TwitterTweetEmbed} from 'react-twitter-embed';
+⬜ 10     
+⬜ 11     We're very thrilled to launch our new developer documentation and community 
+⬜ 12     portal using the immensely flexible and feature rich [Docusaurus](https://docusaurus.io) 
 ```
 
 <br/>
@@ -49,12 +49,13 @@ Right under the anchor markup, we can import components that we need (in this ca
 🟩 5      tags: [announcements, release-notes]
 🟩 6      ---
 🟩 7      import FeedSelector from '../src/components/FeedSelector';
-🟩 8      import Swimm, {SwimmLink, SwimmReleaseBlogPost} from '../src/components/SwimmUtils.js';
-🟩 9      
-🟩 10     We're very thrilled to launch our new developer documentation and community 
-🟩 11     portal using the immensely flexible and feature rich [Docusaurus](https://docusaurus.io) 
-⬜ 12     to manage all of the content.
-⬜ 13     
+🟩 8      import Swimm, {SwimmLink} from '../src/components/SwimmUtils.js';
+🟩 9      import {TwitterTweetEmbed} from 'react-twitter-embed';
+🟩 10     
+🟩 11     We're very thrilled to launch our new developer documentation and community 
+🟩 12     portal using the immensely flexible and feature rich [Docusaurus](https://docusaurus.io) 
+⬜ 13     to manage all of the content.
+⬜ 14     
 ```
 
 <br/>
@@ -63,19 +64,19 @@ Then, we ultimately mix our components with Github flavored Markdown (NB, it has
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 changelog/2021-10-29-Welcome.mdx
 ```mdx
-⬜ 14     Along, with detailed documentation, videos and tutorials, you'll find detailed 
-⬜ 15     release notes for every Swimm Release, as well as news about our other tools, such
-⬜ 16     as our [IDE Plugins](/docs/publishing-content/ide-plugins) or [Github App](/docs/continuous-integration/github-app).
-🟩 17     
-🟩 18     :::tip You can pull RSS or Atom feeds to stay up-to-date:
-🟩 19     
-🟩 20     <FeedSelector />
-🟩 21     
-🟩 22     :::
-🟩 23     
-⬜ 24     Swimm generally releases at the beginning of every week, so you can expect updates
-⬜ 25     to be pretty low volume. There will also be a note if new tutorials are added, or
-⬜ 26     any other features that impact the functionality of this site. Major new features
+⬜ 15     Along, with detailed documentation, videos and tutorials, you'll find detailed 
+⬜ 16     release notes for every Swimm Release, as well as news about our other tools, such
+⬜ 17     as our [IDE Plugins](/docs/publishing-content/ide-plugins) or [Github App](/docs/continuous-integration/github-app).
+🟩 18     
+🟩 19     :::tip You can pull RSS or Atom feeds to stay up-to-date:
+🟩 20     
+🟩 21     <FeedSelector />
+🟩 22     
+🟩 23     :::
+🟩 24     
+⬜ 25     Swimm generally releases at the beginning of every week, so you can expect updates
+⬜ 26     to be pretty low volume. There will also be a note if new tutorials are added, or
+⬜ 27     any other features that impact the functionality of this site. Major new features
 ```
 
 <br/>
