@@ -5,9 +5,9 @@ file_version: 1.0.2
 app_version: 0.6.4-0
 file_blobs:
   docusaurus.config.js: 30cd143aea2172d645633057483a87891c7b2970
-  src/components/SwimmUtils.js: bdca3bf6eea4ed603dc2c45b51b178c65a607b63
-  swimm.config.js: e3a0736ae5e3774ea4afe7767deda06ae23bae01
-  swimm.versions.config.js: d1111e2af9b3dd92c3564c9b10bf9882593b1dae
+  src/components/SwimmUtils.js: b60aa03ac08c63f8655e8facafb1373e9a2590df
+  swimm.config.js: fdd57b163239388d69fa6c10c1eef9235336d8f0
+  swimm.versions.config.js: c98b7f964538427eb19d72f95951b323cb2f57ab
 ---
 
 We have three main configuration files that you need to know about:
@@ -90,7 +90,7 @@ The objects in `SiteSettings`[<sup id="28FeRl">↓</sup>](#f-28FeRl) contain wha
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 swimm.config.js
 ```javascript
-⬜ 1      import GetCurrentSwimmRelease from './swimm.versions.config.js';
+⬜ 1      import GetCurrentSwimmRelease from './src/components/SwimmVersions.js';
 ⬜ 2      
 🟩 3      const SiteSettings = {
 🟩 4          version: GetCurrentSwimmRelease(),
@@ -124,44 +124,13 @@ The objects in `SiteSettings`[<sup id="28FeRl">↓</sup>](#f-28FeRl) contain wha
 
 <br/>
 
-The Swimm Releases Config
--------------------------
+## The Swimm Releases Config
 
-This is just a config that contains (or soon will) all of the Swimm releases with metadata about each one. This will soon be backfilled from all previous releases.
-
-The config exports a couple of functions to make it convenient to get to the data
+This is automatically generated whenever a new release is added.
 
 <br/>
 
-Once you have included the config like any other component, you can get the current release or all releases, or a specific release by name.
-<!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
-### 📄 swimm.versions.config.js
-```javascript
-⬜ 6          '0.4.4': {major: 0,minor: 4,patch: 4,blog: 'https://swimm.io/blog/release-notes-dive-into-0-4-4/',tweet: '1390180301993910278',linkedin: null},
-⬜ 7      }
-⬜ 8      
-🟩 9      function GetCurrentSwimmRelease() {
-🟩 10         var currentVersion = SwimmVersions.current;
-🟩 11         return SwimmVersions[currentVersion];
-🟩 12     }
-🟩 13     
-🟩 14     function GetAllSwimmReleases() {
-🟩 15         return SwimmVersions;
-🟩 16     }
-🟩 17     
-🟩 18     function GetSpecificSwimmRelease(props) {
-🟩 19         if (typeof(SwimmVersions[props]) != "undefined")
-🟩 20             return SwimmVersions[props];
-🟩 21         return null;
-🟩 22     }
-⬜ 23     
-⬜ 24     export {
-⬜ 25         GetCurrentSwimmRelease as default,
-```
-
-<br/>
-
-The history itself is self-explanatory. The null fields are strings when set (URLs to the main blog post, Twitter post and Linked in post (if any) that we ship with some releases.
+The `current` index will always point to the version that was current during the last build. The rest of the field are self explanatory.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 swimm.versions.config.js
 ```javascript
@@ -173,8 +142,7 @@ The history itself is self-explanatory. The null fields are strings when set (UR
 🟩 6          '0.4.4': {major: 0,minor: 4,patch: 4,blog: 'https://swimm.io/blog/release-notes-dive-into-0-4-4/',tweet: '1390180301993910278',linkedin: null},
 🟩 7      }
 ⬜ 8      
-⬜ 9      function GetCurrentSwimmRelease() {
-⬜ 10         var currentVersion = SwimmVersions.current;
+⬜ 9      export {SwimmVersions}
 ```
 
 <br/>
