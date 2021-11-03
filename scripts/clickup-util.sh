@@ -1,8 +1,9 @@
 #!/bin/bash
+source .buildrc 
 
 function get() {
     local url=$1
-    curl -sS --dump-header /dev/null --include --header "Authorization: "${TOKEN}"" $url
+    curl -sS --dump-header /dev/null --header "Authorization: "${TOKEN}"" $url
 }
 
 function get_teams() {

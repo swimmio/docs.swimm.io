@@ -26,3 +26,9 @@ yarn-error.log*
 
 # Local Makefile Envrionmental Variables
 .buildrc
+
+# Local version caches used for release notes generation
+releases.*.json
+
+
+
