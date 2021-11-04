@@ -71,4 +71,13 @@ pretend:
 	@echo "Launching Production Build Locally"
 	npm docusaurus serve
 
+release-notes:
+ifndef SWIMM_RELEASE_NAME
+	@echo "You neeed to specify a release name."
+	@echo "Try: make release-notes SWIMM_RELEASE_NAME=0.1.2 or 0.1.2-3 or even 0.1.2.3 (pick one of those)"
+	@exit 1
+endif
+	@echo "Did you hear about what happened in Roswell?"
+	scripts/swimm-releases.js --release=${SWIMM_RELEASE_NAME}
+
 world: distclean production dev
