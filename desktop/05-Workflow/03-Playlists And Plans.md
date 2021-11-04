@@ -1,32 +1,30 @@
 # Swimm Playlists
 
-Playlists are lists of docs, images, videos and even external links that allow developers to pick up knowledge in a prescribed order. Playlists in Swimm are analgous to playlists in music and streaming applications; things are learned in a certain order while the student can manage interruptions by easily seeing where they left off. 
+Swimm Playlists are a collection of Swimm documents, images, videos
+markdown files and links that are used to have someone progress
+through the collection in a defined order. 
 
-Playlists are particularly important when creating a structured onboarding plan and/or when trying to explain a broad subject that's hard to explain in one document. It's also a way to structure different "learning paths" where bits of content can be used differently in different contexts.
+An analogy for playlists would be, well, playlists. Think of them 
+similarly to how people share lists of songs to play in order. 
 
-## Standard Playlists
+To the left is your list of things to do in order, to the right you'll
+see what it represents (a doc, a text file, a link or an embedded video).
 
-Standard playlists are available from the repository view of a workspace. Standard playlists allow you to step through documentation specific to the _current_ repository, as well as external links, images, videos or markdown files contained within the current repository. An example standard playlist might look like this:
+## Creating & Editing Playlists
 
- 1. Markdown Link: How to set up your local build dependencies
- 2. Markdown Link: README file about debugging
- 3. Swimm Doc: Introduction to instantiating the library
- 4. Swimm Doc: How to add configuration values
- 5. Swimm Doc: How to add a module
- 6. YouTube Video: Library creator describes rationale of how things are structured
+To create a playlist, click "New Playlist" from the repository view.
 
-And you could have more, what's important to take away is all of these items are focused on and relevant to things in the _current_ repository. But, sometimes playlists need to span multiple repositories, or even include multiple playlists. That's where Workspace Playlists come into play (no pun intended).
+You click the plus on the left to add steps and select the things to 
+include. Toggle between "Docs" and "Links" to select the type you want.
 
-## Workspace Playlists (Formerly known as Plans)
+<img alt="Swimm Playlist" src={useBaseUrl('/img/playlist-setup.png')} />
 
-Workspace playlists have all of the power of standard playlists, but can also span multiple repositories, or group multiple playlists from the same or different repositories together. If you wish to make a "playlist of playlists", use a workspace playlist. An example of how you might structure one could be:
+## Working through playlists
 
- 1. Image: Code flow diagram
- 2. Playlist: How to build service-1 locally (from the service-1 repository)
- 3. Playlist: How to debug service-1 locally (from the service-1 repository)
- 4. Video Link: How we use Skaffold to deploy 
- 5. Playlist: How to build service-2 locally (from the service-2 repository)
+Open Swimm to the playlist that you want, and just go down the list. At the 
+bottom of every step you'll see an option to mark it done. Don't worry if
+you need to stop before finishing, Swimm will remember where you left off. 
 
-Whether the docs come from a single, or multiple repositories within the workspace doesn't really matter. Additionally, Swimm will indicate to the reader if they are missing local repositories required to complete the list. 
+Workspace admins can see who has marked documents or playlists as complete.
 
-Playlists (both Standard & Workspace) are still under active development. If you find a use case that we don't support very well, please reach out to us and let us know!
+<img alt="Swimm Playlist" src={useBaseUrl('/img/playlist2.png')} />
