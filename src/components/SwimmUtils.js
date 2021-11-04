@@ -5,7 +5,7 @@ import GetCurrentSwimmRelease, {GetSpecificSwimmRelease} from './SwimmVersions.j
 import Link from '@docusaurus/Link';
 import Emojione from 'react-emoji-render';
 import {TwitterTweetEmbed} from 'react-twitter-embed';
-
+import YouTubePlayer from './YouTubePlayer.js';
 import styles from './SwimmUtils.module.css';
 
 function Swimm(props) {
@@ -70,7 +70,7 @@ SwimmVersion.defaultProps = {
  * @returns Link component 
  */
 function SwimmLink(props) {
-    var linkClass = props.big ? 'button button--secondary button--lg' : '';
+    var linkClass = props.big ? 'button button--primary button--lg' : '';
     switch (props.target) {
         case 'slack':
             return (
@@ -164,14 +164,15 @@ SwimmMoji.defaultProps = {
 function SwimmReleaseBlogPost(props) {
     var releaseInfo = GetSpecificSwimmRelease(props.version);
     var blogPost = releaseInfo.blog;
-
+    var linkText = `Get The Full ${releaseInfo.name} Scoop On Our Main Blog!`
     if (blogPost === null)
         return null;
     else
         return (
             <>
-            <p>We have an even more detailed post about this release on our main blog.</p>
-            <p><SwimmLink target={blogPost} text="Get The Full Scoop! &raquo;" big /></p>
+            <div className={styles.releaseBlogLink}>
+                <SwimmLink target={blogPost} text={linkText} big />
+            </div>
             </>
         );
 }
@@ -216,6 +217,27 @@ SwimmReleaseTweet.defaultProps = {
     version: GetCurrentSwimmRelease(),
 }
 
+function SwimmReleaseVideo(props) {
+    var releaseInfo = GetSpecificSwimmRelease(props.version);
+    var video = releaseInfo.youtube;
+    if (video != null) {
+        return(
+            <>
+            <YouTubePlayer id={video} />
+            </>
+        );
+    }
+    return null;
+}
+
+SwimmReleaseVideo.propTypes = {
+    version: PropTypes.string,
+}
+
+SwimmReleaseVideo.defaultProps = {
+    version: GetCurrentSwimmRelease(),
+}
+
 export {
     Swimm as default,
     SwimmVersion,
@@ -223,4 +245,5 @@ export {
     SwimmMoji,
     SwimmReleaseBlogPost,
     SwimmReleaseTweet,
+    SwimmReleaseVideo,
 }

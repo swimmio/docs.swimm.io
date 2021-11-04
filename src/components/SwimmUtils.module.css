@@ -1,1 +1,32 @@
 /* For utility classes just to make the design work */
+
+html[data-theme='light'] .releaseBlogLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #444;
+    background-image: url('/img/blogLinkBg.svg');
+    background-position: center bottom;
+    background-repeat: repeat;
+    border: 1px solid #bfbfbf;;
+    border-radius: .25em;
+}
+
+html[data-theme='dark'] .releaseBlogLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #444;
+    background-image: url('/img/blogLinkBg.svg');
+    background-position: center bottom;
+    background-repeat: repeat;
+    border: 1px solid rgb(36, 35, 35);
+    border-radius: .25rem;    
+}
+
+.releaseBlogLink a {
+    margin: 1rem 0 1rem 0;
+    padding: 1rem;
+}
