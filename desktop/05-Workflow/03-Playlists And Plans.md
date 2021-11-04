@@ -17,7 +17,7 @@ Standard playlists are available from the repository view of a workspace. Standa
 
 And you could have more, what's important to take away is all of these items are focused on and relevant to things in the _current_ repository. But, sometimes playlists need to span multiple repositories, or even include multiple playlists. That's where Workspace Playlists come into play (no pun intended).
 
-## Workspace Playlists
+## Workspace Playlists (Formerly known as Plans)
 
 Workspace playlists have all of the power of standard playlists, but can also span multiple repositories, or group multiple playlists from the same or different repositories together. If you wish to make a "playlist of playlists", use a workspace playlist. An example of how you might structure one could be:
 
