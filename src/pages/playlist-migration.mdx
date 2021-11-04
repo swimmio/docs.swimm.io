@@ -1,0 +1,35 @@
+# Migrating From Workspace Playlists (aka Plans)
+
+As we get even closer to our goal of implementing Swimm in a manner that is, as much as possible,
+aligned with the concept of DAC ([Docs As Code](https://www.writethedocs.org/guide/docs-as-code/)), we're
+excited to announce two really important things about Swimm Playlists:
+
+ 1. Playlists are now saved in your `.swm/` folder in our new `.sw.md` format. We no longer
+    need to assemble them from metadata on our side, it's all stored in your documentation!
+ 
+ 2. A playlist is now a global thing by default. In previous versions, you needed a special
+    kind of playlist to link to Swimm content from different repositories in a workspace; we 
+    originally called that type of list a Plan and then later a Workspace Playlist. There's
+    no more distinction, one type of playlist can link throughout the workspace.
+
+If you go to any repository in your workspace and click on `+` to make a new playlist, you'll see
+that you get the view that you're used to from the workspace / plan type:
+
+![Swimm Playlist](/img/playlist-setup.png "Swimm Playlist")
+
+Every playlist is now the same, as far as capabilities go.
+
+## What do I need to do?
+
+We're removing the Workspace Playlist object type for compatibility. 
+
+Because Playlists are now tightly interlinked with the documents that they contain, there's no
+practical automatic way of migrating from a Workspace Playlist to a standard one. You'll need
+to go to any repo, create a new Playlist to replace each existing Workspace Playlist, and just
+enter the steps into the new playlist. 
+
+Then, delete the old ones.
+
+## What if I run into trouble?
+
+Please reach out to support, and we'll do our best to help!
