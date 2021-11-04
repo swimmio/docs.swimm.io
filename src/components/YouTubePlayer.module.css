@@ -2,7 +2,7 @@ html[data-theme='light'] .videoEmbed {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 8px solid #bfbfbf;
+    border: 4px solid #bfbfbf;
     border-radius: .25rem;
     background-color: #234986;
     background-image: url('/img/playerbg.svg');
@@ -18,7 +18,7 @@ html[data-theme='dark'] .videoEmbed {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 8px solid rgb(36, 35, 35);
+    border: 4px solid rgb(36, 35, 35);
     border-radius: .25rem;
     background-color: rgb(22, 20, 20);
     background-image: url('/img/playerbg.svg');
