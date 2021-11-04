@@ -164,7 +164,7 @@ SwimmMoji.defaultProps = {
 function SwimmReleaseBlogPost(props) {
     var releaseInfo = GetSpecificSwimmRelease(props.version);
     var blogPost = releaseInfo.blog;
-    var linkText = `Get The Full ${releaseInfo.name} Scoop On Our Main Blog!`
+    var linkText = `Get The Full ${releaseInfo.name} Scoop On Our Main Blog >`
     if (blogPost === null)
         return null;
     else
