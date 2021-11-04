@@ -238,6 +238,27 @@ SwimmReleaseVideo.defaultProps = {
     version: GetCurrentSwimmRelease(),
 }
 
+function SwimmReleaseLinkedIn(props) {
+    var releaseInfo = GetSpecificSwimmRelease(props.version);
+    var linkedin = releaseInfo.linkedin;
+    if (linkedin != null) {
+        return(
+            <>
+            <iframe src={linkedin} height="600" width="500" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+            </>
+        );
+    }
+    return null;  
+}
+
+SwimmReleaseLinkedIn.propTypes = {
+    version: PropTypes.string,
+}
+
+SwimmReleaseLinkedIn.defaultProps = {
+    version: GetCurrentSwimmRelease(),
+}
+
 export {
     Swimm as default,
     SwimmVersion,
@@ -246,4 +267,5 @@ export {
     SwimmReleaseBlogPost,
     SwimmReleaseTweet,
     SwimmReleaseVideo,
+    SwimmReleaseLinkedIn,
 }
