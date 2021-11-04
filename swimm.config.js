@@ -8,7 +8,8 @@ const SiteSettings = {
     },
     emojiShortcuts: {
         default: ':ocean:',
-        release: ':exclamation:  :ocean::ship::swimmer::rocket::new::boom::tada::sparkles:', 
+        release: ':exclamation:  :ocean::ship::swimmer::rocket::new::boom::tada::sparkles:',
+        video: ':movie_camera::clapper::cinema:',
     },
     heap: {
          enabled: true,
