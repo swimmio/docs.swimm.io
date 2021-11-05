@@ -202,6 +202,7 @@ SwimmReleaseBlogPost.defaultProps = {
     else
         return (
             <>
+            <p>We have a thread about this release going on Twitter, if you'd like to join in:</p>
             <TwitterTweetEmbed tweetId={tweet} />
             </>
         );
@@ -245,7 +246,14 @@ function SwimmReleaseLinkedIn(props) {
     if (linkedin != null) {
         return(
             <>
-            <iframe src={linkedin} height="600" width="500" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+            <iframe 
+                src={linkedin} 
+                height="600" 
+                width="500" 
+                frameborder="0" 
+                allowfullscreen="" 
+                title="Embedded post">
+            </iframe>
             </>
         );
     }
