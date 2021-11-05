@@ -5,8 +5,9 @@ html[data-theme='light'] .releaseBlogLink {
     align-items: center;
     justify-content: center;
     width: 100%;
-    background-color: #ccc;
+    background-color: #B8B8B8;
     margin-bottom: 1rem;
+    border-radius: .25rem;
 }
 
 html[data-theme='dark'] .releaseBlogLink {
@@ -15,7 +16,8 @@ html[data-theme='dark'] .releaseBlogLink {
     justify-content: center;
     width: 100%;
     background-color: #333;
-    margin-bottom: 1rem;  
+    margin-bottom: 1rem; 
+    border-radius: .25rem; 
 }
 
 .releaseBlogLink a {
