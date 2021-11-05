@@ -223,6 +223,7 @@ function SwimmReleaseVideo(props) {
     if (video != null) {
         return(
             <>
+            <p>Find the release notes are below this short feature spotlight:</p>
             <YouTubePlayer id={video} />
             </>
         );

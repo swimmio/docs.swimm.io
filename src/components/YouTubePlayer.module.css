@@ -5,7 +5,7 @@ html[data-theme='light'] .videoEmbed {
     border: 4px solid #bfbfbf;
     border-radius: .25rem;
     background-color: #234986;
-    background-image: url('/img/playerbg.svg');
+    background-image: url('/img/blogLinkBg.svg');
     background-position: center bottom;
     background-repeat: repeat;
     position: relative; 
@@ -21,13 +21,13 @@ html[data-theme='dark'] .videoEmbed {
     border: 4px solid rgb(36, 35, 35);
     border-radius: .25rem;
     background-color: rgb(22, 20, 20);
-    background-image: url('/img/playerbg.svg');
+    background-image: url('/img/blogLinkBg.svg');
     background-position: center bottom;
     background-repeat: repeat;
     position: relative; 
     padding-bottom: 56.25%; /* 16:9 */  
     padding-top: 25px;
-    margin: .5rem 0 .1rem 0;
+    margin: .5rem 0 .5rem 0;
 }
 
 .videoEmbed iframe {
