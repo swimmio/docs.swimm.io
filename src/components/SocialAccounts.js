@@ -47,7 +47,7 @@ const SocialList = [
 },
 {
     label: "LinkedIn",
-    social_url: "https://linkedin.com/in/swimmio",
+    social_url: "https://www.linkedin.com/company/swimm-io/",
     metadata: (
         <>
         Keep up with news about the Swimm team, events, and in-depth

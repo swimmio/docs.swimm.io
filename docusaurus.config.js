@@ -204,7 +204,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'LinkedIn',
-                href: 'https://linkedin.com/in/swimmio',
+                href: 'https://www.linkedin.com/company/swimm-io/',
               },
               {
                 label: 'Facebook',
