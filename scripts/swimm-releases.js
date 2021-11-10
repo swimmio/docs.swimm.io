@@ -10,28 +10,53 @@
 
 "use strict"
 /* What can a release look like? 0.6.3 || 0.6.3.1 || 0.6.3-1 */
-const ValidVersionPattern = /(^[0-9]+['.']+[0-9]+['.']+[0-9])+([\.]?[0-9]?)+([\-?]+[0-9?])?/gm;
+const ValidVersionPattern = /(^[0-9]+['.']+[0-9]+['.']+[0-9]+([a-zA-Z]?))+([\.]?[0-9]?)+([\-?]+[0-9?])?/gm;
 
 /* A Global release config object that many things contribute to building. */
 let NewReleaseConfig = {};
 
-/* We get 100 API calls a day, so backfill has to be planned */
+/* The current (live) release config on the site. */
+let CurrentReleaseConfig = null;
+
+/* We get 100 API calls a day, so backfill has to be planned. We also keep track of other things for safety */
 let TotalNeededCalls = 0;
 let AllowedCalls = 100;
 let TotalReleases = 0;
 
 
 let fs = require('fs');
+let path = require('path');
 let https = require('https');
 let shajs = require('sha.js');
 let hash = require('object-hash');
 
+/**
+ * Get the actual *tasks* associated with each list that we associated with the release.
+ * This usually ends up meaning 4 - 5 API calls per task.
+ * (Currently, this returns a mock array)
+ * @param {String} version 
+ */
+function GetReleaseTasks(version) {
+    if (NewReleaseConfig[version]['notes'] !== null) {
+        console.log(`${version} ** GetReleaseTasks(): I already have the copleted tasks for this release.`)
+        return;
+    }
+    let mock = [
+        '  - Fed feral Smurfs to Gargamel.\n',
+        '  - Cleaned up all the Smurf droppings so nobody mistakes them for blueberries.\n',
+        '  - Pruned back Smurfberry bushes so we attract fewer smurfs.\n',
+        '  - Realized that Azrael is kind of a dark name for a cartoon cat, even an evil one.\n'
+    ];
+    NewReleaseConfig[version]['notes'] = mock;
+    NewReleaseConfig[version]['template'] = PrepReleaseNotes(NewReleaseConfig[version]);
+}
 /**
  * See if a list should be fetched for completed tasks for release notes.
  * We don't want to query lists that we know (usually) don't yield anything for notes.
  * It's assumed that the person editing the notes will be aware if something worth
  * mentioning wasn't picked up (this is not a fully automatic process)
  * This is a work-in-progress.
+ * 
  * @param {String} folder 
  * @returns 
  */
@@ -50,7 +75,6 @@ function CheckFolderBlocklist(folder) {
 
 /**
  * Here's where we actually query to get a list of changes from each list associated with this release.
- * 
  * This is what we use to pre-populate the release notes, which we hand-edit before publishing.
  * 
  * @param {String} version - Swimm release, e.g, 0.7.8-9 or 9.8.7.6 
@@ -78,7 +102,19 @@ function FilterReleaseTasks(version) {
 
     NewReleaseConfig[version]['changes'] = filteredCategories;
     console.log(`\n${version} imported :: ${calls_needed} API calls still needed to fetch tasks.\n\n`);
+    NewReleaseConfig[version]['calls'] = calls_needed;
     TotalNeededCalls += calls_needed;
+}
+
+/**
+ * See if a release exist in the current (running) site version config.
+ * 
+ * @param {String} version - normalized version string to check
+ * @returns {Boolean}
+ */
+function ReleaseExists(version) {
+    LoadCurrentReleaseConfig();
+    return(CurrentReleaseConfig[version] instanceof Object ? CurrentReleaseConfig[version]['date'] : false);
 }
 
 /**
@@ -88,9 +124,18 @@ function FilterReleaseTasks(version) {
  * @param {Object} ReleaseData - chunk of release data where this version can be found.
  */
 function ImportRelease(versionContext, releaseData) {
+    let versionName = versionContext['name'];
+    
+    let lastImported = ReleaseExists(versionName);
+    /* need to have some option of forcing this */
+
+    if (lastImported ) {
+        console.log(`${versionName} ** Skipping (previously imported ${new Date(lastImported)})`);
+        return;
+    }
+
     /* Figure out the version, and fill in what we know about it from context */
     let keys = ['major', 'minor', 'patch', 'patchlevel'];
-    let versionName = versionContext['name'];
     let values = versionName.replace('-', '.').split('.');
     const releaseVersion = keys.reduce((obj, key, index) => ({ ...obj, [key]: values[index] ? values[index] : null }), {});
     NewReleaseConfig[versionName] = {
@@ -125,7 +170,8 @@ function ReleaseContextFactory(swimmVersionString) {
     let backfill = {
         name: swimmVersionString,
         date: null, 
-        security: false, 
+        security: false,
+        notes: null,
         blog: null, 
         tweet: null, 
         youtube:null, 
@@ -136,6 +182,7 @@ function ReleaseContextFactory(swimmVersionString) {
 
 /**
  * Backfill one specified release, or all releases.
+ * 
  * @param {String} version - Single version to import, default is all. 
  */
 function BackfillReleases(version = null) {
@@ -143,7 +190,12 @@ function BackfillReleases(version = null) {
     for (const [key, value] of Object.entries(exportedReleases.folders)) {
         let search = value.name.match(ValidVersionPattern);
         if (search !== null) {
-            let release = search.toString();
+            /* 
+               The .replace() here is for legacy compatibility.
+               Some very early releases had a 'u' after the last identifier, indicating 'micro'
+               Just transoform any extraneous strings after the last number to .1 for a new release.
+            */
+            let release = search.toString().replace(/[a-z]$/g, "\.1");
             /* Here, we have *a* valid version folder. */
             if (version !== null) {
                 /* Are we looking for just this one? */
@@ -158,10 +210,50 @@ function BackfillReleases(version = null) {
     }
 }
 
+function WriteReleaseDraft(version) {
+    LoadIntermediateReleaseConfig();
+    let target = NewReleaseConfig[version];
+    let path = './changelog/' + target.name;
+    if (fs.existsSync(path)) {
+        console.log('Not recreating notes for already-published release ', target.name);
+        return;
+    }
+    path = './scripts/output/' + target.name;
+    fs.mkdirSync(path, { recursive: true });
+    fs.writeFileSync(`${path}/index.mdx`, target.template);
+    return;
+}
+
+function WriteReleaseDrafts() {
+    LoadIntermediateReleaseConfig();
+    for(const [key, value] of Object.entries(NewReleaseConfig)) {
+        WriteReleaseDraft(value.name);
+    }
+}
+
+/**
+ * Given a version (or versions) imported with BackfillReleases(), we now need to get the actual
+ * tasks, which is going to take some coordination depending on how many. 
+ * 
+ * @param {String} version - Single version to import, defaults to all
+ * TODO: Make this deal with API request limits and spacing
+ */
+function BackfillReleaseNotes(version = null) {
+    if (version !== null) {
+        GetReleaseTasks(NewReleaseConfig['version']);
+        return;
+    }   
+    for (const [key,  value] of Object.entries(NewReleaseConfig)) {
+        GetReleaseTasks(value['name']);
+    }
+    return;
+}
+
 /**
  * Send a GET request to the ClickUp API
+ * 
  * @param {String} queryUrl 
- * @returns 
+ * @returns {Promise}
  */
 async function SendAPIRequest(queryUrl) {
     return new Promise(async (resolve, reject) => {
@@ -176,6 +268,7 @@ async function SendAPIRequest(queryUrl) {
         };
         let response = [];
         const request = https.request(requestOptions, (res) => {
+            res.on('headers', (headers) => console.log('Returned Headers:', headers));
             res.on('data', chunk => response.push(chunk));
             res.on('end', () => { 
                 const data = Buffer.concat(response).toString(); 
@@ -213,15 +306,43 @@ function WriteReleaseCache(path, value) {
  * so that a human can go clean up & edit them for publishing.
  * 
  * This is called by ImportReleases if no cache exists, as well as from the command line.
- * @return {Promise}
+ * 
+ * @param {Function} callback - Callback to call once done
  */
-async function RefreshReleaseCache() {
-    return new Promise(async (resolve, reject) => {
-        let queryUrl = `/api/v2/space/${process.env.SwimmReleases_ReleaseSpaceId}/folder?archived=true`;
-        SendAPIRequest(queryUrl).then((value) => {
-            WriteReleaseCache('./releases.exports.json', value);
-        });
+function RefreshReleaseCache(callback) {
+    var create = false;
+    try {
+        var statObj = fs.statSync('./releases.exports.json');
+    } 
+    catch (err) {
+        /* It doesn't exist. Proceed so it gets created. */
+        console.log('Release cahce does not yet exist.');
+        create = true;
+    }
+
+    console.log('We are out!');
+    return;
+    /*
+    if (keep == true) {
+        const now = Date.now();
+        const age = Math.floor((now - ctime) / 1000);
+        if (age >= 604800) {
+            console.log('Release cache is over a week old. Stand by - refreshing it ...');
+            keep = false;
+        }
+    }
+
+    if (keep == true)
+        return;
+    
+    let queryUrl = `/api/v2/space/${process.env.SwimmReleases_ReleaseSpaceId}/folder?archived=true`;
+    SendAPIRequest(queryUrl).then((value) => {
+        WriteReleaseCache('./releases.exports.json', value);
+        if (callback instanceof Function) {
+            callback(value);
+        }
     });
+    */
 }
 
 /**
@@ -231,20 +352,26 @@ async function RefreshReleaseCache() {
  */
 function FinalizeReleaseConfig() {
     /* Remove the bits we don't want to keep */
-    for (const [key, value] of Object.entries(NewReleaseConfig))
+    for (const [key, value] of Object.entries(NewReleaseConfig)) {
         delete NewReleaseConfig[key]['changes'];
-
+        delete NewReleaseConfig[key]['notes'];
+        delete NewReleaseConfig[key]['calls'];
+        /* TODO: Need some method of back-dating automatically here */
+        if (NewReleaseConfig[key]['date'] == null) {
+            NewReleaseConfig[key]['date'] = Date.now();
+        }
+    }
     /* Resolve the latest version we know of */
     let versionNames = Object.keys(NewReleaseConfig);
     NewReleaseConfig['current'] = versionNames.pop();
-    console.log(`\nFinalizeReleaseConfig() :: The latest version I know of is ${NewReleaseConfig['current']}, if that's not right, go fix it.`);
+    console.log(`\nFinalizeReleaseConfig() :: The latest version I know of is ${NewReleaseConfig['current']} with ${TotalReleases} total releases. If that's not right, go fix it.`);
 
     /* Hash the object prior to metadata so it can be verified by removing metadata */
     let configHash = hash(NewReleaseConfig);
 
     /* Add the metadata */
     NewReleaseConfig['metadata'] = {
-        generated: Math.floor(Date.now() / 1000),
+        generated: Date.now(),
         hash: configHash,
         generator: './scripts/swimm-releases.js'
     };
@@ -261,6 +388,7 @@ function FinalizeReleaseConfig() {
  * pre-populated items to review.
  */
 function WriteIntermediateReleaseConfig() {
+    /* TODO: fail */
     WriteReleaseCache('./releases.imports.json', JSON.stringify(NewReleaseConfig, null, 2));
 }
 
@@ -270,22 +398,84 @@ function WriteIntermediateReleaseConfig() {
  */
 function WriteReleaseConfig() {
     FinalizeReleaseConfig();
+    /* TODO: fail */
     WriteReleaseCache('./releases.config.json', JSON.stringify(NewReleaseConfig, null, 2));
 }
+
+/**
+ * 
+ * Read the current site release config into a global.
+ * Returns false on failure.
+ * @returns {Boolean}  
+ */
+
+function LoadCurrentReleaseConfig() {
+    if (CurrentReleaseConfig == null)
+        CurrentReleaseConfig = JSON.parse(fs.readFileSync('./releases.config.json'));
+}
+
+/**
+ * 
+ * Reload the last intermediate release config, so that we can time running all the calls
+ * to finish it.
+ * 
+ * "One hundred requests per day outta be enough for anybody. -- ClickUp"
+ */
+function LoadIntermediateReleaseConfig() {
+    if (Object.keys(NewReleaseConfig).length === 0)
+        NewReleaseConfig = JSON.parse(fs.readFileSync('./releases.imports.json'));
+}
+
 /**
  * Generate the index.mdx file to /changelog/version, pre-populated
  * with completed tasks associated with the release.
  * 
  * The intent is not to automatically publish, but to fill a template with items that would
  * likely be included, and have a human edit / inspect it, and then publish it.
- * @param {String} version 
+ * @param {Object} versionContext - The version 
  */
-function PrepReleaseNotes(version) {
+function PrepReleaseNotes(versionContext) {
+    const date = new Date(versionContext.date);
+    const template = 
+`---
+slug: release-${versionContext.name}
+title: Swimm ${versionContext.name} Released
+autthors: [swimm]
+tags: [release-notes]
+date: ${date.getYear()}-${date.getMonth()}-${date.getDate()}
+----
+import Swimm, {SwimmLink, SwimmMoji, SwimmReleaseBlogPost, SwimmReleaseTweet, SwimmReleaseVideo} from '../../src/components/SwimmUtils.js';
 
+# Swimm ${versionContext.name} Has Been Released!
+
+We're pleased to announce the availability of **Swimm ${versionContext.name}**<SwimmMoji text="release"/>
+
+<SwimmReleaseBlogPost version="${versionContext.name}" />
+
+<SwimmReleaseVideo version="${versionContext.name}" />
+
+## New Features:
+
+## Improvements:
+
+## Bug Fixes:
+
+If you have any questions or issues, please reach out on our <SwimmLink target="slack" />. You can
+also drop in during our next <SwimmLink target="officeHours" /> event. We hope to see you there!
+
+<SwimmReleaseTweet version="${versionContext.name}" />
+
+---- AUTO GENERATED NOTES ABOUT THIS RELEASE FOLLOW ----
+
+${versionContext.notes.join('\n')}
+`
+    return template;
 }
 
 
-/* Main execution / argument parsing / etc */
+/* Main execution */
+
+
 
 
 /*
@@ -298,10 +488,20 @@ if (shajs('sha512').update(process.env.SwimmReleases_Configured).digest('base64'
 }
 
 
-BackfillReleases();
-WriteIntermediateReleaseConfig();
-WriteReleaseConfig();
+RefreshReleaseCache(function(d) {
+    console.log('Release Cache Refreshed.');
+});
 
-console.log(`\n${TotalNeededCalls} API calls are needed to fetch notes for ${TotalReleases} total releases.`);
-console.log('If that seems off to you, check the filters.');
-console.log(`\nWith ${AllowedCalls} daily allowed calls, that's gonna take ${TotalNeededCalls / AllowedCalls} days.\n`);
+BackfillReleases();
+if (TotalReleases > 0) {
+    WriteIntermediateReleaseConfig();
+    WriteReleaseConfig();
+    console.log(`\n${TotalNeededCalls} API calls are needed to import tasks for this run. With ${AllowedCalls} daily allowed calls, that's gonna take ${TotalNeededCalls / AllowedCalls} days.\n`);
+    process.exit(0);
+}
+
+LoadIntermediateReleaseConfig();
+BackfillReleaseNotes();
+WriteIntermediateReleaseConfig();
+WriteReleaseDrafts();
+
