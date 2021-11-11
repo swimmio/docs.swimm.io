@@ -19,10 +19,39 @@ let NewReleaseConfig = {};
 let CurrentReleaseConfig = null;
 
 /* We get 100 API calls a day, so backfill has to be planned. We also keep track of other things for safety */
-let TotalNeededCalls = 0;
 let AllowedCalls = 100;
-let TotalReleases = 0;
+let RemainingCalls = 1;
+let CallsReset = 0;
+let LastRan = 0;
 
+/* A running counter to see if there's work left to do */
+let TotalReleases = 0;
+let TotalNeededCalls = 0;
+
+/**
+ * We keep three local files cached:
+ *  - releases.exports.json is a raw dump from our task tracker that includes all release folders
+ *    + IDs of boards and statuses associated with them. 
+ * 
+ *  - releases.imports.json is an intermediate release config that has all we need to figure out
+ *    what calls are needed to get the actual tasks per release, and where we store the results
+ *    of those calls as we make them (within rate limits). This is what's used to produce the 
+ *    release notes draft where all we have to do is include the completed things we want and
+ *    edit them a bit.
+ * 
+ *  - releases.state.json is used to save running state from one invocation to the next, primarily
+ *    so we know how many API calls we have left when we run. These can then be loaded back into 
+ *    globals. 
+ * 
+ *  - releases.config.json is ultimately the config file we'll use for the site to know about all
+ *    of the versions. It's the intermediate config, stripped of all the tasks and statuses and
+ *    things we don't need anymore.
+ */
+
+let ExportedReleaseConfig = './releases.exports.json';
+let IntermediateReleaseConfig = './releases.imports.json';
+let StateReleaseConfig = './releases.state.json';
+let ProductionReleaseConfig = './releases.config.json';
 
 let fs = require('fs');
 let path = require('path');
@@ -50,6 +79,7 @@ function GetReleaseTasks(version) {
     NewReleaseConfig[version]['notes'] = mock;
     NewReleaseConfig[version]['template'] = PrepReleaseNotes(NewReleaseConfig[version]);
 }
+
 /**
  * See if a list should be fetched for completed tasks for release notes.
  * We don't want to query lists that we know (usually) don't yield anything for notes.
@@ -186,7 +216,7 @@ function ReleaseContextFactory(swimmVersionString) {
  * @param {String} version - Single version to import, default is all. 
  */
 function BackfillReleases(version = null) {
-    let exportedReleases = JSON.parse(fs.readFileSync('./releases.exports.json'));
+    let exportedReleases = JSON.parse(fs.readFileSync(ExportedReleaseConfig));
     for (const [key, value] of Object.entries(exportedReleases.folders)) {
         let search = value.name.match(ValidVersionPattern);
         if (search !== null) {
@@ -268,7 +298,8 @@ async function SendAPIRequest(queryUrl) {
         };
         let response = [];
         const request = https.request(requestOptions, (res) => {
-            res.on('headers', (headers) => console.log('Returned Headers:', headers));
+            RemainingCalls = res.headers['x-ratelimit-remaining'];
+            CallsReset = res.headers['x-ratelimit-reset'];
             res.on('data', chunk => response.push(chunk));
             res.on('end', () => { 
                 const data = Buffer.concat(response).toString(); 
@@ -309,40 +340,14 @@ function WriteReleaseCache(path, value) {
  * 
  * @param {Function} callback - Callback to call once done
  */
-function RefreshReleaseCache(callback) {
-    var create = false;
-    try {
-        var statObj = fs.statSync('./releases.exports.json');
-    } 
-    catch (err) {
-        /* It doesn't exist. Proceed so it gets created. */
-        console.log('Release cahce does not yet exist.');
-        create = true;
-    }
-
-    console.log('We are out!');
-    return;
-    /*
-    if (keep == true) {
-        const now = Date.now();
-        const age = Math.floor((now - ctime) / 1000);
-        if (age >= 604800) {
-            console.log('Release cache is over a week old. Stand by - refreshing it ...');
-            keep = false;
-        }
-    }
-
-    if (keep == true)
-        return;
-    
+function RefreshReleaseCache(callback) {    
     let queryUrl = `/api/v2/space/${process.env.SwimmReleases_ReleaseSpaceId}/folder?archived=true`;
     SendAPIRequest(queryUrl).then((value) => {
-        WriteReleaseCache('./releases.exports.json', value);
+        WriteReleaseCache(ExportedReleaseConfig, value);
         if (callback instanceof Function) {
             callback(value);
         }
     });
-    */
 }
 
 /**
@@ -389,7 +394,7 @@ function FinalizeReleaseConfig() {
  */
 function WriteIntermediateReleaseConfig() {
     /* TODO: fail */
-    WriteReleaseCache('./releases.imports.json', JSON.stringify(NewReleaseConfig, null, 2));
+    WriteReleaseCache(IntermediateReleaseConfig, JSON.stringify(NewReleaseConfig, null, 2));
 }
 
 /**
@@ -399,7 +404,28 @@ function WriteIntermediateReleaseConfig() {
 function WriteReleaseConfig() {
     FinalizeReleaseConfig();
     /* TODO: fail */
-    WriteReleaseCache('./releases.config.json', JSON.stringify(NewReleaseConfig, null, 2));
+    WriteReleaseCache(ProductionReleaseConfig, JSON.stringify(NewReleaseConfig, null, 2));
+}
+
+/**
+ * Just something so we keep track of how many calls we have left, when they reset, etc
+ * between runs.
+ */
+function WriteReleaseState() {
+    let state = {Remaining: RemainingCalls, Resets: CallsReset, Ran: Date.now()};
+    WriteReleaseCache(StateReleaseConfig, JSON.stringify(state, null, 2));
+}
+
+/**
+ * 
+ * Set globals based on the last run, when needed.
+ */
+function LoadReleaseState() {
+    let state = JSON.parse(fs.readFileSync(StateReleaseConfig));
+    RemainingCalls = state.Remaining;
+    CallsReset = state.Resets;
+    LastRan = state.Ran;
+    return;
 }
 
 /**
@@ -408,10 +434,13 @@ function WriteReleaseConfig() {
  * Returns false on failure.
  * @returns {Boolean}  
  */
-
 function LoadCurrentReleaseConfig() {
     if (CurrentReleaseConfig == null)
-        CurrentReleaseConfig = JSON.parse(fs.readFileSync('./releases.config.json'));
+        try {
+            CurrentReleaseConfig = JSON.parse(fs.readFileSync(ProductionReleaseConfig));
+        } catch (err) {
+            console.warn('Could not load a valid release config. First time?', err);
+        }
 }
 
 /**
@@ -423,7 +452,7 @@ function LoadCurrentReleaseConfig() {
  */
 function LoadIntermediateReleaseConfig() {
     if (Object.keys(NewReleaseConfig).length === 0)
-        NewReleaseConfig = JSON.parse(fs.readFileSync('./releases.imports.json'));
+        NewReleaseConfig = JSON.parse(fs.readFile(IntermediateReleaseConfig), (err, data) => {console.log(err, data)});
 }
 
 /**
@@ -487,21 +516,24 @@ if (shajs('sha512').update(process.env.SwimmReleases_Configured).digest('base64'
         process.exit(1);
 }
 
-
+/*
 RefreshReleaseCache(function(d) {
     console.log('Release Cache Refreshed.');
 });
+*/
 
 BackfillReleases();
 if (TotalReleases > 0) {
     WriteIntermediateReleaseConfig();
     WriteReleaseConfig();
+    WriteReleaseState();
     console.log(`\n${TotalNeededCalls} API calls are needed to import tasks for this run. With ${AllowedCalls} daily allowed calls, that's gonna take ${TotalNeededCalls / AllowedCalls} days.\n`);
     process.exit(0);
 }
-
+/*
 LoadIntermediateReleaseConfig();
+LoadReleaseState();
 BackfillReleaseNotes();
 WriteIntermediateReleaseConfig();
 WriteReleaseDrafts();
-
+*/ß
