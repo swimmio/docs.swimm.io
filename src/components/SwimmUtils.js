@@ -164,7 +164,7 @@ SwimmMoji.defaultProps = {
 function SwimmReleaseBlogPost(props) {
     var releaseInfo = GetSpecificSwimmRelease(props.version);
     var blogPost = releaseInfo.blog;
-    var linkText = `Get The Full ${releaseInfo.name} Scoop On Our Main Blog >`
+    var linkText = `Get The Full ${releaseInfo.name} Scoop On Our Main Blog \u{000BB}`;
     if (blogPost === null)
         return null;
     else
@@ -224,7 +224,7 @@ function SwimmReleaseVideo(props) {
     if (video != null) {
         return(
             <>
-            <p>Find the release notes are below this short feature spotlight:</p>
+            <p><b>Release notes are below this short feature spotlight:</b></p>
             <YouTubePlayer id={video} />
             </>
         );
