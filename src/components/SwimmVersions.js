@@ -1,8 +1,8 @@
-import {SwimmVersions} from '../../swimm.versions.config.js';
+import SwimmVersions from '../../releases.config.json';
 
 /**
  * Get the version object for the current Swimm version. 
- * @returns object
+ * @returns {Object}
  */
 function GetCurrentSwimmRelease() {
     var currentVersion = SwimmVersions.current;
@@ -11,7 +11,7 @@ function GetCurrentSwimmRelease() {
 
 /**
  * Get info about a specific release. 
- * @param {*} props The version to get.
+ * @param {props} props The version to get.
  * @returns object or null
  */
 function GetSpecificSwimmRelease(props) {
