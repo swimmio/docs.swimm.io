@@ -2,12 +2,12 @@
 id: Zo6UG
 name: What Are The Local Site Configuration Files?
 file_version: 1.0.2
-app_version: 0.6.4-0
+app_version: 0.6.6-0
 file_blobs:
-  docusaurus.config.js: 30cd143aea2172d645633057483a87891c7b2970
-  src/components/SwimmUtils.js: b60aa03ac08c63f8655e8facafb1373e9a2590df
-  swimm.config.js: fdd57b163239388d69fa6c10c1eef9235336d8f0
-  swimm.versions.config.js: c98b7f964538427eb19d72f95951b323cb2f57ab
+  docusaurus.config.js: b6ff314b2d79c44d832f1998938808d2db29bf97
+  src/components/SwimmUtils.js: df6500d1cdc24af473ca6dd8e47dd4214bbf5344
+  swimm.config.js: 4a9643f61921f72724edd39342ac7c8575020426
+  swimm.versions.config.js: 08fb03e4d14965d51cc29a315e3e6fc9811a10f3
 ---
 
 We have three main configuration files that you need to know about:
@@ -72,7 +72,7 @@ After you import the SwimmUtils component, you can call `Swimm`[<sup id="Z1bdEdk
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 src/components/SwimmUtils.js
 ```javascript
-⬜ 8      
+⬜ 8      import YouTubePlayer from './YouTubePlayer.js';
 ⬜ 9      import styles from './SwimmUtils.module.css';
 ⬜ 10     
 🟩 11     function Swimm(props) {
@@ -100,26 +100,27 @@ The objects in `SiteSettings`[<sup id="28FeRl">↓</sup>](#f-28FeRl) contain wha
 🟩 8          },
 🟩 9          emojiShortcuts: {
 🟩 10             default: ':ocean:',
-🟩 11             release: ':exclamation:  :ocean::ship::swimmer::rocket::new::boom::tada::sparkles:', 
-🟩 12         },
-🟩 13         heap: {
-🟩 14              enabled: true,
-🟩 15             id: '2760903549',
-🟩 16             params: [
-🟩 17                 "addEventProperties", 
-🟩 18                 "addUserProperties", 
-🟩 19                 "clearEventProperties", 
-🟩 20                 "identify", 
-🟩 21                 "resetIdentity", 
-🟩 22                 "removeEventProperty", 
-🟩 23                 "setEventProperties", 
-🟩 24                 "track", 
-🟩 25                 "unsetEventProperty"
-🟩 26             ]
-🟩 27         }
-🟩 28     }
-⬜ 29     
-⬜ 30     export {SiteSettings};
+🟩 11             release: ':exclamation:  :ocean::ship::swimmer::rocket::new::boom::tada::sparkles:',
+🟩 12             video: ':movie_camera::clapper::cinema:',
+🟩 13         },
+🟩 14         heap: {
+🟩 15              enabled: true,
+🟩 16             id: '2760903549',
+🟩 17             params: [
+🟩 18                 "addEventProperties", 
+🟩 19                 "addUserProperties", 
+🟩 20                 "clearEventProperties", 
+🟩 21                 "identify", 
+🟩 22                 "resetIdentity", 
+🟩 23                 "removeEventProperty", 
+🟩 24                 "setEventProperties", 
+🟩 25                 "track", 
+🟩 26                 "unsetEventProperty"
+🟩 27             ]
+🟩 28         }
+🟩 29     }
+⬜ 30     
+⬜ 31     export {SiteSettings};
 ```
 
 <br/>
@@ -136,10 +137,10 @@ The `current` index will always point to the version that was current during the
 ```javascript
 🟩 1      const SwimmVersions = {
 🟩 2          current: '0.6.4',
-🟩 3          '0.6.4': {major: 0,minor: 6,patch: 4,blog: null,tweet: null,linkedin: null},
-🟩 4          '0.6.3': {major: 0,minor: 6,patch: 3,blog: null,tweet: null,linkedin: null},
-🟩 5          '0.6.2': {major: 0,minor: 6,patch: 2,blog: null,tweet: null,linkedin: null},
-🟩 6          '0.4.4': {major: 0,minor: 4,patch: 4,blog: 'https://swimm.io/blog/release-notes-dive-into-0-4-4/',tweet: '1390180301993910278',linkedin: null},
+🟩 3          '0.6.4': {name: '0.6.4', major: 0,minor: 6,patch: 4,blog: null,tweet: null,linkedin: null, youtube: null},
+🟩 4          '0.6.3': {name: '0.6.3', major: 0,minor: 6,patch: 3,blog: null,tweet: null,linkedin: null, youtube: null},
+🟩 5          '0.6.2': {name: '0.6.2', major: 0,minor: 6,patch: 2,blog: null,tweet: null,linkedin: null, youtube: null},
+🟩 6          '0.4.4': {name: '0.4.4', major: 0,minor: 4,patch: 4,blog: 'https://swimm.io/blog/release-notes-dive-into-0-4-4/',tweet: '1390180301993910278',linkedin: null, youtube: 'DX2BGvRbjQE'},
 🟩 7      }
 ⬜ 8      
 ⬜ 9      export {SwimmVersions}
