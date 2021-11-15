@@ -1,0 +1,10 @@
+# All are optional, they'll be copied over the defaults.
+security: false
+notes:
+  - Fixed a bug that was causing more bugs
+  - Accidentally created Skynet
+  - Annoyed someone with YAML
+blog: null
+tweet: null
+youtube: null
+linkedin: null
