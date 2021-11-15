@@ -1,14 +1,23 @@
 #!/usr/bin/env node
-/** Copyright 2021 Swimm, Inc.
- * Tool to import release notes from Swimm's task & bug tracker (ClickUp, currently)
- * Not really useful to anyone else without modification, but it's easy enough to ship
- * in this repository. Requires configuration from environmental variables that aren't
- * included here.
+/** Copyright 2021 Swimm, Inc. Cobbled together by Tim Post <tim@swimm.io>
+ * Tool to import versions & release notes from Swimm's task & bug tracker (ClickUp)
+ * Not intended for any use, including educational. It's just easier to have it
+ * here.
  * 
  * License: MIT
+ * 
+ * Note that this is VERY soon going to become a proper class that the CLI will just 
+ * import normally. Right now I'm just figuring out what needs to be exported (public)
+ * in this mix bag of helper functions, and what can go away altogether.
+ * 
+ * I wouldn't bother with any changes other than re-write it into a class, but I'm going
+ * to do that anyway.
  */
-
 "use strict"
+
+/* Environmental variables */
+require('dotenv').config();
+
 /* What can a release look like? 0.6.3 || 0.6.3.1 || 0.6.3-1 */
 const ValidVersionPattern = /(^[0-9]+['.']+[0-9]+['.']+[0-9]+([a-zA-Z]?))+([\.]?[0-9]?)+([\-?]+[0-9?])?/gm;
 
@@ -19,45 +28,99 @@ let NewReleaseConfig = {};
 let CurrentReleaseConfig = null;
 
 /* We get 100 API calls a day, so backfill has to be planned. We also keep track of other things for safety */
-let AllowedCalls = 100;
 let RemainingCalls = 1;
 let CallsReset = 0;
 let LastRan = 0;
 
+
 /* A running counter to see if there's work left to do */
 let TotalReleases = 0;
+
+/* For backfilling, we may need to plan a couple of days @ 100 calls a day */
 let TotalNeededCalls = 0;
 
 /**
- * We keep three local files cached:
- *  - releases.exports.json is a raw dump from our task tracker that includes all release folders
- *    + IDs of boards and statuses associated with them. 
+ * We cache most API responses.
  * 
- *  - releases.imports.json is an intermediate release config that has all we need to figure out
- *    what calls are needed to get the actual tasks per release, and where we store the results
- *    of those calls as we make them (within rate limits). This is what's used to produce the 
- *    release notes draft where all we have to do is include the completed things we want and
- *    edit them a bit.
+ *  - Those that are now static / archived (e.g. task lists) are always kept. They won't change.
  * 
- *  - releases.state.json is used to save running state from one invocation to the next, primarily
- *    so we know how many API calls we have left when we run. These can then be loaded back into 
- *    globals. 
+ *  - Those that change with release cycles are refreshed on-demand.
  * 
- *  - releases.config.json is ultimately the config file we'll use for the site to know about all
- *    of the versions. It's the intermediate config, stripped of all the tasks and statuses and
- *    things we don't need anymore.
+ * This is because we get a finite amount of API requests, so we don't waste them reading the same
+ * response over and over again for a task that was finished a year ago.
  */
+let CacheFolder = './.swimmreleases';
+let ExportedReleaseConfig = 'releases.exports.json';
+let IntermediateReleaseConfig = 'releases.imports.json';
+let StateReleaseConfig = 'releases.state.json';
 
-let ExportedReleaseConfig = './releases.exports.json';
-let IntermediateReleaseConfig = './releases.imports.json';
-let StateReleaseConfig = './releases.state.json';
-let ProductionReleaseConfig = './releases.config.json';
+/* Ultimately, the configuration file that the site will use */
+let ProductionReleaseConfig = 'releases.config.json';
+
+/* Root of API calls, with trailing slash */
+let API = 'https://api.clickup.com/api/v2/';
 
 let fs = require('fs');
-let path = require('path');
 let https = require('https');
-let shajs = require('sha.js');
+let YAML = require('yaml');
+
+/* We hash the final (production) config object before metadata is inserted, with the hash as
+ * part of the metadata. This lets the site verify the configuration during build.
+ */
 let hash = require('object-hash');
+
+/**
+ * Get a list of tasks given a team / space ID.
+ * This is currently not returning the correct number of tasks.
+ * @param {Integer} id - ID of the team 
+ * @param {Function} callback where it goes.
+ * @returns {JSON} - Raw API response, which is also what's written to cache
+ */
+function GetReleaseTasksByTeam(id, callback) {
+    let cacheNode = `releases.teamlist_${id}_.json`;
+    let cacheValue = ReadReleaseCache(cacheNode);
+    if (cacheValue !== null) { 
+        callback(cacheValue);
+        return;
+    }
+    let queryUrl = `${API}/team/${id}/task?space=${process.env.SwimmReleases_ReleaseSpaceId}&archived=true&include_closed=true&status=complete`;
+    SendAPIRequest(queryUrl).then((value) => {
+        WriteReleaseCache(`releases.teamlist_${id}_.json`, value);
+        let responseData = JSON.parse(value);
+        if (callback instanceof Function) {
+            callback(responseData);
+        }
+        return value;
+    });
+}
+
+/**
+ * Get a list of tasks by a given list ID.
+ * This is also currently not returning the correct number of tasks. <sigh>
+ * 
+ * @param {Integer} id - The ID of the task.
+ * @param {Function} callback - Callback function that receives the decoded response
+ * @returns {JSON} - Raw API response, which is also what's written to cache
+ */
+function GetReleaseTasksByList(id, callback) {
+    let cacheNode = `releases.tasklist_${id}_.json`;
+    let cacheValue = ReadReleaseCache(cacheNode);
+    if (cacheValue !== null) { 
+        if (callback instanceof Function) {
+            callback(cacheValue);
+        }
+        return cacheValue;
+    }
+    let queryUrl = `${API}/list/${id}/task?space=${process.env.SwimmReleases_ReleaseSpaceId}&archived=true&include_closed=true&statuses%5B%5D=complete`;
+    SendAPIRequest(queryUrl).then((value) => {
+        WriteReleaseCache(cacheNode, value);
+        let responseData = JSON.parse(value);
+        if (callback instanceof Function) {
+            callback(responseData);
+        }
+        return value;
+    });
+}
 
 /**
  * Get the actual *tasks* associated with each list that we associated with the release.
@@ -88,7 +151,7 @@ function GetReleaseTasks(version) {
  * This is a work-in-progress.
  * 
  * @param {String} folder 
- * @returns 
+ * @returns {Boolean}
  */
 function CheckFolderBlocklist(folder) {
     const blockList = ['Product', 'Devrel', 'Release', 'release', 'Flow', 'Website'];
@@ -197,6 +260,9 @@ function ImportRelease(versionContext, releaseData) {
  * @returns {Object}
  */
 function ReleaseContextFactory(swimmVersionString) {
+    if (typeof ReleaseContextFactory().last == 'undefined') {
+        ReleaseContextFactory().last = {};
+    }
     let backfill = {
         name: swimmVersionString,
         date: null, 
@@ -207,6 +273,9 @@ function ReleaseContextFactory(swimmVersionString) {
         youtube:null, 
         linkedin: null,
     };
+    // TODO: stagger the date here, if needed.
+    // BUT FIRST: Make sure this actually works.
+    ReleaseContextFactory().last = backfill;
     return backfill;
 }
 
@@ -240,6 +309,14 @@ function BackfillReleases(version = null) {
     }
 }
 
+/**
+ * Given a suitably-populated intermediate release config, 
+ * create a draft release notes directory/entry. If we could
+ * get tasks associated with it, they'll be written as a markdown
+ * list at the bottom of the content.
+ * 
+ * @param {String} version 
+ */
 function WriteReleaseDraft(version) {
     LoadIntermediateReleaseConfig();
     let target = NewReleaseConfig[version];
@@ -248,12 +325,24 @@ function WriteReleaseDraft(version) {
         console.log('Not recreating notes for already-published release ', target.name);
         return;
     }
-    path = './scripts/output/' + target.name;
+    path = `${CacheFolder}/drafts/${target.name}`;
     fs.mkdirSync(path, { recursive: true });
     fs.writeFileSync(`${path}/index.mdx`, target.template);
+    let metadata = {
+        security: target.security,
+        blog: target.blog,
+        tweet: target.tweet,
+        youtube: target.youtube,
+        linkedin: target.linkedin
+    };
+    fs.writeFileSync(`${path}/${target.name}.yml`, YAML.stringify(metadata));
     return;
 }
 
+/**
+ * Create a release notes draft for every release in the intermediate config
+ * that doesn't yet have published release notes. 
+ */
 function WriteReleaseDrafts() {
     LoadIntermediateReleaseConfig();
     for(const [key, value] of Object.entries(NewReleaseConfig)) {
@@ -269,6 +358,7 @@ function WriteReleaseDrafts() {
  * TODO: Make this deal with API request limits and spacing
  */
 function BackfillReleaseNotes(version = null) {
+    LoadIntermediateReleaseConfig();
     if (version !== null) {
         GetReleaseTasks(NewReleaseConfig['version']);
         return;
@@ -301,12 +391,16 @@ async function SendAPIRequest(queryUrl) {
             RemainingCalls = res.headers['x-ratelimit-remaining'];
             CallsReset = res.headers['x-ratelimit-reset'];
             res.on('data', chunk => response.push(chunk));
-            res.on('end', () => { 
-                const data = Buffer.concat(response).toString(); 
+            res.on('end', () => {
+                /* So we know how many calls we have left, and when they reset. For backfilling */
+                WriteReleaseState();
+                const data = Buffer.concat(response).toString();
                 resolve(data); 
             });
         });
         request.on('error', e => {
+            /* We don't get charged for the request if there's an error response, 
+            so no need to update state */
             console.error(e);
             reject(e);
         });
@@ -315,14 +409,28 @@ async function SendAPIRequest(queryUrl) {
 }
 
 /**
- * We heavily cache configs generated from API calls because we only get
- * 100 of them a day. This just makes it simple to do that.
+ * Attempt to read a cached object.
+ * 
+ * @param {String} node relative to the root of the cache folder. 
+ * @returns {Object} or null.
+ */
+function ReadReleaseCache(node) {
+    let entry = `${CacheFolder}/${node}`;
+    if (fs.existsSync(entry)) {
+        return JSON.parse(fs.readFileSync(entry));
+    } else
+        return null;
+}
+
+/**
+ * Write to the release cache.
  * 
  * @param {String} path 
  * @param {Object} value 
  */
 function WriteReleaseCache(path, value) {
-    fs.writeFileSync(path, value, 'utf-8', function(e) {
+
+    fs.writeFileSync(`${CacheFolder}/${path}`, value, 'utf-8', function(e) {
         if (e) {
             console.error(`Could not write to ${path}, exiting ...`);
             process.exit(1);
@@ -348,6 +456,24 @@ function RefreshReleaseCache(callback) {
             callback(value);
         }
     });
+}
+
+/**
+ * Initialize the release cache, if it doesn't yet exist.
+ * Intentionally unhandled, we should stop everything if this doesn't work.
+ */
+function InitializeReleaseCache() {
+    if (! fs.existsSync(CacheFolder)) {
+        fs.mkdirSync(CacheFolder);
+    }
+
+    if (! fs.existsSync(ProductionReleaseConfig)) {
+        fs.writeFileSync(ProductionReleaseConfig, '{}');
+    }
+
+    WriteReleaseCache(ExportedReleaseConfig, '{}');
+    WriteReleaseCache(IntermediateReleaseConfig, '{}');
+    WriteReleaseCache(ProductionReleaseConfig, '{}');
 }
 
 /**
@@ -393,17 +519,17 @@ function FinalizeReleaseConfig() {
  * pre-populated items to review.
  */
 function WriteIntermediateReleaseConfig() {
-    /* TODO: fail */
     WriteReleaseCache(IntermediateReleaseConfig, JSON.stringify(NewReleaseConfig, null, 2));
 }
 
 /**
  * 
- * Write the actual configuration that ships with the site. Well, pretend for right now, 
+ * Write the actual configuration that ships with the site.
+ * This gets written to the cache where it can be validated and then committed.
  */
 function WriteReleaseConfig() {
+    LoadIntermediateReleaseConfig();
     FinalizeReleaseConfig();
-    /* TODO: fail */
     WriteReleaseCache(ProductionReleaseConfig, JSON.stringify(NewReleaseConfig, null, 2));
 }
 
@@ -417,7 +543,6 @@ function WriteReleaseState() {
 }
 
 /**
- * 
  * Set globals based on the last run, when needed.
  */
 function LoadReleaseState() {
@@ -452,7 +577,7 @@ function LoadCurrentReleaseConfig() {
  */
 function LoadIntermediateReleaseConfig() {
     if (Object.keys(NewReleaseConfig).length === 0)
-        NewReleaseConfig = JSON.parse(fs.readFile(IntermediateReleaseConfig), (err, data) => {console.log(err, data)});
+        NewReleaseConfig = JSON.parse(fs.readFileSync(IntermediateReleaseConfig));
 }
 
 /**
@@ -502,38 +627,37 @@ ${versionContext.notes.join('\n')}
 }
 
 
-/* Main execution */
-
-
-
-
+/* backfill any missing historical releases with default info */
 /*
- * https://www.youtube.com/watch?v=5LhcNZk9blQ
- */
-if (shajs('sha512').update(process.env.SwimmReleases_Configured).digest('base64') !== 
-    '+tAhfeyz6KrpLiVvboiRfDVKOyFp5ROYBiT7DiRawpjNbYzXZbhFkWfJC5jkkbg5+hxWXgq2A7ykrQn4D2dW8g==') {
-        console.error('This is not yet ready for use.');
-        process.exit(1);
-}
-
-/*
-RefreshReleaseCache(function(d) {
-    console.log('Release Cache Refreshed.');
-});
+BackfillReleases();
+WriteIntermediateReleaseConfig();
 */
 
-BackfillReleases();
-if (TotalReleases > 0) {
-    WriteIntermediateReleaseConfig();
-    WriteReleaseConfig();
-    WriteReleaseState();
-    console.log(`\n${TotalNeededCalls} API calls are needed to import tasks for this run. With ${AllowedCalls} daily allowed calls, that's gonna take ${TotalNeededCalls / AllowedCalls} days.\n`);
-    process.exit(0);
-}
+/* Get release notes for any backfilled / imported releases */
 /*
-LoadIntermediateReleaseConfig();
-LoadReleaseState();
 BackfillReleaseNotes();
 WriteIntermediateReleaseConfig();
+*/
+
+/* Actually write the proposed new config from an intermediate one */
+/*
+WriteReleaseConfig();
+*/
+
+/* Generate a changelog post for all backfilled versions with any pulled in
+ * tasks we might have. These have to be edited before pushed live.
+ */
+/*
 WriteReleaseDrafts();
-*/ß
+*/
+
+let SwimmReleases = {
+    ValidVersionPattern: function() { return ValidVersionPattern; },
+    RefreshCache: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed')} )},
+    BackfillRelease: function(id) { console.log('Would backfill ', id)},
+    BackfillReleases: function() { console.log('Would backfill all releases')},
+
+
+}
+
+module.exports = { SwimmReleases }
