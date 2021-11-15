@@ -259,13 +259,11 @@ function ImportRelease(versionContext, releaseData) {
  * @param {String} swimmVersionString - Swimm release name, e.g. 0.1.2 / 0.1.2-3 / 0.1.2.3 
  * @returns {Object}
  */
-function ReleaseContextFactory(swimmVersionString) {
-    if (typeof ReleaseContextFactory().last == 'undefined') {
-        ReleaseContextFactory().last = {};
-    }
+function ReleaseContextFactory(swimmVersionString, offset=0) {
+
     let backfill = {
         name: swimmVersionString,
-        date: null, 
+        date: Date.now() - offset, 
         security: false,
         notes: null,
         blog: null, 
@@ -273,9 +271,6 @@ function ReleaseContextFactory(swimmVersionString) {
         youtube:null, 
         linkedin: null,
     };
-    // TODO: stagger the date here, if needed.
-    // BUT FIRST: Make sure this actually works.
-    ReleaseContextFactory().last = backfill;
     return backfill;
 }
 
@@ -284,8 +279,8 @@ function ReleaseContextFactory(swimmVersionString) {
  * 
  * @param {String} version - Single version to import, default is all. 
  */
-function BackfillReleases(version = null) {
-    let exportedReleases = JSON.parse(fs.readFileSync(ExportedReleaseConfig));
+function BackfillReleases(version = null, offset=0, callback) {
+    let exportedReleases = ReadReleaseCache(ExportedReleaseConfig);
     for (const [key, value] of Object.entries(exportedReleases.folders)) {
         let search = value.name.match(ValidVersionPattern);
         if (search !== null) {
@@ -307,6 +302,9 @@ function BackfillReleases(version = null) {
             }
         }
     }
+    if (callback instanceof Function) {
+        callback();
+    }
 }
 
 /**
@@ -318,16 +316,23 @@ function BackfillReleases(version = null) {
  * @param {String} version 
  */
 function WriteReleaseDraft(version) {
-    LoadIntermediateReleaseConfig();
     let target = NewReleaseConfig[version];
+    
+    if (typeof target.template === 'undefined') {
+        console.error('Tasks have not yet been backfilled. Run --mode=backfill-notes first.');
+        process.exit(1);
+    }
+
     let path = './changelog/' + target.name;
     if (fs.existsSync(path)) {
         console.log('Not recreating notes for already-published release ', target.name);
         return;
     }
+
     path = `${CacheFolder}/drafts/${target.name}`;
     fs.mkdirSync(path, { recursive: true });
     fs.writeFileSync(`${path}/index.mdx`, target.template);
+
     let metadata = {
         security: target.security,
         blog: target.blog,
@@ -335,7 +340,9 @@ function WriteReleaseDraft(version) {
         youtube: target.youtube,
         linkedin: target.linkedin
     };
+
     fs.writeFileSync(`${path}/${target.name}.yml`, YAML.stringify(metadata));
+    
     return;
 }
 
@@ -343,10 +350,13 @@ function WriteReleaseDraft(version) {
  * Create a release notes draft for every release in the intermediate config
  * that doesn't yet have published release notes. 
  */
-function WriteReleaseDrafts() {
+function WriteReleaseDrafts(callback = null) {
     LoadIntermediateReleaseConfig();
     for(const [key, value] of Object.entries(NewReleaseConfig)) {
         WriteReleaseDraft(value.name);
+    }
+    if (callback instanceof Function) {
+        callback();
     }
 }
 
@@ -357,14 +367,24 @@ function WriteReleaseDrafts() {
  * @param {String} version - Single version to import, defaults to all
  * TODO: Make this deal with API request limits and spacing
  */
-function BackfillReleaseNotes(version = null) {
+function BackfillReleaseNotes(version = null, callback = null) {
     LoadIntermediateReleaseConfig();
     if (version !== null) {
         GetReleaseTasks(NewReleaseConfig['version']);
+        if (callback instanceof Function) {
+            WriteIntermediateReleaseConfig();
+            callback();
+        }
         return;
-    }   
+    }
+
     for (const [key,  value] of Object.entries(NewReleaseConfig)) {
         GetReleaseTasks(value['name']);
+    }
+
+    WriteIntermediateReleaseConfig();
+    if (callback instanceof Function) {
+        callback();
     }
     return;
 }
@@ -448,7 +468,7 @@ function WriteReleaseCache(path, value) {
  * 
  * @param {Function} callback - Callback to call once done
  */
-function RefreshReleaseCache(callback) {    
+function RefreshReleaseCache(callback) {  
     let queryUrl = `/api/v2/space/${process.env.SwimmReleases_ReleaseSpaceId}/folder?archived=true`;
     SendAPIRequest(queryUrl).then((value) => {
         WriteReleaseCache(ExportedReleaseConfig, value);
@@ -487,16 +507,11 @@ function FinalizeReleaseConfig() {
         delete NewReleaseConfig[key]['changes'];
         delete NewReleaseConfig[key]['notes'];
         delete NewReleaseConfig[key]['calls'];
-        /* TODO: Need some method of back-dating automatically here */
-        if (NewReleaseConfig[key]['date'] == null) {
-            NewReleaseConfig[key]['date'] = Date.now();
-        }
     }
     /* Resolve the latest version we know of */
     let versionNames = Object.keys(NewReleaseConfig);
     NewReleaseConfig['current'] = versionNames.pop();
-    console.log(`\nFinalizeReleaseConfig() :: The latest version I know of is ${NewReleaseConfig['current']} with ${TotalReleases} total releases. If that's not right, go fix it.`);
-
+    
     /* Hash the object prior to metadata so it can be verified by removing metadata */
     let configHash = hash(NewReleaseConfig);
 
@@ -506,6 +521,14 @@ function FinalizeReleaseConfig() {
         hash: configHash,
         generator: './scripts/swimm-releases.js'
     };
+
+    if (TotalReleases > 0) {
+        console.log(`\nFinalizeReleaseConfig() :: The latest version I know of is ${NewReleaseConfig['current']} with ${TotalReleases} total releases. If that's not right, go fix it.`);
+        console.log('\nThis is not live yet, run --mode=release when ready.\n');
+    } else {
+        console.log('\nLive config matches release cache.');
+        console.log('\nIf that seems off, you might need to run --mode=refresh once the release folder is archived.\n')
+    }
 
     /* That's it! */
 }
@@ -527,10 +550,13 @@ function WriteIntermediateReleaseConfig() {
  * Write the actual configuration that ships with the site.
  * This gets written to the cache where it can be validated and then committed.
  */
-function WriteReleaseConfig() {
+function WriteReleaseConfig(callback) {
     LoadIntermediateReleaseConfig();
     FinalizeReleaseConfig();
     WriteReleaseCache(ProductionReleaseConfig, JSON.stringify(NewReleaseConfig, null, 2));
+    if (callback instanceof Function) {
+        callback(ProductionReleaseConfig);
+    }
 }
 
 /**
@@ -577,7 +603,7 @@ function LoadCurrentReleaseConfig() {
  */
 function LoadIntermediateReleaseConfig() {
     if (Object.keys(NewReleaseConfig).length === 0)
-        NewReleaseConfig = JSON.parse(fs.readFileSync(IntermediateReleaseConfig));
+        NewReleaseConfig = JSON.parse(fs.readFileSync(`${CacheFolder}/${IntermediateReleaseConfig}`));
 }
 
 /**
@@ -626,23 +652,24 @@ ${versionContext.notes.join('\n')}
     return template;
 }
 
-
-/* backfill any missing historical releases with default info */
-/*
-BackfillReleases();
-WriteIntermediateReleaseConfig();
-*/
-
-/* Get release notes for any backfilled / imported releases */
-/*
-BackfillReleaseNotes();
-WriteIntermediateReleaseConfig();
-*/
-
-/* Actually write the proposed new config from an intermediate one */
-/*
-WriteReleaseConfig();
-*/
+function WriteProductionReleaseConfig(callback) {
+    LoadIntermediateReleaseConfig();
+    FinalizeReleaseConfig();
+    let data = JSON.stringify(NewReleaseConfig, null, 2);
+    fs.writeFileSync(`./${ProductionReleaseConfig}`, 
+        data, 
+        'utf-8', 
+        function(e) { 
+            if (e) {
+                console.error('Could not write production config, exiting.');
+                process.exit(1);
+            }
+            if (callback instanceof Function) {
+                callback();
+            }
+        }
+    );
+}
 
 /* Generate a changelog post for all backfilled versions with any pulled in
  * tasks we might have. These have to be edited before pushed live.
@@ -653,11 +680,13 @@ WriteReleaseDrafts();
 
 let SwimmReleases = {
     ValidVersionPattern: function() { return ValidVersionPattern; },
-    RefreshCache: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed')} )},
-    BackfillRelease: function(id) { console.log('Would backfill ', id)},
-    BackfillReleases: function() { console.log('Would backfill all releases')},
-
-
+    InitializeCache: function() { InitializeReleaseCache() },
+    RefreshCache: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed');}) },
+    BackfillReleases: function(offset=0) { BackfillReleases(null, offset, function() { WriteIntermediateReleaseConfig(); }) },
+    BackfillNotes: function() { BackfillReleaseNotes(null, function() { console.log('Tasks backfilled.')})},
+    WriteConfig: function() { WriteReleaseConfig(null, function(loc) { console.log(`Config written to ${CacheFolder}/${loc}`)}) },
+    ReleaseConfig: function() { WriteProductionReleaseConfig(function() { console.log('Wrote production release config.')})},
+    FlushConfig: function() { WriteReleaseCache(ProductionReleaseConfig, '{}'); fs.writeFileSync(`./${ProductionReleaseConfig}`, '{}', 'utf-8', function(e){ console.log('Release config flushed.')})},
+    WriteDrafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); }
 }
-
 module.exports = { SwimmReleases }

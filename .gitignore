@@ -29,8 +29,8 @@ yarn-error.log*
 .env
 
 # Local version caches used for release notes generation
+.swimmreleases/drafts
 .swimmreleases/*.json
 .swimmreleases/*.db
 .swimmreleases/*.mdx
-
 
