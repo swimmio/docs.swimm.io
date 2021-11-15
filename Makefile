@@ -1,6 +1,6 @@
 .PHONY: all help production rebuild-remote clean distclean dev debug world
 
--include .buildrc
+-include .env
 
 help:
 	@echo "Target              | Explanation"
@@ -47,8 +47,8 @@ clean:
 	npx docusaurus clear
 
 distclean: clean
-	@echo "Removing package locks ..."
-	rm -rf package-lock.json yarn.lock
+	@echo "Removing package locks & modules ..."
+	rm -rf package-lock.json yarn.lock node_modules
 
 maintainer-clean-check:
 	@git clean -nfdx
@@ -77,7 +77,6 @@ ifndef SWIMM_RELEASE_NAME
 	@echo "Try: make release-notes SWIMM_RELEASE_NAME=0.1.2 or 0.1.2-3 or even 0.1.2.3 (pick one of those)"
 	@exit 1
 endif
-	@echo "Did you hear about what happened in Roswell?"
-	scripts/swimm-releases.js --release=${SWIMM_RELEASE_NAME}
+	@scripts/swimm-releases.js --release=${SWIMM_RELEASE_NAME}
 
 world: distclean production dev
