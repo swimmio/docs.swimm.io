@@ -26,10 +26,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # Local Makefile Envrionmental Variables
-.buildrc
+.env
 
 # Local version caches used for release notes generation
-releases.*.json
-
+.swimmreleases/*.json
+.swimmreleases/*.db
+.swimmreleases/*.mdx
 
 
