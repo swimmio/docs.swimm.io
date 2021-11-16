@@ -479,7 +479,7 @@ function RefreshReleaseCache(callback) {
 }
 
 /**
- * Initialize the release cache, if it doesn't yet exist.
+ * (re)-Initialize the release cache.
  * Intentionally unhandled, we should stop everything if this doesn't work.
  */
 function InitializeReleaseCache() {
@@ -491,9 +491,12 @@ function InitializeReleaseCache() {
         fs.writeFileSync(ProductionReleaseConfig, '{}');
     }
 
+    if (fs.existsSync(`${CacheFolder}/drafts`)) {
+        fs.rmdirSync(`${CacheFolder}/drafts`, { recursive: true, force: true });
+    }
+
     WriteReleaseCache(ExportedReleaseConfig, '{}');
     WriteReleaseCache(IntermediateReleaseConfig, '{}');
-    WriteReleaseCache(ProductionReleaseConfig, '{}');
 }
 
 /**
@@ -671,16 +674,49 @@ function WriteProductionReleaseConfig(callback) {
     );
 }
 
-/* Generate a changelog post for all backfilled versions with any pulled in
- * tasks we might have. These have to be edited before pushed live.
+/**
+ * Grab a specific version from the production config and
+ * send it to a callback. This is a convenient way to edit
+ * any specific release - export it to YAML, edit it, then
+ * re-import it.
+ * 
+ * @param {String} version - Swimm version name
+ * @param {Function} callback - Callback function that can receive an object.
  */
-/*
-WriteReleaseDrafts();
-*/
+function ExportRelease(version, callback) {
+    LoadCurrentReleaseConfig();
+    if (typeof CurrentReleaseConfig[version] === "undefined") {
+        callback({});
+        return;
+    }
+    callback(CurrentReleaseConfig[version]);
+    return;
+}
 
+function ImportRelease(version, context, callback) {
+    LoadCurrentReleaseConfig();
+    CurrentReleaseConfig[version] = context;
+    CurrentReleaseConfig['foobaz'] = context;
+    fs.writeFileSync(`./${ProductionReleaseConfig}`, 
+    JSON.stringify(CurrentReleaseConfig, null, 2), 
+    'utf-8', 
+    function(e) { 
+        if (e) {
+            console.error('Could not write production config, exiting.');
+            process.exit(1);
+        }
+        if (callback instanceof Function) {
+            callback(CurrentReleaseConfig[version]);
+        }
+    });
+}
+
+/* This is all still in a bit of flux, as noted above. */
 let SwimmReleases = {
     ValidVersionPattern: function() { return ValidVersionPattern; },
     InitializeCache: function() { InitializeReleaseCache() },
+    Export: function(version) { ExportRelease(version, function(data) {console.log(YAML.stringify(data))})},
+    Import: function(version, context) { ImportRelease(version, context, function(d) {console.log(d)})},
     RefreshCache: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed');}) },
     BackfillReleases: function(offset=0) { BackfillReleases(null, offset, function() { WriteIntermediateReleaseConfig(); }) },
     BackfillNotes: function() { BackfillReleaseNotes(null, function() { console.log('Tasks backfilled.')})},
@@ -689,4 +725,5 @@ let SwimmReleases = {
     FlushConfig: function() { WriteReleaseCache(ProductionReleaseConfig, '{}'); fs.writeFileSync(`./${ProductionReleaseConfig}`, '{}', 'utf-8', function(e){ console.log('Release config flushed.')})},
     WriteDrafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); }
 }
+
 module.exports = { SwimmReleases }

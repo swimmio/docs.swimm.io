@@ -15,6 +15,9 @@ const program = new Command();
 let fs = require('fs');
 let YAML = require('yaml');
 
+let Version = null;
+let ReleaseContext = null;
+
 /* Option handlers */
 
 function validateOption_versionName(option, prev) {
@@ -23,6 +26,7 @@ function validateOption_versionName(option, prev) {
         console.error('Version name format must be one of: "0.1.2", "0.1.2u", "0.1.2.3", "0.1.2-3"');
         process.exit(1);
     }
+    Version = option;
 }
 
 function validateOption_configFile(option, prev) {
@@ -37,8 +41,8 @@ function validateOption_releaseConfig(option, prev) {
         console.error(`Invalid release data config file location specified: ${option}`);
         process.exit(1);
     }
-    let releaseConfig = fs.readFileSync(option, 'utf8');
-    console.log(YAML.parse(releaseConfig));
+    let buffer = fs.readFileSync(option, 'utf8');
+    ReleaseContext = YAML.parse(buffer);
 }
 
 function validateOption_stagger(option, prev) {
@@ -64,10 +68,10 @@ program
 /* Runtime Stuff */
 
 program
-    .option('-v, --versionName <version>', 'the Swimm version name, e.g. "0.1.2" or "0.1.2.3" or "0.1.2-3"', validateOption_versionName)
+    .option('-r, --releaseName <vame>', 'the Swimm version name, e.g. "0.1.2" or "0.1.2.3" or "0.1.2-3"', validateOption_versionName)
     .option('-d, --debug', 'turn this on if you love undefined behavior')
     .option('-s, --stagger [interval]', 'When backfilling, back-date release notes to avoid flooding feeds.', 'offset:minimum', validateOption_stagger)
-    .addOption(new Option('-m, --mode <mode>', 'function to perform.').choices(["init", "import", "draft", "release", "publish", "refresh", "flush", "backfill", "backfill-notes"]));
+    .addOption(new Option('-m, --mode <mode>', 'function to perform.').choices(["init", "import", "draft", "release", "publish", "refresh", "flush", "backfill", "backfill-notes", "export"]));
 
 
 program.parse();
@@ -81,10 +85,13 @@ switch (options.mode) {
         break;
     /* Import a release from a release config file (default is versionName.yml, e.g. 0.1.2.yml */
     case 'import':
-        if (options.versionName === "undefined") {
+        if (Version === null) {
             console.error('You must specify a --versionName to import. Did you mean "backfill"?');
             process.exit(1);
         }
+        validateOption_releaseConfig(`./${Version}.yml`);
+        console.log(ReleaseContext);
+        SwimmReleases.Import(Version, ReleaseContext);
         break;
     /* Draft release notes for any unreleased versions we know about, as best as we can. */
     case 'draft':
@@ -96,7 +103,7 @@ switch (options.mode) {
         break;
     /* Publish A Release Notes Draft */
     case 'publish':
-        if (options.versionName === "undefined") {
+        if (Version === null) {
             console.error('You must specify a --versionName to publish. There is no bulk publish feature, very deliberately.');
             process.exit(1);
         }
@@ -114,8 +121,17 @@ switch (options.mode) {
         SwimmReleases.BackfillReleases(605000 * 1000);
         SwimmReleases.WriteConfig();
        break;
+    /* Backfill release notes for the imported versions */
     case 'backfill-notes':
         SwimmReleases.BackfillNotes();
+        break;
+    /* Export YAML stringified live config object for a version. */
+    case 'export':
+        if (Version === null) {
+            console.error('You must specify a --versionName to export.');
+            process.exit(1);
+        }
+        SwimmReleases.Export(Version);
         break;
     /* Commander shouldn't let us get here but famous last words and all */
     case undefined:
