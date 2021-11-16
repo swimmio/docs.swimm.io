@@ -17,6 +17,7 @@ let YAML = require('yaml');
 
 let Version = null;
 let ReleaseContext = null;
+let UseTheForce = false;
 
 /* Option handlers */
 
@@ -68,14 +69,16 @@ program
 /* Runtime Stuff */
 
 program
-    .option('-r, --releaseName <vame>', 'the Swimm version name, e.g. "0.1.2" or "0.1.2.3" or "0.1.2-3"', validateOption_versionName)
+    .option('-r, --release <name>', 'the Swimm version name, e.g. "0.1.2" or "0.1.2.3" or "0.1.2-3"', validateOption_versionName)
     .option('-d, --debug', 'turn this on if you love undefined behavior')
+    .option('-f, --force', 'Import intermediate configs for all releases, even if in production.', false)
     .option('-s, --stagger [interval]', 'When backfilling, back-date release notes to avoid flooding feeds.', 'offset:minimum', validateOption_stagger)
-    .addOption(new Option('-m, --mode <mode>', 'function to perform.').choices(["init", "import", "draft", "release", "publish", "refresh", "flush", "backfill", "backfill-notes", "export"]));
+    .addOption(new Option('-m, --mode <mode>', 'function to perform.').choices(["init", "import", "export", "draft", "publish", "refresh", "backfill", "backfill-notes"]));
 
 
 program.parse();
 const options = program.opts();
+UseTheForce = options.force;
 
 switch (options.mode) {
     /* Create the cache directory if needed, and initialize blank configs */
@@ -93,13 +96,17 @@ switch (options.mode) {
         console.log(ReleaseContext);
         SwimmReleases.Import(Version, ReleaseContext);
         break;
+    /* Export YAML stringified live config object for a version. */
+    case 'export':
+        if (Version === null) {
+            console.error('You must specify a --versionName to export.');
+            process.exit(1);
+        }
+        SwimmReleases.Export(Version);
+        break;
     /* Draft release notes for any unreleased versions we know about, as best as we can. */
     case 'draft':
-        SwimmReleases.WriteDrafts();
-        break;
-    /* Push a drafted version live in the release notes. */
-    case 'release':
-        SwimmReleases.ReleaseConfig();
+        SwimmReleases.Drafts();
         break;
     /* Publish A Release Notes Draft */
     case 'publish':
@@ -110,28 +117,15 @@ switch (options.mode) {
         break;
     /* Refresh the version cache */
     case 'refresh':
-        SwimmReleases.RefreshCache();
-        break;
-    /* Flush the finalized configs */
-    case 'flush':
-        SwimmReleases.FlushConfig();
+        SwimmReleases.Refresh();
         break;
     /* Backfill versions we don't yet have into the cache & write intermediate config with default values */
     case 'backfill':
-        SwimmReleases.BackfillReleases(605000 * 1000);
-        SwimmReleases.WriteConfig();
+        SwimmReleases.Backfill(UseTheForce);
        break;
     /* Backfill release notes for the imported versions */
     case 'backfill-notes':
-        SwimmReleases.BackfillNotes();
-        break;
-    /* Export YAML stringified live config object for a version. */
-    case 'export':
-        if (Version === null) {
-            console.error('You must specify a --versionName to export.');
-            process.exit(1);
-        }
-        SwimmReleases.Export(Version);
+        SwimmReleases.Notes();
         break;
     /* Commander shouldn't let us get here but famous last words and all */
     case undefined:
@@ -141,4 +135,3 @@ switch (options.mode) {
         console.error(`Unknown option '${options.mode}' passed. Try --help mode'`);
         process.exit(1);
 }
-

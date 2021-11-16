@@ -68,6 +68,7 @@ let YAML = require('yaml');
  * part of the metadata. This lets the site verify the configuration during build.
  */
 let hash = require('object-hash');
+const { version } = require('os');
 
 /**
  * Get a list of tasks given a team / space ID.
@@ -211,22 +212,20 @@ function ReleaseExists(version) {
 }
 
 /**
- * Build a release object with things associated with a version.
+ * Build a release object with things associated with a version from backfill. 
+ * Normally, we just import YAML to ImportRelease, but this one is special, it 
+ * brings in all the historical releases, so we name it Swimmport :)
  * 
  * @param {Object} versionContext - context for the release (factory, or from the command line)
  * @param {Object} ReleaseData - chunk of release data where this version can be found.
  */
-function ImportRelease(versionContext, releaseData) {
+function Swimmport(versionContext, releaseData, force) {
     let versionName = versionContext['name'];
-    
     let lastImported = ReleaseExists(versionName);
-    /* need to have some option of forcing this */
-
-    if (lastImported ) {
+    if (lastImported && force == false) {
         console.log(`${versionName} ** Skipping (previously imported ${new Date(lastImported)})`);
         return;
     }
-
     /* Figure out the version, and fill in what we know about it from context */
     let keys = ['major', 'minor', 'patch', 'patchlevel'];
     let values = versionName.replace('-', '.').split('.');
@@ -259,11 +258,10 @@ function ImportRelease(versionContext, releaseData) {
  * @param {String} swimmVersionString - Swimm release name, e.g. 0.1.2 / 0.1.2-3 / 0.1.2.3 
  * @returns {Object}
  */
-function ReleaseContextFactory(swimmVersionString, offset=0) {
-
+function ReleaseContextFactory(release) {
     let backfill = {
-        name: swimmVersionString,
-        date: Date.now() - offset, 
+        name: release,
+        date: null, 
         security: false,
         notes: null,
         blog: null, 
@@ -277,31 +275,24 @@ function ReleaseContextFactory(swimmVersionString, offset=0) {
 /**
  * Backfill one specified release, or all releases.
  * 
- * @param {String} version - Single version to import, default is all. 
+ * @param {Function} callback - Callback to notify when done. 
  */
-function BackfillReleases(version = null, offset=0, callback) {
+function BackfillReleases(force, callback) {
     let exportedReleases = ReadReleaseCache(ExportedReleaseConfig);
+    if (typeof exportedReleases.folders === "undefined") {
+        console.error(`I can't find the exports from ClickUp. You need to re-run with --mode refresh.`);
+        process.exit(1);
+    }
+
     for (const [key, value] of Object.entries(exportedReleases.folders)) {
         let search = value.name.match(ValidVersionPattern);
         if (search !== null) {
-            /* 
-               The .replace() here is for legacy compatibility.
-               Some very early releases had a 'u' after the last identifier, indicating 'micro'
-               Just transoform any extraneous strings after the last number to .1 for a new release.
-            */
             let release = search.toString().replace(/[a-z]$/g, "\.1");
-            /* Here, we have *a* valid version folder. */
-            if (version !== null) {
-                /* Are we looking for just this one? */
-                if (release === version) {
-                    ImportRelease(ReleaseContextFactory(release), value);
-                    return;
-                }
-            } else {
-                ImportRelease(ReleaseContextFactory(release), value);
-            }
+            console.log(`Calling ImportRelease & ReleaseContextFactory`);
+            Swimmport(ReleaseContextFactory(release), value, force);
         }
     }
+
     if (callback instanceof Function) {
         callback();
     }
@@ -371,8 +362,8 @@ function BackfillReleaseNotes(version = null, callback = null) {
     LoadIntermediateReleaseConfig();
     if (version !== null) {
         GetReleaseTasks(NewReleaseConfig['version']);
+        WriteIntermediateReleaseConfig();
         if (callback instanceof Function) {
-            WriteIntermediateReleaseConfig();
             callback();
         }
         return;
@@ -381,8 +372,8 @@ function BackfillReleaseNotes(version = null, callback = null) {
     for (const [key,  value] of Object.entries(NewReleaseConfig)) {
         GetReleaseTasks(value['name']);
     }
-
     WriteIntermediateReleaseConfig();
+    
     if (callback instanceof Function) {
         callback();
     }
@@ -449,7 +440,6 @@ function ReadReleaseCache(node) {
  * @param {Object} value 
  */
 function WriteReleaseCache(path, value) {
-
     fs.writeFileSync(`${CacheFolder}/${path}`, value, 'utf-8', function(e) {
         if (e) {
             console.error(`Could not write to ${path}, exiting ...`);
@@ -492,19 +482,21 @@ function InitializeReleaseCache() {
     }
 
     if (fs.existsSync(`${CacheFolder}/drafts`)) {
-        fs.rmdirSync(`${CacheFolder}/drafts`, { recursive: true, force: true });
+        fs.rmdirSync(`${CacheFolder}/drafts`, { recursive: true });
     }
 
     WriteReleaseCache(ExportedReleaseConfig, '{}');
     WriteReleaseCache(IntermediateReleaseConfig, '{}');
+    WriteReleaseCache(ProductionReleaseConfig, '{}');
 }
+
 
 /**
  * Once release notes have been generated, there's no reason to have 
  * the task/list references any longer. We also add some final metadata
  * about this run so we know how old the config is, etc.
  */
-function FinalizeReleaseConfig() {
+function FinalizeReleaseConfig(callback=null) {
     /* Remove the bits we don't want to keep */
     for (const [key, value] of Object.entries(NewReleaseConfig)) {
         delete NewReleaseConfig[key]['changes'];
@@ -525,15 +517,18 @@ function FinalizeReleaseConfig() {
         generator: './scripts/swimm-releases.js'
     };
 
-    if (TotalReleases > 0) {
-        console.log(`\nFinalizeReleaseConfig() :: The latest version I know of is ${NewReleaseConfig['current']} with ${TotalReleases} total releases. If that's not right, go fix it.`);
-        console.log('\nThis is not live yet, run --mode=release when ready.\n');
-    } else {
-        console.log('\nLive config matches release cache.');
-        console.log('\nIf that seems off, you might need to run --mode=refresh once the release folder is archived.\n')
+    let results = {
+        total: TotalReleases,
+        current: NewReleaseConfig['current'],
+        metadata: NewReleaseConfig['metadata'],
+        live: TotalReleases > 0 ? false:true
+    }
+    
+    if (callback instanceof Function) {
+        callback(results);
     }
 
-    /* That's it! */
+    return results;
 }
 
 /**
@@ -696,7 +691,6 @@ function ExportRelease(version, callback) {
 function ImportRelease(version, context, callback) {
     LoadCurrentReleaseConfig();
     CurrentReleaseConfig[version] = context;
-    CurrentReleaseConfig['foobaz'] = context;
     fs.writeFileSync(`./${ProductionReleaseConfig}`, 
     JSON.stringify(CurrentReleaseConfig, null, 2), 
     'utf-8', 
@@ -714,16 +708,16 @@ function ImportRelease(version, context, callback) {
 /* This is all still in a bit of flux, as noted above. */
 let SwimmReleases = {
     ValidVersionPattern: function() { return ValidVersionPattern; },
-    InitializeCache: function() { InitializeReleaseCache() },
+    Init: function() { InitializeReleaseCache() },
     Export: function(version) { ExportRelease(version, function(data) {console.log(YAML.stringify(data))})},
     Import: function(version, context) { ImportRelease(version, context, function(d) {console.log(d)})},
-    RefreshCache: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed');}) },
-    BackfillReleases: function(offset=0) { BackfillReleases(null, offset, function() { WriteIntermediateReleaseConfig(); }) },
-    BackfillNotes: function() { BackfillReleaseNotes(null, function() { console.log('Tasks backfilled.')})},
-    WriteConfig: function() { WriteReleaseConfig(null, function(loc) { console.log(`Config written to ${CacheFolder}/${loc}`)}) },
-    ReleaseConfig: function() { WriteProductionReleaseConfig(function() { console.log('Wrote production release config.')})},
-    FlushConfig: function() { WriteReleaseCache(ProductionReleaseConfig, '{}'); fs.writeFileSync(`./${ProductionReleaseConfig}`, '{}', 'utf-8', function(e){ console.log('Release config flushed.')})},
-    WriteDrafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); }
+    Refresh: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed');}) },
+    Backfill: function(force) { BackfillReleases(force, function() { WriteIntermediateReleaseConfig(); })},
+    Notes: function() { BackfillReleaseNotes(null, function() { console.log('Tasks backfilled.')})},
+    Write: function() { WriteReleaseConfig(null, function(loc) { console.log(`Config written to ${CacheFolder}/${loc}`)}) },
+    Release: function() { WriteProductionReleaseConfig(function() { console.log('Wrote production release config.')})},
+    Reload: function() { console.log('reload') },
+    Drafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); },
 }
 
 module.exports = { SwimmReleases }
