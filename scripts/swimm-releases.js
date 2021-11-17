@@ -15,50 +15,40 @@
  */
 "use strict"
 
-/* Environmental variables */
+/* Environmental variables hold interesting secrets. */
 require('dotenv').config();
+
+/* BEGIN GLOBALS THAT WILL VERY SOON BE PART OF A CLASS */
 
 /* What can a release look like? 0.6.3 || 0.6.3.1 || 0.6.3-1 */
 const ValidVersionPattern = /(^[0-9]+['.']+[0-9]+['.']+[0-9]+([a-zA-Z]?))+([\.]?[0-9]?)+([\-?]+[0-9?])?/gm;
-
 /* A Global release config object that many things contribute to building. */
 let NewReleaseConfig = {};
-
 /* The current (live) release config on the site. */
 let CurrentReleaseConfig = null;
-
 /* We get 100 API calls a day, so backfill has to be planned. We also keep track of other things for safety */
 let RemainingCalls = 1;
 let CallsReset = 0;
-let LastRan = 0;
-
-
 /* A running counter to see if there's work left to do */
 let TotalReleases = 0;
-
-/* For backfilling, we may need to plan a couple of days @ 100 calls a day */
-let TotalNeededCalls = 0;
-
 /**
  * We cache most API responses.
  * 
- *  - Those that are now static / archived (e.g. task lists) are always kept. They won't change.
+ * They're huge, they take a while to fetch, and they only change
+ * when a new release folder is archived.
  * 
- *  - Those that change with release cycles are refreshed on-demand.
- * 
- * This is because we get a finite amount of API requests, so we don't waste them reading the same
- * response over and over again for a task that was finished a year ago.
+ * We get a finite amount of requests (100 / daily)
+ *
  */
 let CacheFolder = './.swimmreleases';
 let ExportedReleaseConfig = 'releases.exports.json';
 let IntermediateReleaseConfig = 'releases.imports.json';
 let StateReleaseConfig = 'releases.state.json';
-
-/* Ultimately, the configuration file that the site will use */
 let ProductionReleaseConfig = 'releases.config.json';
-
 /* Root of API calls, with trailing slash */
 let API = 'https://api.clickup.com/api/v2/';
+
+/* END GLOBALS THAT WILL VERY SOON BE PART OF A CLASS */
 
 let fs = require('fs');
 let https = require('https');
