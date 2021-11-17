@@ -68,10 +68,10 @@ let YAML = require('yaml');
  * part of the metadata. This lets the site verify the configuration during build.
  */
 let hash = require('object-hash');
-const { version } = require('os');
+
 
 /**
- * Get a list of tasks given a team / space ID.
+ * Get a list of tasks given a space ID
  * This is currently not returning the correct number of tasks.
  * @param {Integer} id - ID of the team 
  * @param {Function} callback where it goes.
@@ -84,10 +84,12 @@ function GetReleaseTasksByTeam(id, callback) {
         callback(cacheValue);
         return;
     }
-    let queryUrl = `${API}/team/${id}/task?space=${process.env.SwimmReleases_ReleaseSpaceId}&archived=true&include_closed=true&status=complete`;
+    let queryUrl = `${API}/team/${id}/task?statuses%5B%5D=complete&archived=true`;
     SendAPIRequest(queryUrl).then((value) => {
-        WriteReleaseCache(`releases.teamlist_${id}_.json`, value);
         let responseData = JSON.parse(value);
+        if (! responseData.err) {
+            WriteReleaseCache(`releases.teamlist_${id}_.json`, value);
+        }
         if (callback instanceof Function) {
             callback(responseData);
         }
@@ -97,7 +99,6 @@ function GetReleaseTasksByTeam(id, callback) {
 
 /**
  * Get a list of tasks by a given list ID.
- * This is also currently not returning the correct number of tasks. <sigh>
  * 
  * @param {Integer} id - The ID of the task.
  * @param {Function} callback - Callback function that receives the decoded response
@@ -112,7 +113,7 @@ function GetReleaseTasksByList(id, callback) {
         }
         return cacheValue;
     }
-    let queryUrl = `${API}/list/${id}/task?space=${process.env.SwimmReleases_ReleaseSpaceId}&archived=true&include_closed=true&statuses%5B%5D=complete`;
+    let queryUrl = `${API}/list/${id}/task?&statuses%5B%5D=complete`;
     SendAPIRequest(queryUrl).then((value) => {
         WriteReleaseCache(cacheNode, value);
         let responseData = JSON.parse(value);
@@ -718,6 +719,17 @@ let SwimmReleases = {
     Release: function() { WriteProductionReleaseConfig(function() { console.log('Wrote production release config.')})},
     Reload: function() { console.log('reload') },
     Drafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); },
+    Magic: function(id) {
+        GetReleaseTasksByTeam(id, function(d){
+            if (d.err) {
+                console.error(d);
+                process.exit(1);
+            }
+            for (const [key, value] of Object.entries(d.tasks)) {
+                console.log(value.folder.name, value.list.name, value.name, value.status.date_closed);
+            }
+        });
+    }
 }
 
 module.exports = { SwimmReleases }

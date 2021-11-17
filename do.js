@@ -69,11 +69,25 @@ program
 /* Runtime Stuff */
 
 program
-    .option('-r, --release <name>', 'the Swimm version name, e.g. "0.1.2" or "0.1.2.3" or "0.1.2-3"', validateOption_versionName)
-    .option('-d, --debug', 'turn this on if you love undefined behavior')
-    .option('-f, --force', 'Import intermediate configs for all releases, even if in production.', false)
-    .option('-s, --stagger [interval]', 'When backfilling, back-date release notes to avoid flooding feeds.', 'offset:minimum', validateOption_stagger)
-    .addOption(new Option('-m, --mode <mode>', 'function to perform.').choices(["init", "import", "export", "draft", "publish", "refresh", "backfill", "backfill-notes"]));
+    .option('-r, --release <name>', 
+        'the Swimm version name, e.g. "0.1.2" or "0.1.2.3" or "0.1.2-3"', validateOption_versionName)
+    .option('-d, --debug', 
+        'turn this on if you love undefined behavior')
+    .option('-f, --force', 
+        'Import intermediate configs for all releases, even if in production.', false)
+    .option('-s, --stagger [interval]', 'When backfilling, back-date release notes to avoid flooding feeds.', 
+        'offset:minimum', validateOption_stagger)
+    .addOption(new Option('-m, --mode <mode>', 
+        'function to perform.').choices([
+            "init", 
+            "import", 
+            "export", 
+            "draft", 
+            "publish", 
+            "refresh", 
+            "backfill", 
+            "backfill-notes", 
+            "magic"]));
 
 
 program.parse();
@@ -126,6 +140,10 @@ switch (options.mode) {
     /* Backfill release notes for the imported versions */
     case 'backfill-notes':
         SwimmReleases.Notes();
+        break;
+    /* THIS MAGIC MOMENT .... */
+    case 'magic':
+        SwimmReleases.Magic(3723701);
         break;
     /* Commander shouldn't let us get here but famous last words and all */
     case undefined:
