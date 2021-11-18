@@ -97,7 +97,7 @@ UseTheForce = options.force;
 switch (options.mode) {
     /* Create the cache directory if needed, and initialize blank configs */
     case 'init':
-        SwimmReleases.InitializeCache();
+        SwimmReleases.Init();
         console.log('You very likely now want to re-run with --mode=refresh');
         break;
     /* Import a release from a release config file (default is versionName.yml, e.g. 0.1.2.yml */
@@ -143,7 +143,7 @@ switch (options.mode) {
         break;
     /* THIS MAGIC MOMENT .... */
     case 'magic':
-        SwimmReleases.Magic(3723701);
+        SwimmReleases.Calls();
         break;
     /* Commander shouldn't let us get here but famous last words and all */
     case undefined:

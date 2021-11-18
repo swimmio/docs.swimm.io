@@ -6,12 +6,8 @@
  * 
  * License: MIT
  * 
- * Note that this is VERY soon going to become a proper class that the CLI will just 
- * import normally. Right now I'm just figuring out what needs to be exported (public)
- * in this mix bag of helper functions, and what can go away altogether.
- * 
- * I wouldn't bother with any changes other than re-write it into a class, but I'm going
- * to do that anyway.
+ * This is being refactored into a class that we'll soon use instead
+ * (well, actually, 3 classes)
  */
 "use strict"
 
@@ -121,10 +117,6 @@ function GetReleaseTasksByList(id, callback) {
  * @param {String} version 
  */
 function GetReleaseTasks(version) {
-    if (NewReleaseConfig[version]['notes'] !== null) {
-        console.log(`${version} ** GetReleaseTasks(): I already have the copleted tasks for this release.`)
-        return;
-    }
     let mock = [
         '  - Fed feral Smurfs to Gargamel.\n',
         '  - Cleaned up all the Smurf droppings so nobody mistakes them for blueberries.\n',
@@ -146,7 +138,7 @@ function GetReleaseTasks(version) {
  * @returns {Boolean}
  */
 function CheckFolderBlocklist(folder) {
-    const blockList = ['Product', 'Devrel', 'Release', 'release', 'Flow', 'Website'];
+    const blockList = ['Product', 'DevRel', 'Release', 'release', 'Flow', 'Website'];
     const haystack = folder.toString();
     let matches = false;
     blockList.forEach(function(item, index, array) {
@@ -188,7 +180,6 @@ function FilterReleaseTasks(version) {
     NewReleaseConfig[version]['changes'] = filteredCategories;
     console.log(`\n${version} imported :: ${calls_needed} API calls still needed to fetch tasks.\n\n`);
     NewReleaseConfig[version]['calls'] = calls_needed;
-    TotalNeededCalls += calls_needed;
 }
 
 /**
@@ -252,8 +243,8 @@ function Swimmport(versionContext, releaseData, force) {
 function ReleaseContextFactory(release) {
     let backfill = {
         name: release,
-        date: null, 
-        security: false,
+        date: Date.now(), 
+        security: null,
         notes: null,
         blog: null, 
         tweet: null, 
@@ -696,7 +687,7 @@ function ImportRelease(version, context, callback) {
     });
 }
 
-/* This is all still in a bit of flux, as noted above. */
+/* This is very temporary while I refactor all of this down into succinct classes */
 let SwimmReleases = {
     ValidVersionPattern: function() { return ValidVersionPattern; },
     Init: function() { InitializeReleaseCache() },
@@ -709,16 +700,15 @@ let SwimmReleases = {
     Release: function() { WriteProductionReleaseConfig(function() { console.log('Wrote production release config.')})},
     Reload: function() { console.log('reload') },
     Drafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); },
-    Magic: function(id) {
-        GetReleaseTasksByTeam(id, function(d){
-            if (d.err) {
-                console.error(d);
-                process.exit(1);
-            }
-            for (const [key, value] of Object.entries(d.tasks)) {
-                console.log(value.folder.name, value.list.name, value.name, value.status.date_closed);
-            }
-        });
+    Calls: function() { 
+        LoadIntermediateReleaseConfig();
+        let calls = 0;
+        let releases = 0;
+        for (const [key, value] of Object.entries(NewReleaseConfig)) {
+            calls += value.calls;
+            releases += 1;
+        }
+        console.log(`${calls} API calls are needed to import task lists for ${releases} releases.`);
     }
 }
 
