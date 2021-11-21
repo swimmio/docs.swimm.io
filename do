@@ -142,6 +142,7 @@ switch (options.mode) {
     /* THIS MAGIC MOMENT .... */
     case 'magic':
         console.log(`It's a kind of magic ...`);
+        SwimmReleases.Write();
         break;
     /* Commander shouldn't let us get here but famous last words and all */
     case undefined:
