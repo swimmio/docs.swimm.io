@@ -539,6 +539,7 @@ function FinalizeReleaseConfig(callback=null) {
         delete NewReleaseConfig[key]['changes'];
         delete NewReleaseConfig[key]['notes'];
         delete NewReleaseConfig[key]['calls'];
+        delete NewReleaseConfig[key]['template'];
     }
     /* Resolve the latest version we know of */
     let versionNames = Object.keys(NewReleaseConfig);
