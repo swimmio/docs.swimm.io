@@ -10,6 +10,7 @@
  * (well, actually, 3 classes)
  */
 "use strict"
+const { DateTime } = require("luxon");
 
 /* Environmental variables hold interesting secrets. */
 require('dotenv').config();
@@ -22,11 +23,9 @@ const ValidVersionPattern = /(^[0-9]+['.']+[0-9]+['.']+[0-9]+([a-zA-Z]?))+([\.]?
 let NewReleaseConfig = {};
 /* The current (live) release config on the site. */
 let CurrentReleaseConfig = null;
-/* We get 100 API calls a day, so backfill has to be planned. We also keep track of other things for safety */
-let RemainingCalls = 1;
-let CallsReset = 0;
 /* A running counter to see if there's work left to do */
 let TotalReleases = 0;
+
 /**
  * We cache most API responses.
  * 
@@ -58,7 +57,9 @@ let hash = require('object-hash');
 
 /**
  * Get a list of tasks given a space ID
- * This is currently not returning the correct number of tasks.
+ * This will eventually be the way we can import all release notes along with additional
+ * helpful data. Problem is, it currently does not return archived lists. 
+ * We have voted for this ClickUp feature request: https://clickup.canny.io/feature-requests/p/let-get-filtered-team-tasks-include-items-in-archived-hierarchy
  * @param {Integer} id - ID of the team 
  * @param {Function} callback where it goes.
  * @returns {JSON} - Raw API response, which is also what's written to cache
@@ -91,7 +92,8 @@ function GetReleaseTasksByTeam(id, callback) {
  * @returns {JSON} - Raw API response, which is also what's written to cache
  */
 function GetReleaseTasksByList(id, callback) {
-    let cacheNode = `releases.tasklist_${id}_.json`;
+    /* Before we even worry about rate limits, see if we have a cached copy */
+    let cacheNode = `tasklists/releases.tasklist_${id}_.json`;
     let cacheValue = ReadReleaseCache(cacheNode);
     if (cacheValue !== null) { 
         if (callback instanceof Function) {
@@ -99,10 +101,17 @@ function GetReleaseTasksByList(id, callback) {
         }
         return cacheValue;
     }
+
+    /* SendAPI request will be a potato by refusing to run if we're out of requests. */
     let queryUrl = `${API}/list/${id}/task?&statuses%5B%5D=complete`;
     SendAPIRequest(queryUrl).then((value) => {
-        WriteReleaseCache(cacheNode, value);
         let responseData = JSON.parse(value);
+        /* Don't save an error response as a cached object, but let the
+         * caller figure out what to do (or log) next from the callback.
+         */
+        if (! value.err) {
+            WriteReleaseCache(cacheNode, value);
+        }
         if (callback instanceof Function) {
             callback(responseData);
         }
@@ -117,14 +126,65 @@ function GetReleaseTasksByList(id, callback) {
  * @param {String} version 
  */
 function GetReleaseTasks(version) {
-    let mock = [
-        '  - Fed feral Smurfs to Gargamel.\n',
-        '  - Cleaned up all the Smurf droppings so nobody mistakes them for blueberries.\n',
-        '  - Pruned back Smurfberry bushes so we attract fewer smurfs.\n',
-        '  - Realized that Azrael is kind of a dark name for a cartoon cat, even an evil one.\n'
-    ];
-    NewReleaseConfig[version]['notes'] = mock;
+
+    let notes = [];
+    let dates = [];
+
+    let lists = NewReleaseConfig[version]['changes'];
+
+    for (const [id] of Object.entries(lists)) {
+        let task = {
+            name:null,
+            date_closed: null,
+            creator: null,
+            developers: null,
+            tags: [],
+            url: null,
+            folder: null,
+            list: null
+        }
+
+        let developers = [];
+
+        GetReleaseTasksByList(id, function(d) {
+            if (d.err) {
+                console.error(`GetReleaseTasksByList :: Error :: ${d.err}`);
+                WriteIntermediateReleaseConfig();
+                console.log('Intermediate config saved so we can pick up from the last successful call. Re-try when API is available.');
+                process.exit(1);
+            }
+            for (const [key, value] of Object.entries(d.tasks)) {
+                task.name = value.name;
+                task.date_closed = value.date_closed;
+                task.creator = value.creator.username;
+                task.url = value.url;
+                task.folder = value.folder.name;
+                task.list = value.list.name;
+                for (const [item, data] of Object.entries(value.assignees)) {
+                    developers.push(data.username);
+                }
+                task.developers = String(Array.from(new Set(developers)));
+                task.tags = String(value.tags);
+                let released = DateTime.fromSeconds(parseInt(task.date_closed, 10)).toFormat('MM-dd-yyyy');
+                let item = `  - ${task.list} / ${task.name}\n    - completed: ${released}  ${task.folder} tags: ${task.tags} created by: ${task.creator} devs: ${task.developers}`;
+                notes.push(item);
+                dates.push(Math.floor(task.date_closed / 1000));
+            }
+        });
+    };
+    
+    NewReleaseConfig[version]['notes'] = notes;
     NewReleaseConfig[version]['template'] = PrepReleaseNotes(NewReleaseConfig[version]);
+
+    // Since we're backfilling, we can now date the release by the oldest (smallest) timestamp.
+    // Do that, if the date is in the future from the last task. 
+    dates.sort(function(a, b) { return a - b });
+    let estimated = dates.shift();
+    if (NewReleaseConfig[version]['date'] > estimated) {
+        NewReleaseConfig[version]['date'] = estimated;
+    }
+
+    NewReleaseConfig[version]['calls'] = 0;
 }
 
 /**
@@ -138,7 +198,7 @@ function GetReleaseTasks(version) {
  * @returns {Boolean}
  */
 function CheckFolderBlocklist(folder) {
-    const blockList = ['Product', 'DevRel', 'Release', 'release', 'Flow', 'Website'];
+    const blockList = ['Product', 'DevRel', 'Release', 'release', 'Flow', 'Website', 'Branch', 'branch'];
     const haystack = folder.toString();
     let matches = false;
     blockList.forEach(function(item, index, array) {
@@ -159,27 +219,21 @@ function CheckFolderBlocklist(folder) {
 function FilterReleaseTasks(version) {
     let rawCategories = NewReleaseConfig[version]['changes'];
     let filteredCategories = {};
-    let calls_needed = 0;
 
     for (const [key, value] of Object.entries(rawCategories)) {
         console.log(`\n      ${version} :: Mentions list ${key} named ${value.name}`);
         if (CheckFolderBlocklist(value.name)) {
             continue;
         }
-
-        calls_needed += 1;
         filteredCategories[key] = {name: value['name']};
-        filteredCategories[key]['statuslist'] = {};
-
-        for (const [key1, value1] of Object.entries(rawCategories[key]['statuslist'])) {
-            filteredCategories[key]['statuslist'][key1] = {id: value1['id'], name: value1['status']};
-            console.log(`        -> Contains status ID: ${value1.id} Named: ${value1.status} (added to query heap)`);
-        }
     }
+    let calls = Object.keys(filteredCategories).length;
 
     NewReleaseConfig[version]['changes'] = filteredCategories;
-    console.log(`\n${version} imported :: ${calls_needed} API calls still needed to fetch tasks.\n\n`);
-    NewReleaseConfig[version]['calls'] = calls_needed;
+    NewReleaseConfig[version]['calls'] = calls;
+
+    console.log(`\n${version} imported :: ${calls} API calls still needed to fetch tasks.\n\n`);
+
 }
 
 /**
@@ -210,8 +264,8 @@ function Swimmport(versionContext, releaseData, force) {
     }
     /* Figure out the version, and fill in what we know about it from context */
     let keys = ['major', 'minor', 'patch', 'patchlevel'];
-    let values = versionName.replace('-', '.').split('.');
-    const releaseVersion = keys.reduce((obj, key, index) => ({ ...obj, [key]: values[index] ? values[index] : null }), {});
+    let values = versionName.replace('-', '.').split('.').map( Number );
+    const releaseVersion = keys.reduce((obj, key, index) => ({ ...obj, [key]: values[index] >= 0 ? values[index] : null }), {});
     NewReleaseConfig[versionName] = {
         ...releaseVersion,
         ...versionContext
@@ -228,9 +282,9 @@ function Swimmport(versionContext, releaseData, force) {
         }
         NewReleaseConfig[versionName]['changes'][needle] = {name: haystack, statuslist: statuses}
     }
-    console.log(versionName, ' :: Packed all associated task list IDs and statuses - resolving lists ...')
     FilterReleaseTasks(versionName);
     TotalReleases += 1;
+    console.log(versionName, ' :: Packed all associated task list IDs and statuses - resolving lists ...')
 }
 
 /**
@@ -243,7 +297,7 @@ function Swimmport(versionContext, releaseData, force) {
 function ReleaseContextFactory(release) {
     let backfill = {
         name: release,
-        date: Date.now(), 
+        date: Math.floor(Date.now() / 1000), 
         security: null,
         notes: null,
         blog: null, 
@@ -255,8 +309,9 @@ function ReleaseContextFactory(release) {
 }
 
 /**
- * Backfill one specified release, or all releases.
+ * Backfill All Known Releases
  * 
+ * @param {Boolean} force - force import even if already in the production config
  * @param {Function} callback - Callback to notify when done. 
  */
 function BackfillReleases(force, callback) {
@@ -270,7 +325,6 @@ function BackfillReleases(force, callback) {
         let search = value.name.match(ValidVersionPattern);
         if (search !== null) {
             let release = search.toString().replace(/[a-z]$/g, "\.1");
-            console.log(`Calling ImportRelease & ReleaseContextFactory`);
             Swimmport(ReleaseContextFactory(release), value, force);
         }
     }
@@ -334,32 +388,22 @@ function WriteReleaseDrafts(callback = null) {
 }
 
 /**
- * Given a version (or versions) imported with BackfillReleases(), we now need to get the actual
- * tasks, which is going to take some coordination depending on how many. 
+ * Just something so we keep track of how many calls we have left, when they reset, etc
+ * between runs.
  * 
- * @param {String} version - Single version to import, defaults to all
- * TODO: Make this deal with API request limits and spacing
+ * @param {Object} state - State object to write.
  */
-function BackfillReleaseNotes(version = null, callback = null) {
-    LoadIntermediateReleaseConfig();
-    if (version !== null) {
-        GetReleaseTasks(NewReleaseConfig['version']);
-        WriteIntermediateReleaseConfig();
-        if (callback instanceof Function) {
-            callback();
-        }
-        return;
-    }
+ function WriteReleaseState(state) {
+    WriteReleaseCache(StateReleaseConfig, JSON.stringify(state, null, 2));
+}
 
-    for (const [key,  value] of Object.entries(NewReleaseConfig)) {
-        GetReleaseTasks(value['name']);
-    }
-    WriteIntermediateReleaseConfig();
-    
-    if (callback instanceof Function) {
-        callback();
-    }
-    return;
+/**
+ * Set globals based on the last run, when needed.
+ */
+function LoadReleaseState() {
+    /* First thing tomorrow - make me invalidate state if this file is stale */
+    let state = JSON.parse(fs.readFileSync(`${CacheFolder}/${StateReleaseConfig}`));
+    return state;
 }
 
 /**
@@ -369,6 +413,11 @@ function BackfillReleaseNotes(version = null, callback = null) {
  * @returns {Promise}
  */
 async function SendAPIRequest(queryUrl) {
+    const releaseState = LoadReleaseState();
+    if (releaseState.remaining < 1) {
+        console.error('SendAPIRequest :: I am out of API requests and Dad says stop if that happens.');
+        process.exit(1);
+    }
     return new Promise(async (resolve, reject) => {
         const requestOptions = {
             hostname: 'api.clickup.com',
@@ -381,19 +430,21 @@ async function SendAPIRequest(queryUrl) {
         };
         let response = [];
         const request = https.request(requestOptions, (res) => {
-            RemainingCalls = res.headers['x-ratelimit-remaining'];
-            CallsReset = res.headers['x-ratelimit-reset'];
+            let state = {
+                allowed: 100,
+                remaining: parseInt(res.headers['x-ratelimit-remaining'], 10),
+                resets: parseInt(res.headers['x-ratelimit-reset'], 10),
+                lastran: Math.floor(Date.now() / 1000)
+            }
+            /* So we know how many calls we have left, and when they reset. For backfilling */
+            WriteReleaseState(state);
             res.on('data', chunk => response.push(chunk));
             res.on('end', () => {
-                /* So we know how many calls we have left, and when they reset. For backfilling */
-                WriteReleaseState();
                 const data = Buffer.concat(response).toString();
                 resolve(data); 
             });
         });
         request.on('error', e => {
-            /* We don't get charged for the request if there's an error response, 
-            so no need to update state */
             console.error(e);
             reject(e);
         });
@@ -465,6 +516,10 @@ function InitializeReleaseCache() {
 
     if (fs.existsSync(`${CacheFolder}/drafts`)) {
         fs.rmdirSync(`${CacheFolder}/drafts`, { recursive: true });
+    }
+
+    if (!fs.existsSync(`${CacheFolder}/tasklists`)) {
+        fs.mkdirSync(`${CacheFolder}/tasklists`);
     }
 
     WriteReleaseCache(ExportedReleaseConfig, '{}');
@@ -540,26 +595,6 @@ function WriteReleaseConfig(callback) {
 }
 
 /**
- * Just something so we keep track of how many calls we have left, when they reset, etc
- * between runs.
- */
-function WriteReleaseState() {
-    let state = {Remaining: RemainingCalls, Resets: CallsReset, Ran: Date.now()};
-    WriteReleaseCache(StateReleaseConfig, JSON.stringify(state, null, 2));
-}
-
-/**
- * Set globals based on the last run, when needed.
- */
-function LoadReleaseState() {
-    let state = JSON.parse(fs.readFileSync(StateReleaseConfig));
-    RemainingCalls = state.Remaining;
-    CallsReset = state.Resets;
-    LastRan = state.Ran;
-    return;
-}
-
-/**
  * 
  * Read the current site release config into a global.
  * Returns false on failure.
@@ -595,14 +630,14 @@ function LoadIntermediateReleaseConfig() {
  * @param {Object} versionContext - The version 
  */
 function PrepReleaseNotes(versionContext) {
-    const date = new Date(versionContext.date);
     const template = 
-`---
+`
+---
 slug: release-${versionContext.name}
 title: Swimm ${versionContext.name} Released
 autthors: [swimm]
 tags: [release-notes]
-date: ${date.getYear()}-${date.getMonth()}-${date.getDate()}
+date: ${DateTime.fromSeconds(parseInt(versionContext.date, 10)).toFormat('MM-dd-yyyy')}
 ----
 import Swimm, {SwimmLink, SwimmMoji, SwimmReleaseBlogPost, SwimmReleaseTweet, SwimmReleaseVideo} from '../../src/components/SwimmUtils.js';
 
@@ -687,6 +722,12 @@ function ImportRelease(version, context, callback) {
     });
 }
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
+
 /* This is very temporary while I refactor all of this down into succinct classes */
 let SwimmReleases = {
     ValidVersionPattern: function() { return ValidVersionPattern; },
@@ -695,21 +736,55 @@ let SwimmReleases = {
     Import: function(version, context) { ImportRelease(version, context, function(d) {console.log(d)})},
     Refresh: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed');}) },
     Backfill: function(force) { BackfillReleases(force, function() { WriteIntermediateReleaseConfig(); })},
-    Notes: function() { BackfillReleaseNotes(null, function() { console.log('Tasks backfilled.')})},
     Write: function() { WriteReleaseConfig(null, function(loc) { console.log(`Config written to ${CacheFolder}/${loc}`)}) },
     Release: function() { WriteProductionReleaseConfig(function() { console.log('Wrote production release config.')})},
     Reload: function() { console.log('reload') },
     Drafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); },
-    Calls: function() { 
+    Notes: async function() { 
         LoadIntermediateReleaseConfig();
+        let state = LoadReleaseState();
         let calls = 0;
+        let allowed = 100;
         let releases = 0;
+        let imported = 0;
         for (const [key, value] of Object.entries(NewReleaseConfig)) {
             calls += value.calls;
             releases += 1;
         }
+
+        /* We have notes for every version we know about */
+        if (calls == 0) {
+            console.log(`Nothing to do. ${calls} calls for ${releases} releases. Missing something? Try --mode refresh, --mode backfill, --mode backfill-notes.`);
+            process.exit(0);
+        }
+
+        /* We may need a plan if we're backfilling a bunch */
         console.log(`${calls} API calls are needed to import task lists for ${releases} releases.`);
+        console.log(`I am allowed ${allowed} calls per day. This will take ${calls / allowed} day(s) to complete.`);
+        console.log(`I'll monitor the release state, and only process a version if it requires the same or fewer calls than I have left.`);
+
+        for (const [key, value] of Object.entries(NewReleaseConfig)) {
+            /* Some may not have any associated lists, or may have been previously imported */
+            if (value.calls == 0) {
+                continue;
+            }
+            console.log(`\n${value.name} ::: PROCESSING ::: (${value.calls} required`)
+            for (const [change, tasklist] of Object.entries(NewReleaseConfig[key]['changes'])) {
+                console.log(`  - List ID ${change} correlates to tasks from "[${value.name}] - ${tasklist.name}"`);
+                GetReleaseTasks(value.name);
+                state = LoadReleaseState();
+            }
+            imported += 1;
+            /* use await sleep(2500) if a pause is needed here */
+        }
+        WriteIntermediateReleaseConfig();
+        console.log(`Imported release notes for ${imported} out of ${releases} total releases.`);
     }
 }
 
+/* Tomorrow:
+ * - Fix the date thing
+ * - Get queries running
+ * - Edit & ship as many release notes as we can.
+ */
 module.exports = { SwimmReleases }

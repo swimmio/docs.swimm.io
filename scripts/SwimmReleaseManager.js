@@ -200,3 +200,5 @@ class SwimmReleaseManager {
 
     } 
 }
+
+module.exports = { SwimmReleaseManager }
