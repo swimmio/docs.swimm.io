@@ -1,6 +1,8 @@
 # IDE Plugins
 
-Swimm currently supports integration with VSCode, and we're working really hard to fully support IntelliJ and Visual Studio as well. As they're ready, they will appear on the "Integrations" tab from any repository:
+Swimm currently supports integration with VSCode, and all JetBrains IDEs. Our next target IDE is Visual Studio.
+
+As more plugins are ready, they will appear on the "Integrations" tab from any repository:
 
 ![Integrations](/img/desktop/integrations.png "Integrations Menu")
 
