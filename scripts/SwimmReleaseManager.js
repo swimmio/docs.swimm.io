@@ -5,8 +5,8 @@ class SwimmCacheManager {
 
     /* Where Should the cache and drafts be written? Neither should be tracked in git. */
     CacheFolder = './.swimmreleases';
-    DraftsFolder = `${CacheFolder}/drafts`;
-    MetaFolder = `${CacheFolder}/yaml-metadata`;
+    DraftsFolder = `drafts`;
+    MetaFolder = `yaml-metadata`;
 
     /* Locations of nodes in cache */
     ConfigNodes = {
@@ -15,12 +15,13 @@ class SwimmCacheManager {
         next: 'releases.next.json',
         state: 'releases.state.json',
     }
+    YAML = require('yaml');
 
     constructor (fs) {
         this.fs = fs || require('fs');
     }
 
-    get node() {
+    read(node) {
         let path = `${this.CacheFolder}/${node}`;
         if (this.fs.existsSync(path)) {
             return JSON.parse(this.fs.readFileSync(path, 'utf8'));
@@ -28,41 +29,60 @@ class SwimmCacheManager {
         return null;
     }
 
-    set node(value) {
-        let path = `${this.CacheFolder}/${node}}`;
+    write(node, value) {
+        let path = `${this.CacheFolder}/${node}`;
         this.fs.writeFileSync(path, value);
     }
 
     writeConfigFile(node, value) {
-        this.set(this.ConfigNodes[node], value);
+        this.write(this.ConfigNodes[node], value);
     }
 
     readConfigFile(node) {
-        return this.get(ConfigNodes[node]);
+        return this.read(ConfigNodes[node]);
     }
 
     writeMetaData(node, value) {
         let path = `${this.MetaFolder}/${node}.yml`;
-        this.set(path, value);
+        this.write(path, value);
     }
 
     readMetaData(node) {
-        let path = `${this.MetaFolder}/${node}.yml`;
-        return this.get(path);
+        let path = `${this.CacheFolder}/${this.MetaFolder}/${node}.yml`;
+        return this.YAML.parse(this.fs.readFileSync(path, 'utf-8'));
+    }
+
+    writeReleaseNote(node, value) {
+        let path = `${this.CacheFolder}/${this.DraftsFolder}/${node}`;
+        this.fs.mkdirSync(path);
+        this.write(`${path}/index.mdx`, value);
     }
 
     init() {
-        if (! this.fs.existsSync(this.CacheFolder)) {
+        /* folders */
+        if (! this.fs.existsSync($this.CacheFolder)) {
             this.fs.mkdirSync(this.CacheFolder);
         }
-    
+
+        if (! this.fs.existsSync(`${this.CacheFolder}/${this.DraftsFolder}`)) {
+            this.fs.mkdirSync(`${this.CacheFolder}/${this.DraftsFolder}`);
+        }
+        
+        if (! this.fs.existsSync(`${this.CacheFolder}/${this.MetaFolder}`)) {
+            this.fs.mkdirSync(`${this.CacheFolder}/${this.MetaFolder}`);
+        }
+
+        /* The main (prod) file */
         if (! this.fs.existsSync(this.ProductionReleaseConfig)) {
             this.fs.writeFileSync(this.ProductionReleaseConfig, '{}');
         }
-    
-        if (this.fs.existsSync(this.DraftsFolder)) {
-            fs.rmdirSync(this.DraftsFolder, { recursive: true });
-        }
+
+        /* We don't delete any cache from init. In fact, init
+         * is a way you can rebuild the whole config from the
+         * cache.
+         * 
+         * But, we need to initialize the configs.
+         */
 
         this.writeConfigFile('exported', '{}');
         this.writeConfigFile('intermediate', '{}');
@@ -201,4 +221,4 @@ class SwimmReleaseManager {
     } 
 }
 
-module.exports = { SwimmReleaseManager }
+module.exports = { SwimmReleaseManager, SwimmCacheManager }

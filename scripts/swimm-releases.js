@@ -11,6 +11,7 @@
  */
 "use strict"
 const { DateTime } = require("luxon");
+const { SwimmCacheManager } = require('./SwimmReleaseManager.js');
 
 /* Environmental variables hold interesting secrets. */
 require('dotenv').config();
@@ -368,8 +369,11 @@ function WriteReleaseDraft(version) {
         linkedin: target.linkedin
     };
 
-    fs.writeFileSync(`${path}/${target.name}.yml`, YAML.stringify(metadata));
-    
+    path = `${CacheFolder}/yaml-metadata/${target.name}.yml`;
+    if (! fs.existsSync(path)) {
+        fs.writeFileSync(path, YAML.stringify(metadata));  
+    }
+
     return;
 }
 
@@ -706,21 +710,22 @@ function ExportRelease(version, callback) {
     return;
 }
 
-function ImportRelease(version, context, callback) {
+function UpdateRelease(version, context, callback) {
     LoadCurrentReleaseConfig();
     CurrentReleaseConfig[version] = context;
     fs.writeFileSync(`./${ProductionReleaseConfig}`, 
-    JSON.stringify(CurrentReleaseConfig, null, 2), 
-    'utf-8', 
-    function(e) { 
-        if (e) {
-            console.error('Could not write production config, exiting.');
-            process.exit(1);
+        JSON.stringify(CurrentReleaseConfig, null, 2), 
+        'utf-8', 
+        function(e) { 
+            if (e) {
+                console.error('Could not write production config, exiting.');
+                process.exit(1);
+            }
+            if (callback instanceof Function) {
+                callback(CurrentReleaseConfig[version]);
+            }
         }
-        if (callback instanceof Function) {
-            callback(CurrentReleaseConfig[version]);
-        }
-    });
+    );
 }
 
 function sleep(ms) {
@@ -733,13 +738,18 @@ function sleep(ms) {
 let SwimmReleases = {
     ValidVersionPattern: function() { return ValidVersionPattern; },
     Init: function() { InitializeReleaseCache() },
-    Export: function(version) { ExportRelease(version, function(data) {console.log(YAML.stringify(data))})},
-    Import: function(version, context) { ImportRelease(version, context, function(d) {console.log(d)})},
+    Export: function(version) { 
+        let cache = new SwimmCacheManager;
+        ExportRelease(version, function(data) {
+            cache.writeMetaData(version, YAML.stringify(data));
+            console.log(YAML.stringify(data))
+        })
+    },
+    Update: function(version, context) { UpdateRelease(version, context, function(d) {console.log(d)})},
     Refresh: function() { RefreshReleaseCache(function(){ console.log('Dynamic API cache refreshed');}) },
     Backfill: function(force) { BackfillReleases(force, function() { WriteIntermediateReleaseConfig(); })},
     Write: function() { WriteReleaseConfig(null, function(loc) { console.log(`Config written to ${CacheFolder}/${loc}`)}) },
     Release: function() { WriteProductionReleaseConfig(function() { console.log('Wrote production release config.')})},
-    Reload: function() { console.log('reload') },
     Drafts: function() { WriteReleaseDrafts(function() { console.log('Drafts written.')}); },
     Notes: async function() { 
         LoadIntermediateReleaseConfig();
@@ -780,12 +790,22 @@ let SwimmReleases = {
         }
         WriteIntermediateReleaseConfig();
         console.log(`Imported release notes for ${imported} out of ${releases} total releases.`);
-    }
+    },
+    Publish: function(version) {
+        let draft = `${CacheFolder}/drafts/${version}`;
+        let pub = `./changelog/${version}`;
+        fs.mkdirSync(pub);
+        fs.rename(draft, pub, function (err) {
+            if (err) {
+                console.error('Failed to publish draft - ', err);
+                process.exit(1);
+            }
+            console.log(`${version} published! Don't forget to add / commit / push.`);
+          })
+    },
 }
 
 /* Tomorrow:
- * - Fix the date thing
- * - Get queries running
  * - Edit & ship as many release notes as we can.
  */
 module.exports = { SwimmReleases }

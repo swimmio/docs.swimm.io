@@ -9,7 +9,8 @@
  */
 
  "use strict"
-const { SwimmReleases } = require('./scripts/swimm-releases.js'); 
+const { SwimmReleases } = require('./scripts/swimm-releases.js');
+const { SwimmCacheManager } = require('./scripts/SwimmReleaseManager.js');
 const { Command, Option } = require('commander');
 const program = new Command();
 let fs = require('fs');
@@ -18,6 +19,7 @@ let YAML = require('yaml');
 let Version = null;
 let ReleaseContext = null;
 let UseTheForce = false;
+
 
 /* Option handlers */
 
@@ -30,26 +32,6 @@ function validateOption_versionName(option, prev) {
     Version = option;
 }
 
-function validateOption_configFile(option, prev) {
-    if (! fs.existsSync(option)) {
-        console.error(`Invalid production config file location specified: ${option}`);
-        process.exit(1);
-    }
-}
-
-function validateOption_releaseConfig(option, prev) {
-    if (! fs.existsSync(option)) {
-        console.error(`Invalid release data config file location specified: ${option}`);
-        process.exit(1);
-    }
-    let buffer = fs.readFileSync(option, 'utf8');
-    ReleaseContext = YAML.parse(buffer);
-}
-
-function validateOption_stagger(option, prev) {
-    console.log(option);
-}
-
 /* Metadata */
 
 program
@@ -58,13 +40,6 @@ program
     .description("The doer of release things that need done.")
     .usage("<global options> [arguments] <releasefile.yml>")
     .helpOption('-h, --help', 'read more information');
-
-/* Global flags */
-
-program
-    .option('-c, --currentConfig [file.json]', 
-        'production (current) releases configuration file location, if different than usual.', './releases.config.json', validateOption_configFile)
-    .option('-C, --releaseConfig [file.yml]', 'pre-set values that will get passed to ReleaseFactory.', validateOption_releaseConfig)
 
 /* Runtime Stuff */
 
@@ -75,22 +50,39 @@ program
         'Import intermediate configs for all releases, even if in production.', false)
     .addOption(new Option('-m, --mode <mode>', 
         'function to perform.').choices([
-            "init", 
-            "import", 
+            "init",
+            "create", 
+            "update", 
             "export", 
             "draft", 
-            "publish", 
-            "refresh", 
+            "publish",
+            "refresh",  
             "backfill", 
             "backfill-notes", 
+            "commit",
+            "push",
             "magic"
         ])
     );
 
 
+function validateVersion() {
+    if (Version === null) {
+        console.error('You must specify a --versionName for this mode.');
+        process.exit(1);
+    }
+}
+
 program.parse();
 const options = program.opts();
 UseTheForce = options.force;
+
+if (options.mode === "undefined") {
+    console.error('Malformed option to --mode, try --help for a list of valid options.');
+    process.exit(1);
+}
+
+let cache = new SwimmCacheManager;
 
 switch (options.mode) {
     /* Create the cache directory if needed, and initialize blank configs */
@@ -98,22 +90,33 @@ switch (options.mode) {
         SwimmReleases.Init();
         console.log('You very likely now want to re-run with --mode=refresh');
         break;
-    /* Import a release from a release config file (default is versionName.yml, e.g. 0.1.2.yml */
-    case 'import':
-        if (Version === null) {
-            console.error('You must specify a --versionName to import. Did you mean "backfill"?');
+    /* Create a bare minimum config for a release. */
+    case 'create':
+        /* create a new skeletal config as YAML then update it */
+        validateVersion();
+        /* for now just do it by hand */
+        break;
+    /* Import a release from a yaml config */
+    case 'update':
+        validateVersion();
+        let context = cache.readMetaData(Version);
+        if (context === null) {
+            console.error(`I'm sorry Dave, I'm afraid I can't do that. (Try exporting it first)`);
             process.exit(1);
         }
-        validateOption_releaseConfig(`./${Version}.yml`);
-        console.log(ReleaseContext);
-        SwimmReleases.Import(Version, ReleaseContext);
+        
+        context.major = parseInt(context.major, 10);
+        context.minor = parseInt(context.minor, 10);
+        context.patch = parseInt(context.patch, 10);
+        context.patchlevel = context.patchlevel == null ? 0 : parseInt(context.patchlevel, 10);
+        context.name = context.name.toString();
+
+        SwimmReleases.Update(Version, context);
+
         break;
     /* Export YAML stringified live config object for a version. */
     case 'export':
-        if (Version === null) {
-            console.error('You must specify a --versionName to export.');
-            process.exit(1);
-        }
+        validateVersion();
         SwimmReleases.Export(Version);
         break;
     /* Draft release notes for any unreleased versions we know about, as best as we can. */
@@ -122,10 +125,8 @@ switch (options.mode) {
         break;
     /* Publish A Release Notes Draft */
     case 'publish':
-        if (Version === null) {
-            console.error('You must specify a --versionName to publish. There is no bulk publish feature, very deliberately.');
-            process.exit(1);
-        }
+        validateVersion();
+        SwimmReleases.Publish(Version);
         break;
     /* Refresh the version cache */
     case 'refresh':
@@ -139,15 +140,18 @@ switch (options.mode) {
     case 'backfill-notes':
         SwimmReleases.Notes();
         break;
-    /* THIS MAGIC MOMENT .... */
-    case 'magic':
-        console.log(`It's a kind of magic ...`);
+    /* Produce a config that can be copied over to production */
+    case 'commit':
         SwimmReleases.Write();
         break;
-    /* Commander shouldn't let us get here but famous last words and all */
-    case undefined:
-        console.error('Missing required option --mode, try --help for more.');
-        process.exit(1);
+    /* Actually push a 'next' config live */
+    case 'push':
+        SwimmReleases.Release();
+        break;
+    /* This points to whatever command I'm currently working on. Never quite know what that might be. */
+    case 'magic':
+        console.log(`It's a kind of magic ...`);
+        break;
     default:
         console.error(`Unknown option '${options.mode}' passed. Try --help mode'`);
         process.exit(1);
