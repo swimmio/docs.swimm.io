@@ -91,7 +91,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       navbar: {
         title: '',
         logo: {
-          alt: 'Swimm Logo',
+          alt: 'Swimm Documentation',
           src: 'img/logo.svg',
         },
         items: [
