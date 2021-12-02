@@ -3,9 +3,22 @@ id: of2y9
 name: test emiliya
 file_version: 1.0.2
 app_version: 0.6.8-1
+file_blobs:
+  babel.config.js: e00595dae7d69190e2a9d07202616c2ea932e487
 ---
 
 test test
+
+<br/>
+
+<!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
+### 📄 babel.config.js
+```javascript
+🟩 1      module.exports = {
+🟩 2        presets: [require.resolve('@docusaurus/core/lib/babel/preset')],
+🟩 3      };
+⬜ 4      
+```
 
 <br/>
 
