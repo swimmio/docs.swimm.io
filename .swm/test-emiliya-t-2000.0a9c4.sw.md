@@ -4,7 +4,7 @@ name: Test Emiliya T 2000
 file_version: 1.0.2
 app_version: 0.6.8-1
 file_blobs:
-  docusaurus.config.js: 307588a63b518bc60c7c78ea0d3c4c0520c128f9
+  docusaurus.config.js: 9f613bb7d79f8aa96902f9dbd074455272bc959e
 ---
 
 testing
@@ -14,11 +14,16 @@ testing
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 docusaurus.config.js
 ```javascript
-🟩 1      const lightCodeTheme = require('prism-react-renderer/themes/github');
-🟩 2      const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 ⬜ 3      
 ⬜ 4      // With JSDoc @type annotations, IDEs can provide config autocompletion
 ⬜ 5      /** @type {import('@docusaurus/types').DocusaurusConfig} */
+🟩 6      (module.exports = {
+🟩 7        title: 'Swimm Developer Community',
+🟩 8        tagline: 'Swimm Dev Docs',
+🟩 9        url: 'https://docs.swimm.io',
+⬜ 10       baseUrl: '/',
+⬜ 11       onBrokenLinks: 'throw',
+⬜ 12       onBrokenMarkdownLinks: 'warn',
 ```
 
 <br/>
