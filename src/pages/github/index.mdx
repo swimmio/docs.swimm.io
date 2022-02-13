@@ -15,21 +15,21 @@ to contact us at info@swimm.io
 to get started.**
 
 
-## Why is Swimm asking me for Github OAuth?
+## Why is Swimm asking me for GitHub OAuth?
 
-Swimm is using it to connect with your Github repositories in order to fetch relevant documents 
+Swimm is using it to connect with your GitHub repositories in order to fetch relevant documents 
 and verify if code snippets are up-to-date. In addition, Swimm enables users to issue Pull 
 Requests to update documentation accordingly. Swimm never makes changes to source code files 
 other than documentation files (.sw.md).
 
 ### Who can see my code?
 
-Only you, and those who normally have access to it in Github. Swimm never makes a copy of your
-code, everything is stored in your repository on Github.
+Only you, and those who normally have access to it in GitHub. Swimm never makes a copy of your
+code, everything is stored in your repository on GitHub.
 
-### How does Swimm store the Github token that I provide?
+### How does Swimm store the GitHub token that I provide?
 
-The Github token is stored on the client-side browser (local storage) in a manner that is only 
+The GitHub token is stored on the client-side browser (local storage) in a manner that is only 
 accessible to Swimm’s app. The Token is not stored at any time on Swimm’s servers. 
 
 ### Will any of our code or content ever travel to, or be stored on Swimm’s servers?
@@ -59,29 +59,30 @@ metadata stored on Swimm’s servers will be encrypted at rest.
 
 No, Swimm does not modify any code in your production environment.
 
-## Swimm CI Integration - Information Regarding Github App Authorization
+## Swimm CI Integration - Information Regarding GitHub App Authorization
 
 Swimm helps its users maintain fresh documentation by integrating into their CI. This can be done 
-manually [add link to relevant doc site page] or by using our Github App.
+manually [add link to relevant doc site page] or by using our GitHub App.
 
-Following are several questions and answers regarding the Swimm Github App’s security profile. 
-Note that these refer only to users of the Github App and not to users of our web app that do not 
-use the Github App. If you have any questions that do not appear here, or if you need clarification, 
+Following are several questions and answers regarding the Swimm GitHub App’s security profile. 
+Note that these refer only to users of the GitHub App and not to users of our web app that do not 
+use the GitHub App. If you have any questions that do not appear here, or if you need clarification, 
 please don’t hesitate to contact us at info@swimm.io
 
 
-### Which permissions does the Github App require and why?
+### Which permissions does the GitHub App require and why?
 
 Swimm uses read access to read your code and verify that the documents are in sync.
 
 We use “PR comment creation” access to write a comment, identified with “Swimm” on the PR during 
-verification. Note, that this access permission does not grant any write access to the repo. 
-We need check permissions (both read and write) to install the Github app in your repos and execute 
-the app on demand. Once the app is installed, a user can select to enable/disable the app per repo 
-and make the checks required or not-required per branch. 
+verification.
 
-### Does Swimm store the Github token that I provide?
-No. Every time an action is triggered, Github sends  the unique app installation identifier to Swimm’s 
+When we discover documents that get out of sync due to code changes in a PR, we use write access to create a commit on the same PR with the required document changes in order to automatically sync your documents. Note that Swimm will never apply code or document changes to your repository without user consent. 
+
+We need check permissions (both read and write) to install the GitHub app in your repos and execute the app on demand. Once the app is installed, a user can select to enable/disable the app per repo and make the checks required or not-required per branch.
+
+### Does Swimm store the GitHub token that I provide?
+No. Every time an action is triggered, GitHub sends  the unique app installation identifier to Swimm’s 
 server. We use this information to generate a unique token (one-off token). This token is never stored 
 on our servers and is used for the duration of the action only.
 
@@ -99,7 +100,7 @@ No.
 
 ### Will Swimm ever make any changes to my code?
 
-No. The Github App will only indicate to the user whether or not the documents are up to date. The app does
+No. The GitHub App will only indicate to the user whether or not the documents are up to date. The app does
 not have any write access permissions to the code itself. 
 
 ### Where are Swimm’s servers?
@@ -109,7 +110,7 @@ Google Cloud Platform (GCP)
 ### Does Swimm encrypt my data?
 
 All data transferred to Swimm’s server will be encrypted during transit. We use only secure functions (HTTPS) 
-to fetch the code from Github servers and communicate back the results. 
+to fetch the code from GitHub servers and communicate back the results. 
 
 ### Can the Swimm CI app affect code in production? 
 
