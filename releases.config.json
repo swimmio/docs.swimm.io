@@ -1,4 +1,43 @@
 {
+  "0.7.5": {
+    "major": 0,
+    "minor": 7,
+    "patch": 5,
+    "patchlevel": null,
+    "name": "0.7.5",
+    "date": 1647180791000,
+    "security": null,
+    "blog": null,
+    "tweet": null,
+    "youtube": null,
+    "linkedin": null
+  },
+  "0.7.4": {
+    "major": 0,
+    "minor": 7,
+    "patch": 4,
+    "patchlevel": null,
+    "name": "0.7.4",
+    "date": 1644703200000,
+    "security": null,
+    "blog": null,
+    "tweet": null,
+    "youtube": null,
+    "linkedin": null
+  },
+  "0.7.3": {
+    "major": 0,
+    "minor": 7,
+    "patch": 3,
+    "patchlevel": null,
+    "name": "0.7.3",
+    "date": 1642629600000,
+    "security": null,
+    "blog": null,
+    "tweet": null,
+    "youtube": null,
+    "linkedin": null
+  },
   "0.2.3": {
     "major": 0,
     "minor": 2,
