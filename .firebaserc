@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "production": "swimmio",
+    "staging": "swimm-dev"
+  }
+}

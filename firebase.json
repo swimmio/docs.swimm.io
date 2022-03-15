@@ -1,0 +1,64 @@
+{
+  "hosting": [
+    {
+      "public": "build",
+      "site": "docs-site-test",
+      "ignore": [
+        "firebase.json",
+        ".firebaserc",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ttf)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=2592000"
+            }
+          ]
+        },
+        {
+          "source": "**/*.@(js|css)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=604800"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "public": "build",
+      "site": "docs-swimm",
+      "ignore": [
+        "firebase.json",
+        ".firebaserc",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ttf)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=2592000"
+            }
+          ]
+        },
+        {
+          "source": "**/*.@(js|css)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=604800"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
