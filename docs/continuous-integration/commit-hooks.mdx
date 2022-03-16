@@ -8,12 +8,12 @@ import Link from '@docusaurus/Link';
 # Verification Through Commit Hooks
 
 Commit hooks are a neat feature of Git (and other DVCS) that allow you to 'tap into'
-certain functuionality at certain stages of operation. One of the most useful places
+certain functionality at certain stages of operation. One of the most useful places
 for hooks to run is *right* before finalizing a commit.
 
-Commit hooks are very usful for running lint scripts, static analysis and anything
+Commit hooks are very useful for running lint scripts, static analysis and anything
 else that commonly causes pull requests to be rejected due to housekeeping. Swimm's
-verification checks can efffectively run here, but this will only be effective if
+verification checks can effectively run here, but this will only be effective if
 **everyone** uses the hooks the same way.
 
 To utilize pre-commit hooks, You'll need to make sure you have the latest `swimm_cli`
@@ -29,10 +29,10 @@ chmod +x ./swimm_cli
 We recommend always fetching a new copy of `swimm_cli` in your scripts so that your
 verification is the same engine as the latest Swimm release.
 
-## Sample Commit Hook Configurations:
+## Sample commit hook configurations:
 
 Below are the sample configurations, in no specific order. If you need one that
-isn't listed, 
+isn't listed, please reach out on our <SwimmLink target="slack" />
 
 ### Husky
 
@@ -54,7 +54,7 @@ Then, run the following in your terminal while in the repository root:
 $ npx husky add .husky/pre-commit "npm run pre-commit"
 ```
 
-### pre-commit
+### Pre-commit
 
 [Pre-commit](https://pre-commmit.com) works with Git to intercept certain kinds of events 
 through the use of hooks, which allows actions to run before the commit transaction actually 
@@ -68,15 +68,15 @@ block the commit, depending on the conventions that feel right for you and your 
 To install pre-commit hooks, first install pre-commit, and then follow the instructions 
 [in this repository](https://github.com/swimmio/pre-commit). 
 
-### Shell Example: Verifying Docs As Up-To-Date
+### Shell example: verifying docs are up-to-date
 
 ```shell
-echo "Verifying documentation units"
+echo "Verifying docs"
 wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
 chmod +x ./swimm_cli  
 ./swimm_cli verify
 ``` 
-### Shell Example: Verify Overall Coverage
+### Shell example: verify overall coverage
 
 `swimm_cli coverage` Will scan whatever code Git knows about and compare that to
 the amount of documentation you've created. The result will be a score of 0 to 100. 

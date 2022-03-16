@@ -5,14 +5,14 @@ sidebar_position: 1
 ---
 import Link from "@docusaurus/Link";
 
-# What is Swimm's Autosync?
+# What is Swimm's Auto-sync?
 
 There are approximately <Link href="https://en.wikipedia.org/wiki/List_of_programming_languages">
 700 non-esoteric programming languages</Link> in the wild that someone could conceivably use. But,
 even esoteric or purely educational code needs documentation, so imagine that number being at least
 one thousand very conservatively.
 
-Swimm's Autosync algorithm makes informed decisions about what happened in your code based on the
+Swimm's auto-sync algorithm makes informed decisions about what happened in your code based on the
 impact that any given change made to the code. This approach is much faster, much more accurate and
 exponentially more efficient than requiring a full-blown lexical parser for well over a thousand
 languages.
@@ -29,7 +29,7 @@ footprint that any change to the code might leave:
  - You used Git to rename a file or directory
  - You added a type cast to resolve warnings about an ambiguous callback
 
-These are all great examples of trvial changes that all have a very similar "shape" to them,
+These are all great examples of trivial changes that all have a very similar "shape" to them,
 almost completely regardless of the language being used. 
 
 Additionally, when you use <Link to="/docs/creating-content/smart-tokens">Smart Tokens & Paths</Link>
@@ -62,7 +62,7 @@ appears to still represent the same thing. If you introduce a change in the code
 a potential type safety issue, you'll need to make sure to note that in the narrative around
 the code. 
 
-## What About Preprocessors Or Oxygen-style Markup?
+## What about preprocessors or Oxygen-style markup?
 
 Swimm only understands one scope, which is the entire file. It doesn't understand conditional
 compilation, execution scope, variable scope, comments, or other comment markup. 
@@ -71,10 +71,10 @@ It's on our roadmap to be able to input documentation from other formats easily 
 documentation, but understanding comment markup would be a job the editor does, similarly to 
 how it interprets markdown.
 
-## What Happens If Autosync Can't Handle Something?
+## What happens if auto-sync can't handle something?
 
 Sometimes code vanishes completely, or changes into something that's just unrecognizeable from
-what it was. If Autosync decides that a change is impactful enough that human oversight is needed, the
+what it was. If auto-sync decides that a change is impactful enough that human oversight is needed, the
 following things happen:
 
  - The running verification check will fail. Depending on your configuration, this means
