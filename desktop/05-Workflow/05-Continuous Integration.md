@@ -161,12 +161,24 @@ The best way to run on Jenkins is through a "Freestyle Project", formerly known 
 Once you have that done, under Build, select "Execute Shell" and paste the following commands:
 
 ```shell
-echo "Verifying documentation units"
-git config --global user.name "nobody"
-git config --global user.email "nobody@example.com"
-wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
-node swimm_cli --version  
-node swimm_cli verify
+stage('Swimm Verify') {
+  steps {
+    script {
+      echo "Verifying documentation"
+      sh '''
+
+        git config --global user.name "user.name"
+        git config --global user.email "youremail@domain.com"
+        wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cl
+        chmod +x ./swimm_cli
+        ./swimm_cli --version
+        ./swimm_cli verify
+
+        '''
+
+    }
+  }
+}
 ```
 
 You can put whatever logic you'd like following that, `swimm verify` will exit with a nonzero status if there's a problem. It's also up to you if you'd like to set up a project just for this, or just add it as the last step to an existing project - the scripts will all run the same.
@@ -215,10 +227,13 @@ some things to keep in mind:
 If you need to run the test 'headless' on a build server, you can use the following command to pull in the latest client and have node.js (10.15.0+) execute it:
 
 ```sh
-echo "Verifying documentation units"
-wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
-node swimm_cli --version  
-node swimm_cli verify
+echo "Verifying documentation"
+git config --global user.name "user.name"
+git config --global user.email "youremail@domain.com"
+wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cl
+chmod +x ./swimm_cli
+./swimm_cli --version
+./swimm_cli verify
 ``` 
 ### Shellcode Example: Verify Overall Coverage
 

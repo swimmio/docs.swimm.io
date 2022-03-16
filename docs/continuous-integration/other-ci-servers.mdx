@@ -153,15 +153,16 @@ whatever triggers or timing you'd like. There are only a few things that you hav
 
  2. If you are using Jenkins' advanced clone configuration, _make sure you disable the shallow pull option_ - Swimm is going to require that the entire history be present.
 
- 3. You're going to need `curl` installed, which you can do via `apt-get install curl`
+ 3. You're going to need `wget` or `curl` installed, which you can do via `apt-get install wget`/`apt-get install curl`
  
 Once you have that done, under Build, select "Execute Shell" and paste the following commands:
 
 ```shell
-echo "Verifying documentation units"
-git config --global user.name "nobody"
-git config --global user.email "nobody@example.com"
-wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
-node swimm_cli --version  
-node swimm_cli verify
+echo "Verifying documentation"
+git config --global user.name "user.name"
+git config --global user.email "youremail@domain.com"
+wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cl
+chmod +x ./swimm_cli
+./swimm_cli --version
+./swimm_cli verify
 ```
