@@ -9,102 +9,83 @@ import YouTubePlayer from '../src/components/YouTubePlayer.js'
 **We never see your code or store your Github token. See our <Link to="/github">Security Overview</Link>
 for more information.**
 
-This ten minute video shows you how to sign up, connect your Github account, 
+This guide shows you how to sign up, connect your GitHub account, 
 give Swimm the permissions it needs to work, and create your first Swimm 
-document. Then, we show you how to keep your documentation up-to-date through 
-continuous integration, and how to make your documentation discoverable 
+document. Then we show you how to keep your documentation up-to-date and how to make your documentation discoverable 
 just-in-time through our IDE plugins. This will give you a great sense of 
 Swimm's functionality and feel, and start your thinking on ways that you 
-can integrate it:
+can integrate it.
 
-<YouTubePlayer id="KsL9IVOAB4w" />
+Here are the milestones you need to accomplish:
 
-We really recommend watching the video, but if you'd prefer to just skim some
-steps while you explore, that's fine too! Feel free to look around the categories
-to the left; the link back to this quick start will always be on the top.
-
-Here are the milestones you need to accomplish, in order:
-
-## Set Up A Workspace
+## Set up a workspace
 
 A workspace in Swimm is a logical grouping of repositories associated with a team.
-Many organizations only need a single workspace, and we reocmmend starting with just
+Many organizations only need a single workspace, and we recommend starting with just
 one until the need for more becomes clear.
 
 Example use cases for multiple workspaces might be:
 
- - One workspace per Microservice
- - Separating concerns, like "The Front End Team", "The Back End Team", "The Internal Dev Team", "The Data Team"
- - Student or Volunteer groups managing translations, etc.
+ - One workspace per micro-service
+ - Separating concerns, like "The Front End Team," "The Back End Team," "The Internal Dev Team," "The Data Team"
+ - Student or volunteer groups managing translations, etc.
 
-## Understand How Branching Impacts Your Workflow
+## Understand how branching impacts your workflow
 
 Swimm uses Git to store your documentation in the `.swm` folder of each repository
 where you use Swimm. This means that documentation that you write needs to be committed
 and merged just like anything else. 
 
-Additionally, if you create documentation on a protected branch, Swimm will automatically 
-create a temporary branch, and then open a pull request to merge it into the protected 
+You can decide whether to create documentation on a side branch and open a PR to merge it to the main 
 branch.
 
-You can still save/commit directly to the main branch if it isn't protected, but we
-strongly recommend utilizing the pull request as an additional layer of safety and 
+You can still commit directly to the main branch if it isn't protected, but we
+strongly recommend utilizing the PR as an additional layer of safety and 
 review. 
 
-In fact, you're probably still on the `initializing-swimm` branch right now. You can
-merge this later, or throw it away and start over after getting the feel for things.
+## Create your first document with smart paths & tokens
 
-## Create Your First Document With Smart Paths & Tokens
-
-Pick something extremely common that someone new might need to do and write up a short
+Pick something that requires documentation and write up a short
 tutorial on how to accomplish it. Use the list below for inspiration:
 
  - How do I write a unit test?
  - How do I set up my local build environment?
  - How do I debug a service too big for Minikube?
- - How does mathematic notation work?
+ - How do I integrate a third-party service?
 
  Now, grab some snippets from relevant files (e.g. an example unit test) and add them to
  your document.
 
  Now, fill in the narrative. Hit the `/` key when the cursor is by itself to bring up 
- a quick menu. Try smart paths - these autosync if the path ever moves. Try using some
+ a quick menu. Try smart paths - these auto-sync if the path ever moves. Try using some
  smart tokens to call out variables, functions or methods and you won't need to worry
  if they ever change. 
 
-## Create Your First Playlist
+## Create your first Swimm Playlist
 
 Once you've documented one or two simple things that anyone onboarding to the code would
-appreciate knowing, it's time to create a playlist to orgainze those documents purposefully.
+appreciate knowing, it's time to create a playlist to orgainze those documents.
 
 Create a "Getting Familiar" playlist and try adding the documents you just created, as well
 as links to any existing README files you might have, or even videos, flowcharts or funny 
 memes to lighten the mood. 
 
-## Set Up Continuous documentation
+## Set up Continuous Documentation
 
-Swimm means never having to dedicate sprints to playing catch up with your documentation
-again. But to accomplish this, we need documentation to evolve continuously with the code.
-
-Make sure Swimm verification is running on your CI pipeline through our Github app, or
+To set up Continuous Documentation, make sure Swimm Verify is running on your CI pipeline through our GitHub app, or
 by using one of our sample configurations for popular CI servers. Talk with your team
-and decide what your best action is if a pull request breaks the documentation. A lot
-of clients prefer to fail, and require the documentation changes become part of the PR. 
-
-You can also open an issue, and agree upon a SLA where the documentation will be brought
-up-to-date. 
+and decide what your best action is if a PR breaks the documentation. 
 
 If you don't use continuous integration, please consider taking advantage of commit hooks
 to make sure your documentation stays up-to-date.
 
-## Try Our IDE plugins
+## Try our IDE plugins
 
-Swimm's IDE plugins provide access to your beautiful documents right inline with the code
-that they explain, and your documentation opens right in the IDE. This is truly first-class
-"just in time" help and is also a great example of how Swimm augments your existing code
-comments. 
+Swimm's IDE plugins provide access to your documents right inline with the code
+that they explain, and your documentation opens right in the IDE. This is an example of how Swimm augments your existing code
+comments conveniently so you don't have to look for them. 
 
-## Invite Others To Your Workspace
+## Invite others to your workspace
 
 Many hands make light work! Use the "invite" feature on the workspace page to invite others
 on your team to enjoy and create great documentation along with you.
