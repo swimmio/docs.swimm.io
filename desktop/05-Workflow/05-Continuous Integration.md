@@ -152,11 +152,9 @@ Ordinarily, your `workflows:` section will already be defined, just put `- swimm
 
 The best way to run on Jenkins is through a "Freestyle Project", formerly known as a "Workflow". You can set up a project called "Swimm Verification" and point it at your repository, with whatever triggers or timing you'd like. There are only a few things that you have to watch out for:
 
- 1. You absolutely, positively must have Node JS installed on the worker, version 14 or later. If you're on a Debian-ish setup, [here's a really good tutorial on how to install the Node LTS package](https://tecadmin.net/install-latest-nodejs-npm-on-debian/). The gist is, add the official Node repo to your sources via `curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -` - and then just `apt-get install nodejs` -- this will work even if you have an older version installed (e.g. Node 10)
+ 1. If you are using Jenkins' advanced clone configuration, _make sure you disable the shallow pull option_ - Swimm is going to require that the entire history be present.
 
- 2. If you are using Jenkins' advanced clone configuration, _make sure you disable the shallow pull option_ - Swimm is going to require that the entire history be present.
-
- 3. You're going to need `curl` installed, which you can do via `apt-get install curl`
+ 2. You're going to need `curl` installed, which you can do via `apt-get install curl`
 
 Once you have that done, under Build, select "Execute Shell" and paste the following commands:
 
