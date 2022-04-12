@@ -1,4 +1,17 @@
 {
+  "0.8.0": {
+    "major": 0,
+    "minor": 8,
+    "patch": 0,
+    "patchlevel": null,
+    "name": "0.8.0",
+    "date": 1649693885,
+    "security": null,
+    "blog": null,
+    "tweet": null,
+    "youtube": null,
+    "linkedin": null
+  },
   "0.7.8": {
     "major": 0,
     "minor": 7,
