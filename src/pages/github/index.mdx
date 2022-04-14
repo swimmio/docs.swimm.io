@@ -18,24 +18,23 @@ to get started.**
 ## Why is Swimm asking me for GitHub OAuth?
 
 Swimm is using it to connect with your GitHub repositories in order to fetch relevant documents 
-and verify if code snippets are up-to-date. In addition, Swimm enables users to issue Pull 
+and verify if code snippets are up to date. In addition, Swimm enables users to issue Pull 
 Requests to update documentation accordingly. Swimm never makes changes to source code files 
 other than documentation files (.sw.md).
 
 ### Who can see my code?
 
 Only you, and those who normally have access to it in GitHub. Swimm never makes a copy of your
-code, everything is stored in your repository on GitHub.
+code but for some features, Swimm processes parts of your code in order to make recommendations and suggestions for documentation that should be updated.
 
 ### How does Swimm store the GitHub token that I provide?
 
-The GitHub token is stored on the client-side browser (local storage) in a manner that is only 
-accessible to Swimm’s app. The Token is not stored at any time on Swimm’s servers. 
+The GitHub token is not stored at any time on Swimm’s servers. The token is stored on the client-side browser (local storage) in a manner that is only 
+accessible in the Swimm app. However, Swimm will use your tokens to create doc recommendations in our effort to help you push forward creating docs for your team.
 
-### Will any of our code or content ever travel to, or be stored on Swimm’s servers?
+### Will any of our code or content be stored on Swimm’s servers?
 
-No. Swimm does store meta-data such as document titles, timestamps, usage statistics etc, but
-none of your actual code or content.
+None of your actual code or content is stored on Swimm's server. Swimm only stores meta-data such as document titles, timestamps, usage statistics etc. 
 
 ### Will Swimm ever make any changes to my code?
 
