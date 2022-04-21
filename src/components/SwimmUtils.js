@@ -64,7 +64,7 @@ SwimmVersion.defaultProps = {
  * 
  * Actually renders as:
  * 
- * <Link className="button button--secondary button--lg" href="https://swimm.live">Community Slack Channel</Link>
+ * <Link className="button button--secondary button--lg" href="https://swimm.io/slack">Community Slack Channel</Link>
  * 
  * @param {*} props 
  * @returns Link component 
