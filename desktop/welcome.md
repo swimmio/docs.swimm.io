@@ -31,7 +31,7 @@ If you have any difficulty with anything mentioned in this portal, [there are se
 
 Before you do anything else, we recommend that you do the following things (don't worry, they won't take long!):
 
- - Join our friendly, low-volume [Slack community](https://swimm.live/slack). This is a great resource to get help from other Swimmers, lifeguards, and folks that work at Swimm.
+ - Join our friendly, low-volume [Slack community](https://swimm.io/slack). This is a great resource to get help from other Swimmers, lifeguards, and folks that work at Swimm.
  - Install one of our [IDE plugins](Workflow/IDE%20Plugins) to enable showing beacons where Swimm documentation exists that can be used to open Swimm and jump right into that area of your documentation. Right now, we support VSCode with other popular IDEs in the works.
  - Follow us on [Twitter](https://twitter.com/swimm_io) and / or [LinkedIn](https://www.linkedin.com/company/swimm-io/) for updates and special opportunities to connect with us. 
 
