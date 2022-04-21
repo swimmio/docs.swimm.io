@@ -3,7 +3,7 @@ import GetCurrentSwimmRelease from './src/components/SwimmVersions.js';
 const SiteSettings = {
     version: GetCurrentSwimmRelease(),
     community: {
-        slack: 'https://swimm.live/slack',
+        slack: 'https://swimm.io/slack',
         officeHours: 'https://calendly.com/timpost/swimm-s-office-hours-with-tim-post',
     },
     emojiShortcuts: {
