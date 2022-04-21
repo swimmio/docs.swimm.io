@@ -34,7 +34,7 @@ Installed, it provides the same experience as the VSCode plugin, with the same c
 
 ## Status Of Other IDE Plugins
 
-Here's a brief status of what we're working on. Check our [blog](https://swimm.io/blog) for updates & release notes, or [join our Slack community](https://swimm.live/slack) if you'd like to test these when they're alpha-quality but stable.
+Here's a brief status of what we're working on. Check our [blog](https://swimm.io/blog) for updates & release notes, or [join our Slack community](https://swimm.io/slack) if you'd like to test these when they're alpha-quality but stable.
 
 | IDE | Functionality | Status | Implemented |
 | --- | --- | --- | --- |
