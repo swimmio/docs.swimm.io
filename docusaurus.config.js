@@ -179,7 +179,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'Community Slack Channel',
-                href: 'https://swimm.live/slack',
+                href: 'https://swimm.io/slack',
               },
               {
                 label: 'Stack Overflow',
@@ -221,11 +221,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             items: [
               {
                 label: 'Terms Of Service',
-                href: 'https://swimm.io/terms-of-service',
+                href: 'https://swimm.io/legal/terms-of-service/',
               },
               {
                 label: 'Privacy Policy',
-                href: 'https://swimm.io/privacy-policy',
+                href: 'https://swimm.io/legal/privacy-policy/',
               },
             ],
           },
