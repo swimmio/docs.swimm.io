@@ -46,72 +46,12 @@ jobs:
       - uses: swimmio/swimm-verify-action@v1
 ```
 
-### Bitbucket Pipelines
-
-```yml
-image: ubuntu:latest
-pipelines:
-  default:
-    - parallel:
-        - step:
-            name: Documentation
-            script:
-              - echo "Verifying documentation units"
-              - wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
-              - chmod +x ./swimm_cli
-              - ./swimm_cli verify
-```
-
 ### Travis CI
 
 ```yml
 - wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
 - chmod +x ./swimm_cli
 - ./swimm_cli verify
-```
-
-### Gitlab
-
-```yml
-# Adopted from the community contributed base node image, found at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Nodejs.gitlab-ci.yml
-image: ubuntu:latest
-# We deliberately do not cache anything
-test_async:
- script:
-   - echo "Verifying documentation units"
-   - wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
-   - chmod +x ./swimm_cli
-   - ./swimm_cli verify
-```
-
-### Azure DevOps Pipelines
-
-Note that Microsoft no longer grants free parallel tasks to new Azure DevOps users; this was done in response to some folks abusing the build servers. Hence, you'll need to have been given a grant to continue using parallel jobs for free, or you need to be on a paid account. 
-
-Below is the YAML to configure the pipeline:
-
-```yml
-# Pipeline config to verify Swimm docs as in-sync
-# Copyright 2021 Swimm
-# License: MIT
-
-trigger:
-- main
-
-pool:
-  vmImage: ubuntu-latest
-
-steps:
-
-- bash: |
-    echo "Verifying documentation units"
-    git config --global user.name "Username" 
-    git config --global user.email "me@example.com"
-    wget -O swimm_cli https://releases.swimm.io/ci/latest/packed-swimm-linux-cli
-    chmod +x ./swimm_cli  
-    ./swimm_cli verify
-  displayName: "Swimm Verify" 
 ```
 
 ### Circle CI
