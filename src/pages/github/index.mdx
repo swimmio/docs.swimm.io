@@ -3,28 +3,25 @@ import Link from '@docusaurus/Link';
 
 # Swimm Web App - Security Overview
 
-Swimm is a code documentation platform for individuals and teams. With Swimm, developers 
-create code-coupled documentation that is saved on their own repository in Markdown format, 
-and is kept up-to-date when the code changes.
+Swimm is a platform for Continuous Documentation platform, helping developers create, find, and maintain documentation. With Swimm, developers 
+create code-coupled documentation that is saved on their own repository in Markdown format and is kept up-to-date when the code changes.
 
-The Following are several questions and answers regarding our security profile. If you have 
+We've prepared some frequently asked questions regarding Swimm's security profile as well as information about Swimm's SOC2 compliance. 
+
+If you have 
 any questions that do not appear here, or if you need clarification, please don’t hesitate 
 to contact us at info@swimm.io
 
-**Once you've read this, we recommend <Link to="/docs/quickstart">going through the fifteen minute quickstart</Link>
-to get started.**
-
-
 ## Why is Swimm asking me for GitHub OAuth?
 
-Swimm is using it to connect with your GitHub repositories in order to fetch relevant documents 
+Swimm is using it to connect with your GitHub repositories in order to access relevant documents 
 and verify if code snippets are up to date. In addition, Swimm enables users to issue Pull 
-Requests to update documentation accordingly. Swimm never makes changes to source code files 
+Requests to update documentation. Swimm never makes changes to source code files 
 other than documentation files (.sw.md).
 
 ### Who can see my code?
 
-Only you, and those who normally have access to it in GitHub. Swimm never makes a copy of your
+Only you, and those who normally have access to it in GitHub, can see your code. Swimm never makes a copy of your
 code but for some features, Swimm processes parts of your code in order to make recommendations and suggestions for documentation that should be updated.
 
 ### How does Swimm store the GitHub token that I provide?
@@ -39,8 +36,7 @@ None of your actual code or content is stored on Swimm's server. Swimm only stor
 ### Will Swimm ever make any changes to my code?
 
 Swimm will create a folder in your repo to store the documents you create upon first login to the 
-app (`/.swm/`). After that, upon each document creation - once the user stores the document, Swimm 
-will save the relevant file in the folder created in your repo. Swimm will not make any modifications 
+app (`/.swm/`). After that, when you create documents and store them, Swimm saves the relevant file in the folder created in your repo. Swimm will not make any modifications 
 to your code besides these files and will not change any existing code files. Every operation to the 
 code starts with an explicit intent from the user, and the change management is performed on your 
 version control system.
@@ -60,10 +56,10 @@ No, Swimm does not modify any code in your production environment.
 
 ## Swimm CI Integration - Information Regarding GitHub App Authorization
 
-Swimm helps its users maintain fresh documentation by integrating into their CI. This can be done 
+Swimm helps its users maintain up to date documentation by integrating their CI. This can be done 
 manually [add link to relevant doc site page] or by using our GitHub App.
 
-Following are several questions and answers regarding the Swimm GitHub App’s security profile. 
+We've prepared some frequently asked questions about Swimm GitHub App’s security profile. 
 Note that these refer only to users of the GitHub App and not to users of our web app that do not 
 use the GitHub App. If you have any questions that do not appear here, or if you need clarification, 
 please don’t hesitate to contact us at info@swimm.io
@@ -76,7 +72,7 @@ Swimm uses read access to read your code and verify that the documents are in sy
 We use “PR comment creation” access to write a comment, identified with “Swimm” on the PR during 
 verification.
 
-When we discover documents that get out of sync due to code changes in a PR, we use write access to create a commit on the same PR with the required document changes in order to automatically sync your documents. Note that Swimm will never apply code or document changes to your repository without user consent. 
+When we discover documents that become out of sync due to code changes in a PR, we use write access to create a commit on the same PR with the required document changes in order to automatically sync your documents. Note that Swimm will never apply code or document changes to your repository without user consent. 
 
 We need check permissions (both read and write) to install the GitHub app in your repos and execute the app on demand. Once the app is installed, a user can select to enable/disable the app per repo and make the checks required or not-required per branch.
 
@@ -109,8 +105,14 @@ Google Cloud Platform (GCP)
 ### Does Swimm encrypt my data?
 
 All data transferred to Swimm’s server will be encrypted during transit. We use only secure functions (HTTPS) 
-to fetch the code from GitHub servers and communicate back the results. 
+to access the code from GitHub servers and communicate back the results. 
 
 ### Can the Swimm CI app affect code in production? 
 
 No, Swimm does not modify any code in your production environment.
+
+## Is Swimm SOC 2 compliant?
+We are pleased to share that Swimm is SOC 2 compliant. Compliance with the SOC 2 standard is voluntary, but it has become increasingly important as companies select their service providers. For security-conscious businesses, SOC 2 compliance is now viewed as a minimal requirement when considering a SaaS provider, and it’s often a requirement in vendor contracts.
+
+To request Swimm’s full SOC 2 Type II report as of December 2021, just send us an email at info@swimm.io
+
