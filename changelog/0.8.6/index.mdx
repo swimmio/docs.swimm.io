@@ -16,13 +16,20 @@ We're pleased to announce the availability of **Swimm 0.8.6**<SwimmMoji text="re
 <SwimmReleaseVideo version="0.8.6" />
 
 ## New Features:
- - INSERT TEXT
+- After reviewing a doc, you can now send a quick thank you to everyone who contributed to creating that document. At the bottom of the document, there are 3 options you can pick: great doc, time-saver, and valuable insights. 
+- You can assign a doc to a Swimm user or email address via the Assign link located below the document title. You can choose from a predefined set of reasons (needs review, needs updating, FYI, other) and assign it and include an optional note. After assigning a doc, the assignee will receive an email with the assignment details.
+- You can obtain and share a direct link to a code snippet with the anchor icon located at the top-right corner of a snippet.
+- Introducing a new GitHub App setting called Configure Swimm Verify Check . When enabled, Swimm will fail only when outdated/out of sync docs are caused by your current PR. When disabled (default), Swimm will show updates related to any outdated/out of sync docs. 
 
 ## Improvements:
- - INSERT TEXT
+ - You can see a list of all contributors on a doc (not only the last contributor) when viewing a doc. 
+### A few changes in our editor
+- Slash command "/link" changed into 2 commands: "/doc" and "/playlist" to add links to these items specifically. 
+- Typing "Enter" creates a new block which results in a more fluid and smooth editing experience.
+- A new contextual menu when clicking the block handle icon shows the block options.
 
 ## Bug Fixes:
- - INSERT TEXT
+ - When "Swimm Verify Check" configuration checkbox is enabled with a PR from a side-branch of a side-branch - Swimm Verify didn't behave correctly
 
 
 For further information and any questions, please reach out to us on our <SwimmLink target="slack" />.
