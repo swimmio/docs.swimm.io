@@ -2,11 +2,11 @@
 id: Zo6UG
 name: What Are The Local Site Configuration Files?
 file_version: 1.0.2
-app_version: 0.8.4-0
+app_version: 0.9.1-0
 file_blobs:
   docusaurus.config.js: 369e547bec3a6ee7752e78db291fb7bfaf56313f
   src/components/SwimmUtils.js: 6b4d2d4516c8a2ebcf650e6677ffe847aecceb7b
-  swimm.config.js: 4864a6928963d9ca5f989815be222ccfe3771f21
+  swimm.config.js: 0451ddd2b7da0ded9e20c21a2b27b9950b8aa9e5
 ---
 
 We have three main configuration files that you need to know about:
@@ -103,7 +103,7 @@ The objects in `SiteSettings`[<sup id="28FeRl">↓</sup>](#f-28FeRl) contain wha
 🟩 12             video: ':movie_camera::clapper::cinema:',
 🟩 13         },
 🟩 14         heap: {
-🟩 15              enabled: true,
+🟩 15              enabled: false,
 🟩 16             id: '2760903549',
 🟩 17             params: [
 🟩 18                 "addEventProperties", 
