@@ -12,7 +12,7 @@ const SiteSettings = {
         video: ':movie_camera::clapper::cinema:',
     },
     heap: {
-        enabled: false,
+         enabled: false,
         id: '2760903549',
         params: [
             "addEventProperties", 
