@@ -1,4 +1,17 @@
 {
+  "0.9.1": {
+    "major": 0,
+    "minor": 9,
+    "patch": 1,
+    "patchlevel": null,
+    "name": "0.9.1",
+    "date": 1656935153,
+    "security": null,
+    "blog": null,
+    "tweet": null,
+    "youtube": null,
+    "linkedin": null
+  },
   "0.9.0": {
     "major": 0,
     "minor": 9,
