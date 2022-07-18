@@ -66,7 +66,7 @@ Then, we ultimately mix our components with Github flavored Markdown (NB, it has
 ```mdx
 ⬜ 15     Along, with detailed documentation, videos and tutorials, you'll find detailed 
 ⬜ 16     release notes for every Swimm Release, as well as news about our other tools, such
-⬜ 17     as our [IDE Plugins](/docs/publishing-content/ide-plugins) or [Github App](/docs/continuous-integration/github-app).
+⬜ 17     as our [IDE Plugins](/docs/ide-integrations/ide-plugins) or [Github App](/docs/continuous-integration/github-app).
 🟩 18     
 🟩 19     :::tip You can pull RSS or Atom feeds to stay up-to-date:
 🟩 20     
