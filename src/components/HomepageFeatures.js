@@ -25,7 +25,7 @@ const FeatureList = [
       </>
     ),
     link_title: 'See What\'s Supported',
-    link_href: '/docs/publishing-content/ide-plugins'
+    link_href: '/docs/ide-integrations/ide-plugins'
   },
   {
     title: 'Knowledgebase Integrations',
