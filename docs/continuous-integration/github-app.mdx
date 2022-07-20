@@ -3,20 +3,128 @@ id: Swimm's Github App
 slug: github-app
 sidebar_position: 2
 ---
+import Link from '@docusaurus/Link';
+
 
 # Swimm's GitHub App
 
-The Swimm GitHub app verifies that all your documents are up-to-date on every PR. 
-When a Doc requires reviewing, we post a comment with a link to 
-editing this specific Doc. 
+If you're using GitHub, Swimm’s GitHub app will help you streamline PRs to verify that your documentation is up to date.
+       
+To get the Swimm GitHub App, you first need to <Link href="https://app.swimm.io/register">sign up for Swimm.</Link> 
+You should use Swimm’s Web App to create documentation and configure the setting for our GitHub App.
 
-Have team members who don't know Swimm yet? Our app posts comments to make sure 
-they know what to do when their documents need review.
+Once you are set up with your workspace and connect a repository, go to <Link href="https://github.com/apps/swimm-io"> GitHub</Link> and install it on your repositories.
 
-If you're using GithHub, our app is very likely the integration you want to use.
-It'll always use the latest and greatest underlying verification code that our
-GitHub Action uses, with a lot of additional polish to help streamline PRs and
-the whole review process. 
+# Swimm's GitHub App Features
 
-Anyone that has administrative access to your GitHub organization can install
-the GitHub app easily through the "Integrations" page.
+**Accepting Auto-synced changes from GitHub**
+
+Swimm’s patented <Link href="https://swimm.io/blog/how-does-swimm-s-auto-sync-feature-work/">Auto-sync</Link> algorithm analyzes what happens in your codebase. When Swimm Verify check recognizes Auto-sync documentation changes, you’ll be notified via a comment on your pull request. 
+
+Trigger a Swimm Commit by clicking the “Approve Auto-sync” button in the Check, which accepts all Auto-synced docs from the GitHub App.
+
+![GitHub No Docs Need Attention](../../static/img/GitHub_Image1.png)
+![GitHub Doc Need Your Attention](../../static/img/GitHub_Image2.png)
+
+
+**Automatic Auto-sync approval**
+
+Set up automatic Auto-sync approval in the GitHub app settings to automatically accept Auto-sync changes and commit them to your open pull request in a dedicated commit.
+![GitHub Auto-sync](../../static/img/GitHub_Image3.png)
+
+Go to GitHub App Settings and check the “Configure Automatic Auto-sync Approval” box.
+
+![GitHub Configure Auto-sync Approval](../../static/img/GitHub_Image4.png)
+
+**New doc notifications**
+
+Set an alert on Slack or via email whenever a new document is created and merged to your main branch. This helps keep track of new documentation in your repo and allows you to invite other members of your organization to read and learn more about new documentation. We’ve found that this encourages a better overall understanding of the codebase.
+
+Go to GitHub App Settings and add the requested email under "Email Me When New Docs are Created."
+
+![GitHub Email](../../static/img/GitHub_Image5.png) 
+
+**Draft documents from pull requests**
+
+When a pull request is interesting enough to document, Swimm’s GitHub App analyzes code changes and notifies you with a comment to create documentation. 
+
+To create a doc, click the "Review Draft in App" button in our comment and go to Swimm’s Web App. All the code changes from your PR will be added to a document and then you’ll just need to explain the code.
+
+![GitHub Create a Doc](../../static/img/GitHub_Image6.png)
+
+**Doc recommendations**
+
+Swimm’s GitHub app alerts you to relevant docs on PRs, recommending documentation to review when code changes.
+
+Examples of when a doc may be recommended: 
+- a fragile piece of code changes referencing an Incident Report 
+- whenever someone changes a covered testing in an E2E testing guide 
+- when someone changes a configuration script in CI deployment documentation 
+
+![GitHub Doc Recommendations](../../static/img/GitHub_Image7.png)
+
+**Swimm Verify Check on PR changes only**
+
+Swimm’s GitHub app has an option to run Swimm Verify only on files that are changed in the PR. 
+- When this option is disabled (this is the default setting), Swimm will show updates related to any outdated/out of sync docs.
+- When the setting under “Configure Swimm Verify Check” is enabled from the GitHub app setting, it will notify you only when the changes in your PR have impacted Swimm docs.
+
+![GitHub Swimm Verify Check](../../static/img/GitHub_Image8.png)
+
+When there are issues on your main branch, consider turning this option on until they are resolved. This feature will allow other engineers to avoid unnecessary delays while you can fix the broken document.
+
+**Disabling comments**
+
+Swimm’s GitHub app has an option to disable comments to reduce the number of notifications that you’re sent. 
+
+If you don’t want to see Swimm Recommended Doc comments, you can disable it in the settings. And if you’d prefer not to get updates on your PRs when your documentation is outdated, you can set that preference in the settings as well.
+
+![GitHub Disabling Comments](../../static/img/GitHub_Image9.png)
+
+**Integrations with other tools**
+
+Swimm is partnered with <Link href="https://docs.swimm.io/docs/continuous-integration/swimm-atlassian-compass-application/">Atlassian Compass.</Link> Use Swimm’s Compass Integration to link Swimm documentation to the Compass component and see the latest documentation status for all your distributed services from a single place.
+
+Additional integrations are on the way; stay tuned!
+
+**Doc Hooks - Alpha**
+
+Swimm is currently developing a new feature — Doc Hooks — which will allow you to set a doc recommendation when a certain path is changed. 
+
+A few examples of Doc Hooks:
+1. Addition of a new database migration file → link to your database migration policy
+2. Modification of a configuration file → link to your environment variable update process walkthrough
+3. Addition of a new record in your infrastructure as a code setting → link to your explainer on how to verify it will be deployed correctly
+
+Stay tuned!
+
+**Permissions needed for Swimm’s GitHub App**
+
+    Swimm requests the following permissions for our GitHub App:
+
+*Checks*
+- We ask for read and write permissions to allow Swimm’s GitHub App to add the Swimm Verify check and update the check results once they are ready.
+
+*Content* (from repos, commits, branches, downloads, releases, and merges)
+- Read permission to enable Swimm to verify your documentation is up to date as the code changes
+- Write permission to allow Swimm to accept and commit suggested Auto-sync changes directly in GitHub. We won’t modify files in your repositories outside the .swm folder.
+
+*Issues*
+- Read and write permissions on issues allow our GitHub App to (1) write comments on your Pull Requests when your documentation is out of date (2) recommend relevant documentation to read (3) suggest new documentation to create based on the PR.
+
+*Pull Requests*
+-Read and write permissions on requests to allow Swimm’s GitHub App to (1) write comments and annotations on your Pull Requests when your documentation is out of date, or (2) when we can recommend relevant documentation to read or suggest creating new documentation based on the Pull Request.
+
+    Swimm’s GitHub App pays attention to the following events in your codebase:
+
+*Pull Requests*
+- To make sure we can verify the code in your Pull Requests and notify you when new documentation is included in a Pull Request that was merged, we require PR event permissions.
+
+*Check Runs*
+- To keep track of our Swimm Verify Check status and react accordingly, as well as support some of our more advanced features such as approving Auto-synced changes directly from GitHub, we require Check Runs permissions.
+
+<Link href="https://swimm.io/blog/soc-2-compliance-a-guide-for-developers/">Swimm is SOC2 compliant</Link> and ISO 27001 certified. Read about security aspects of our GitHub app <Link href="https://docs.swimm.io/github/">here.</Link><br/> 
+<Link href="info@swimm.io">Reach out to us</Link> to request Swimm’s SOC 2 Type II report.
+
+
+
